@@ -1,0 +1,10 @@
+.app-wrapper {
+    background: #000;  
+}
+
+.app-container {    
+    margin: 0 12.5%;
+    min-width: 500px;
+    height: 100vh;
+    background: #fff; 
+}

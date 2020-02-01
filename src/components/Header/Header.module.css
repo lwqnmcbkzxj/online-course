@@ -1,0 +1,40 @@
+.header {
+    background: #000;
+    height: 100px;
+    padding: 0 12.5%;
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;   
+    justify-items: center;
+    align-items: center;
+    grid-gap: 50px;
+   
+    font-size: 24px;
+}
+.options {
+    display: grid;
+    grid-template-columns: 1fr 1fr;   
+    grid-gap: 30px;
+    justify-items: center;
+    align-items: center;
+}
+
+.item:first-child {
+    justify-self: start;
+    padding-left: 30px;
+}
+.item:last-child {
+    justify-self: end;
+    padding-right: 30px;
+}
+.item {   
+    color: #fff;
+}
+
+.activeLink {
+    font-weight: bold; 
+}
+
+.courseName {
+    font-weight: bold; 
+    font-size: 26px;  
+}
