@@ -1,8 +1,8 @@
-const SET_LESSON_DATA = 'SEND-LESSON-DATA';
+const SET_TASK_DATA = 'SEND-TASK-DATA';
 
 
 let initialState = {
-    lesson: {
+    task: {
         id: null,
         title: null,
         media: null,
@@ -16,13 +16,13 @@ let initialState = {
     }
 }
 
-const lessonReducer = (state = initialState, action) => {
+const taskReducer = (state = initialState, action) => {
 
     switch (action.type) {
-        case SET_LESSON_DATA: {
+        case SET_TASK_DATA: {
             return {
                 ...state,
-                lesson: action.lesson
+                task: action.task
             };
         }
 
@@ -32,12 +32,12 @@ const lessonReducer = (state = initialState, action) => {
 }
 
 
-export const setLessonData = (lesson) => {
+export const setTaskData = (task) => {
     return {
-        type: SET_LESSON_DATA,
-        lesson
+        type: SET_TASK_DATA,
+        task
     }
 }
 
 
-export default lessonReducer;
+export default taskReducer;

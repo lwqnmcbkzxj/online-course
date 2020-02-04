@@ -1,11 +1,16 @@
 import React from 'react';
 import s from './Tasks.module.css';
+import { Route } from "react-router-dom";
+
+import TasksListContainer from './TasksList/TasksListContainer';
+import TaskContainer from './Task/TaskContainer';
 
 
-const Tasks = () => {
+const Tasks = (props) => {
     return (
-        <div>
-            Tasks
+        <div className={s.tasks}>
+            {/* <TasksListContainer /> */}
+            {/* <Route path="/course/task/:taskId" render={() => <TaskContainer />} />            */}
         </div>        
     );
 }

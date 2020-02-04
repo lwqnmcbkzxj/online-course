@@ -11,7 +11,7 @@ const Course = () => {
     return (
         <div className = {s.course}>
             <SectionsListContainer />
-            <Route path="/course/lesson" render={() => <LessonContainer />} />           
+            <Route path="/course/lesson/:lessonId" render={() => <LessonContainer />} />           
            
         </div>        
     );

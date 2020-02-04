@@ -1,23 +1,8 @@
-const SET_SECTIONS = 'SEND-SET_SECTIONS_DATA-DATA';
-
+const SET_SECTIONS = 'SET_SECTIONS_DATA';
 
 
 let initialState = {
-    sections: [
-        {
-            "name": "Section 1 intro",
-            "lessons": [
-                { "id": 1, "name": "General physics huhuhuhuh" }
-            ]
-        },
-        {
-            "name": "Section 2 general physics",
-            "lessons": [
-                { "id": 2, "name": "Experimental physics Mozart" },
-                { "id": 3, "name": "Newer Leibniz Physics" }
-            ]
-        }
-    ],
+    sections: [],
 }
 
 const sectionsReducer = (state = initialState, action) => {

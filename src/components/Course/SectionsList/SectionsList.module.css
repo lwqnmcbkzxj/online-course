@@ -1,6 +1,5 @@
 .sectionList {
     border-right: 1px solid #000;
-    height: 100vh;
     padding: 20px;
 }
 
@@ -21,5 +20,4 @@
 
 .activeLink {
     font-weight: bold;
-
 }
