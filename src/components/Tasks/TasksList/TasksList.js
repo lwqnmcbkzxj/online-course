@@ -1,24 +1,27 @@
 import React from 'react';
-import TasksList from './TasksList';
-import Axios from 'axios';
-import { connect } from 'react-redux';
+import s from './TasksList.module.css';
+import { NavLink } from 'react-router-dom';
 
+const TasksList = (props) => {
+    return (
+        <div className={s.taskList}>
+            TASKLIST
+           {
+                props.tasks.map(task =>
+                    <NavLink to={`/tasks/${task.id}`} key={task.id}>
+                        <div className={s.task}>
+                            <h1 className={s.taskName}>{task.name}</h1>
+                            <div className={s.stats}>
+                                <div className={s.likes}>Likes - {task.likes}</div>
+                                <div className={s.views}>Views - {task.views}</div>
+                                <div className={s.rating}>Rating - {task.rating}</div>
+                            </div>
+                        </div>
 
-class TasksListContainer extends React.Component {
-    componentDidMount() { 
-        // sectionsAPI.getSections().then((response) => {
-        //     this.props.setLessonData(response.data[0]);    
-        // })
-    }
-    render() {
-        return <TasksList {...this.props} tasks={this.props.tasks} />
-    }
+                    </NavLink>
+                )
+            }
+        </div>
+    );
 }
-
-let mapStateToProps = (state) => ({
-    tasks: state.tasksPage.tasks
-})
-
-
-
-export default connect(mapStateToProps, { setTasks })(TasksListContainer);
+export default TasksList;

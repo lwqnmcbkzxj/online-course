@@ -1,0 +1,13 @@
+.taskList {
+    border-right: 1px solid #000;
+    padding: 20px;
+}
+
+.task {
+    margin: 20px 0;
+}
+
+.task:hover {
+    background: #c9c9c9;
+    cursor: pointer;
+}

@@ -4,15 +4,9 @@ const SET_TASK_DATA = 'SEND-TASK-DATA';
 let initialState = {
     task: {
         id: null,
-        title: null,
-        media: null,
+        type: null,
+        img: null,
         text: null,
-        task: {
-            type: null,
-            img: null,
-            text: null,
-            variants: null
-        }
     }
 }
 
@@ -32,7 +26,7 @@ const taskReducer = (state = initialState, action) => {
 }
 
 
-export const setTaskData = (task) => {
+export const setTask = (task) => {
     return {
         type: SET_TASK_DATA,
         task

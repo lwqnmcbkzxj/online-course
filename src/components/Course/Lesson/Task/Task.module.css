@@ -1,0 +1,12 @@
+.task .imageHolder {
+    margin: 0 auto;
+    text-align: center;
+}
+
+.task img {
+    width: 90%;
+}
+
+.question {
+    padding: 10px 0;
+}

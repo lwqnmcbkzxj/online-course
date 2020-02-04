@@ -1,9 +1,8 @@
 .header {
     background: #000;
     height: 100px;
-    padding: 0 12.5%;
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;   
+    grid-template-columns: 1fr 1fr ;   
     justify-items: center;
     align-items: center;
     grid-gap: 50px;
@@ -12,7 +11,7 @@
 }
 .options {
     display: grid;
-    grid-template-columns: 1fr 1fr;   
+    grid-template-columns: 1fr 1fr 1fr;   
     grid-gap: 30px;
     justify-items: center;
     align-items: center;

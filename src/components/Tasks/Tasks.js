@@ -9,8 +9,8 @@ import TaskContainer from './Task/TaskContainer';
 const Tasks = (props) => {
     return (
         <div className={s.tasks}>
-            {/* <TasksListContainer /> */}
-            {/* <Route path="/course/task/:taskId" render={() => <TaskContainer />} />            */}
+            <TasksListContainer />
+            <Route path="/tasks/:taskId" render={() => <TaskContainer />} />           
         </div>        
     );
 }

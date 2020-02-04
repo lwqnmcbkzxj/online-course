@@ -12,12 +12,14 @@ class LessonContainer extends React.Component {
         let response = {
             id: lessonId,
             title: 'LESSON TITLE ' + lessonId,
-            media: "https://www.youtube.com/embed/5R3RI5xowdI",
-            text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+            media: "https://www.youtube.com/watch?v=2lAe1cqCOXo",
+            text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+            Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit. 
+            In voluptate velit esse cillum dolore eu fugiat nulla pariatur.Excepteur sint occaecat cupidatat non proident.`,
             task: {
-                type: null,
-                img: null,
-                text: null,
+                type: 1,
+                img: 'https://bugaga.ru/uploads/posts/2013-05/1369165348_milahi-29.jpg',
+                text: "Текст вопроса",
                 variants: null
             }
         }
@@ -43,12 +45,14 @@ class LessonContainer extends React.Component {
             let response = {
                 id: lessonId,
                 title: 'LESSON TITLE ' + lessonId,
-                media: "https://www.youtube.com/embed/5R3RI5xowdI",
-                text: "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.",
+                media: "https://www.youtube.com/watch?v=2lAe1cqCOXo",
+                text: `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit. 
+                In voluptate velit esse cillum dolore eu fugiat nulla pariatur.Excepteur sint occaecat cupidatat non proident.`,
                 task: {
-                    type: null,
-                    img: null,
-                    text: null,
+                    type: 1,
+                    img: 'https://bugaga.ru/uploads/posts/2013-05/1369165348_milahi-29.jpg',
+                    text: "Текст вопроса",
                     variants: null
                 }
             }
