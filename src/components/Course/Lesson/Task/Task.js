@@ -2,7 +2,6 @@ import React from 'react';
 import s from './Task.module.css';
 
 const Task = (props) => { 
-    console.log(props)
     let task = null;
     switch (props.task.type) {
         case 0:

@@ -15,7 +15,8 @@ const Lesson = (props) => {
                 <h2>Lecture notes</h2>
                 <p>{props.lesson.text}</p>               
             </div>
-            <Task task={props.lesson.task}/>           
+            <Task task={props.lesson.task} />       
+            <div className={s.buttonHolder}> <button>Complete</button></div>
         </div>        
     );
 }

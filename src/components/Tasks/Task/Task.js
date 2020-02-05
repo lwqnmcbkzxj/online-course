@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './Task.module.css';
 
-
+// Тип 1 - 
 const Task = (props) => {
     return (
         <div className={s.task}>
@@ -9,6 +9,7 @@ const Task = (props) => {
             <p className={s.question}>{props.task.text}</p>
             <div className={s.imageHolder}><img src={props.task.img} /></div>
             <div>Type - {props.task.type}</div>
+
         </div>
     );
 }

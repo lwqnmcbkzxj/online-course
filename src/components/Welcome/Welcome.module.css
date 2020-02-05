@@ -1,0 +1,20 @@
+.welcome {
+    height: 100vh;
+    overflow: hidden;
+    overflow-y: hidden;
+    overflow-x: hidden;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+.welcome button{
+    padding: 10px 50px;
+    background: #f7b500;
+    color: #1f1f1f;
+    border: 2px solid #1f1f1f;
+    transition: .3s;
+}
+.welcome button:hover{
+   box-shadow: 1px 1px 5px #818181;
+   cursor: pointer;
+}

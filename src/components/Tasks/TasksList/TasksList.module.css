@@ -1,13 +1,27 @@
-.taskList {
+.tasksList  {
     border-right: 1px solid #000;
-    padding: 20px;
+    padding: 20px 20px 20px 40px;
 }
 
 .task {
-    margin: 20px 0;
+    padding: 10px 0;
 }
 
-.task:hover {
-    background: #c9c9c9;
-    cursor: pointer;
+.taskName {
+    font-weight: bold;
+    font-size: 18px;
+}
+
+.stats {
+    margin-top: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: start;
+}
+.stats div {
+    margin: 0 5px;
+}
+.stats img {
+    width: 20px;
 }
