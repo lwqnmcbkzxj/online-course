@@ -12,20 +12,21 @@ import Course from './components/Course/Course'
 
 const App = (props) => {
 	return (
-		<div className="app-wrapper">
+		<div className="app-wrapper">		
+			<Route path={/^(?!.*welcome).*$/} render={() => <Header />} />
 
-			<Route path={/^(?!.*welcome).*$/} render={() => <Header />} /> 
-			
-
-			<div className='app-container'>	
-			<Route exact path="/welcome" render={() => <Welcome />} /> 
-				
-				<Route path="/course" render={() => <Course />} />          
-				<Route path="/tasks" render={() => <Tasks />} />          
-				<Route path="/dashboard" render={() => <Dashboard />} /> 
+			<div className='app-container'>
+				<Route exact path="/welcome" render={() => <Welcome />} />
+				<Route path="/course" render={() => <Course />} />
+				<Route path="/tasks" render={() => <Tasks />} />
+				<Route path="/dashboard" render={() => <Dashboard />} />
 			</div>
 		</div>
 	);
 }
 
 export default App;
+
+
+
+

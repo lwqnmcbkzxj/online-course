@@ -16,8 +16,8 @@ const TasksList = (props) => {
                             <h1 className={s.taskName}>{task.name}</h1>
                             <div className={s.stats}>
                                 <div className={s.rating}> <img src={ task.rating == 1 ? rating1 : task.rating == 2 ? rating2 : rating3 }/></div>
-                                <div className={s.likes}><i class="fa fa-heart" aria-hidden="true"></i> {task.likes}</div>
-                                <div className={s.views}><i class="fa fa-eye" aria-hidden="true"></i> {task.views}</div>
+                                <div className={s.likes}><i className="fa fa-heart" aria-hidden="true"></i> {task.likes}</div>
+                                <div className={s.views}><i className="fa fa-eye" aria-hidden="true"></i> {task.views}</div>
                             </div>
                         </div>
 
