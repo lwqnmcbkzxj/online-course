@@ -1,3 +1,6 @@
+import { lessonsAPI } from '../api/api';
+
+
 const SET_LESSON_DATA = 'SEND-LESSON-DATA';
 const SET_CURRENT_LESSON = 'SET_CURRENT_LESSON';
 const ADD_LESSON = 'ADD_LESSON';
@@ -34,27 +37,51 @@ const lessonReducer = (state = initialState, action) => {
                 currentLesson: +action.lessonId
             };
         }
-            
-        // case ADD_LESSON: {
-        //     const newLesson = {
 
-        //     }
-        //     return {
-        //         ...state,
-        //         currentLesson: +action.lessonId
-        //     };
-        // }
         default:
             return state;
     }
 }
 
 
-export const setLessonData = (lesson) => {
+export const setLesson = (lesson) => {
     return {
         type: SET_LESSON_DATA,
         lesson
     }
+}
+
+export const getLesson = (lessonId) => (dispatch) => {
+    var response = {
+        "id": lessonId,
+        "title":'abc',
+        "elements": [
+            {
+                "text": "\"Ancient Egypt was famous for physics\"",
+                "media": null
+            },
+            {
+                "text": "Egyptian Music",
+                "media": null
+            },
+            {
+                "text": null,
+                "media": "https:\/\/youtube.com"
+            },
+            {
+                "text": "Привет там",
+                "media": null
+            }
+        ]
+    }
+    dispatch(setLesson(response));
+    dispatch(setCurrentLesson(lessonId));
+
+
+    // lessonsAPI.getLesson(lessonId).then((response) => {
+    //     dispatch(setLesson(response));
+    //     dispatch(setCurrentLesson(lessonId));
+    // })    
 }
 
 export const setCurrentLesson = (lessonId) => {

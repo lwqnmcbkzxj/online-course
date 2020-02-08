@@ -1,4 +1,4 @@
-import { createStore, combineReducers } from "redux";
+import { createStore, combineReducers, applyMiddleware } from "redux";
 
 import lessonReducer from "./lesson-reducer";
 import sectionsReducer from "./sections-reducer";
@@ -7,7 +7,9 @@ import taskReducer from "./task-reducer";
 import userReducer from "./user-reducer";
 import usersReducer from "./users-reducer";
 import editReducer from "./edit-reducer";
+import courseReducer from "./course-reducer";
 
+import thunkMiddleware from "redux-thunk"
 
 
 
@@ -19,9 +21,11 @@ let reducers = combineReducers({
     user: userReducer,
     users: usersReducer,
     edit: editReducer,
+    course: courseReducer
 }); 
 
-let store = createStore(reducers);
+let store = createStore(reducers, applyMiddleware(thunkMiddleware));
+
 
 export default store;
 

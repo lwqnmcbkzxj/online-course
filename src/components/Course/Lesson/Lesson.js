@@ -3,10 +3,11 @@ import s from './Lesson.module.css';
 
 import Media from './Media/Media'
 import Task from './Task/Task'
+import { editLesson } from '../../../redux/course-reducer';
 const Lesson = (props) => {
-    console.log(props)
+    // console.log(props)
     return (
-        <div className = {s.lesson}>           
+        <div className={s.lesson}>             
             <h1 className={s.title}>{props.lesson.title}</h1>
             
             <Media media={props.lesson.media} /> 
