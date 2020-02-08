@@ -3,7 +3,9 @@ const SET_STATS = 'SET-STATS';
 
 
 let initialState = {  
-    info: {},
+    info: {
+        isAdmin: true,
+    },
     stats: {}
     
 }

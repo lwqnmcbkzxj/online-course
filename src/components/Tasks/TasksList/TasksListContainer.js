@@ -8,36 +8,37 @@ import { setTasks } from '../../../redux/tasks-reducer';
 
 class TasksContainer extends React.Component {
     componentDidMount() { 
-        // tasksAPI.getTasks().then((response) => {
-        //     this.props.setTasksData(response.data[0]);    
-        // })
+        tasksAPI.getTasks().then((response) => {
+            console.log(response)
+            this.props.setTasks(response);
+        })
 
-        let response = [
-            {
-                id: 1,
-                name: 'Task 1',
-                likes: 0,
-                views: 5,
-                rating: 1,
-            },
-            {
-                id: 2,
-                name: 'Task 2',
-                likes: 3,
-                views: 2,
-                rating: 2,
-            },
-            {
-                id: 3,
-                name: 'Task 3',
-                likes: 2,
-                views: 7,
-                rating: 3,
-            }
-        ]
+        // let response = [
+        //     {
+        //         id: 1,
+        //         name: 'Task 1',
+        //         likes: 0,
+        //         views: 5,
+        //         rating: 1,
+        //     },
+        //     {
+        //         id: 2,
+        //         name: 'Task 2',
+        //         likes: 3,
+        //         views: 2,
+        //         rating: 2,
+        //     },
+        //     {
+        //         id: 3,
+        //         name: 'Task 3',
+        //         likes: 2,
+        //         views: 7,
+        //         rating: 3,
+        //     }
+        // ]
 
 
-        this.props.setTasks(response);
+        // this.props.setTasks(response);
 
     }
     render() {

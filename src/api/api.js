@@ -1,8 +1,9 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    withCredentials: true,   
-    baseURL: "http://online-course.dig-studio.ru/api/",
+    // withCredentials: true,   
+    // baseURL: "http://online-course.dig-studio.ru/api/",
+    baseURL: "http://8300fa73.ngrok.io",
 });
 
 export const sectionsAPI = {
@@ -19,8 +20,13 @@ export const lessonsAPI = {
 }
 
 export const tasksAPI = {   
-    getTasks(id){
+    getTasks(){
         return instance.get(`tasks`)
+            .then(response => response.data);
+    },
+
+    getTask(id){
+        return instance.get(`tasks/${id}`)
             .then(response => response.data);
     }
 }

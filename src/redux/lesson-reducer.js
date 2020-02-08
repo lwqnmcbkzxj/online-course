@@ -1,4 +1,6 @@
 const SET_LESSON_DATA = 'SEND-LESSON-DATA';
+const SET_CURRENT_LESSON = 'SET_CURRENT_LESSON';
+const ADD_LESSON = 'ADD_LESSON';
 
 
 let initialState = {
@@ -13,7 +15,8 @@ let initialState = {
             text: null,
             variants: null
         }
-    }
+    },
+    currentLesson: 1,
 }
 
 const lessonReducer = (state = initialState, action) => {
@@ -25,7 +28,22 @@ const lessonReducer = (state = initialState, action) => {
                 lesson: action.lesson
             };
         }
+        case SET_CURRENT_LESSON: {
+            return {
+                ...state,
+                currentLesson: +action.lessonId
+            };
+        }
+            
+        // case ADD_LESSON: {
+        //     const newLesson = {
 
+        //     }
+        //     return {
+        //         ...state,
+        //         currentLesson: +action.lessonId
+        //     };
+        // }
         default:
             return state;
     }
@@ -39,5 +57,17 @@ export const setLessonData = (lesson) => {
     }
 }
 
+export const setCurrentLesson = (lessonId) => {
+    return {
+        type: SET_CURRENT_LESSON,
+        lessonId
+    }
+}
 
+export const addLesson = (lesson) => {
+    return {
+        type: ADD_LESSON,
+        lesson
+    }
+}
 export default lessonReducer;

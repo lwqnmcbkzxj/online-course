@@ -10,21 +10,18 @@ class TaskContainer extends React.Component {
     componentDidMount() {
         let taskId = this.props.match.params.taskId ? this.props.match.params.taskId : 1;
 
-        // tasksAPI.getTask().then((response) => {
-        //     this.props.setTask(response.data[0]);    
+        // tasksAPI.getTask(taskId).then((response) => {
+        //     this.props.setTask(response);    
         // })
+
         let response = {
             id: taskId,
             type: 1,
             img: 'https://bugaga.ru/uploads/posts/2013-05/1369165348_milahi-29.jpg',
-            text: "Текст вопроса " + taskId,
+            title: "Текст вопроса " + taskId,
             variants: null
         }
-
-
         this.props.setTask(response);
-
-
     }
 
 
@@ -35,18 +32,18 @@ class TaskContainer extends React.Component {
 
 
         if (taskId !== prevProps.task.id) {
-            // tasksAPI.getTask().then((response) => {
-            //     this.props.setTask(response.data[0]);    
-            // })
+            // tasksAPI.getTask(taskId).then((response) => {
+            //     this.props.setTask(response);
+            // });
+
+
             let response = {
                 id: taskId,
                 type: 1,
                 img: 'https://bugaga.ru/uploads/posts/2013-05/1369165348_milahi-29.jpg',
-                text: "Текст вопроса " + taskId,
+                title: "Текст вопроса " + taskId,
                 variants: null
             }
-
-
             this.props.setTask(response);
         }
     }

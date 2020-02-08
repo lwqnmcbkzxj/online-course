@@ -13,7 +13,7 @@ const TasksList = (props) => {
                 props.tasks.map(task =>
                     <NavLink to={`/tasks/${task.id}`} key={task.id}>
                         <div className={s.task}>
-                            <h1 className={s.taskName}>{task.name}</h1>
+                            <h1 className={s.taskName}>{task.title}</h1>
                             <div className={s.stats}>
                                 <div className={s.rating}> <img src={ task.rating == 1 ? rating1 : task.rating == 2 ? rating2 : rating3 }/></div>
                                 <div className={s.likes}><i className="fa fa-heart" aria-hidden="true"></i> {task.likes}</div>

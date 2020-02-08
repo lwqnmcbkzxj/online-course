@@ -6,17 +6,19 @@ import tasksReducer from "./tasks-reducer";
 import taskReducer from "./task-reducer";
 import userReducer from "./user-reducer";
 import usersReducer from "./users-reducer";
+import editReducer from "./edit-reducer";
 
 
 
 
 let reducers = combineReducers({
     lessonPage: lessonReducer,
-    sectionsPage: sectionsReducer,
+    sections: sectionsReducer,
     tasksPage: tasksReducer,
     taskPage: taskReducer,
     user: userReducer,
     users: usersReducer,
+    edit: editReducer,
 }); 
 
 let store = createStore(reducers);

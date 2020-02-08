@@ -4,7 +4,7 @@ import s from './Lesson.module.css';
 import Media from './Media/Media'
 import Task from './Task/Task'
 const Lesson = (props) => {
-    
+    console.log(props)
     return (
         <div className = {s.lesson}>           
             <h1 className={s.title}>{props.lesson.title}</h1>
@@ -15,7 +15,7 @@ const Lesson = (props) => {
                 <h2>Lecture notes</h2>
                 <p>{props.lesson.text}</p>               
             </div>
-            <Task task={props.lesson.task} />       
+            {/* <Task task={props.lesson.task} />        */}
             <div className={s.buttonHolder}> <button>Complete</button></div>
         </div>        
     );

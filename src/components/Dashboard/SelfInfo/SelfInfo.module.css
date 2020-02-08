@@ -1,0 +1,15 @@
+.selfInfo {
+    width: 50vw;
+    margin: 0 auto;
+}
+
+.stats>div, .info>div {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    padding: 13px 0;
+    border-bottom: 1px solid #bcbcbc;
+}
+.stats>div{    
+    font-weight: bold;
+    font-size: 20px;
+}
