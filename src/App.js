@@ -21,6 +21,8 @@ const App = (props) => {
 				<Route path="/course" render={() => <Course />} />
 				<Route path="/tasks" render={() => <Tasks />} />
 				<Route path="/dashboard" render={() => <Dashboard />} />
+
+				
 			</div>
 		</div>
 	);

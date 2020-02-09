@@ -15,9 +15,9 @@ const ADD_LESSON = 'ADD_LESSON';
 
 let initialState = {
     sections: [],
-    lesson: { },
+    lesson: {},
     currentLessonId: 1,
-    currentSectionId: 1
+    currentSectionId: 1,
 }
 
 const courseReducer = (state = initialState, action) => {
@@ -36,22 +36,22 @@ const courseReducer = (state = initialState, action) => {
                 lesson: action.lesson
             };
         }
-           
-            
+
+
         case SET_CURRENT_SECTION_ID: {
             return {
                 ...state,
                 currentSectionId: action.sectionId,
             }
         }
-            
+
         case SET_CURRENT_LESSON_ID: {
             return {
                 ...state,
                 currentLessonId: +action.lessonId
             };
         }
-        
+
         case ADD_SECTION: {
             let maxId = 0;
             for (let section of state.sections) {
@@ -71,24 +71,30 @@ const courseReducer = (state = initialState, action) => {
             };
         }
         case ADD_LESSON: {
-            // let maxId = 0;
-            // for (let section of state.sections) {
-            //     if (section.id > maxId)
-            //         maxId = section.id
-            // }
-            //нужен section.id
+            let maxId = 0;
+            for (let section of state.sections) {
+                for (let lesson of section.lessons) {
+                    if (lesson.id > maxId)
+                        maxId = lesson.id
+                }
+            }
             let newLesson = {
-                id: 1,
-                
+                id: maxId + 1,
+                title: "New lesson ",
             }
 
             return {
                 ...state,
-                // sections: [...state.sections, newSection]
+                sections: state.sections.map(section => {
+                    if (section.id == action.sectionId) {
+                        section.lessons = [...section.lessons, newLesson];
+                    }
+                    return section;
+                })
             };
-        } 
-            
-       
+        }
+
+
         default:
             return state;
     }
@@ -132,7 +138,7 @@ export const getSections = () => (dispatch) => {
                     "content_type": 0
                 }
             ]
-        },        
+        },
     ]
     dispatch(setSections(response));
 
@@ -144,7 +150,7 @@ export const getSections = () => (dispatch) => {
 export const getLesson = (lessonId) => (dispatch) => {
     var response = {
         "id": lessonId,
-        "title":'abc',
+        "title": `TITLE + ${lessonId}`,
         "elements": [
             {
                 "text": "\"Ancient Egypt was famous for physics\"",
@@ -213,10 +219,11 @@ export const setCurrentLessonId = (lessonId) => {
     }
 }
 
-export const addLesson = (lesson) => {
+export const addLesson = (lesson, sectionId) => {
     return {
         type: ADD_LESSON,
-        lesson
+        lesson,
+        sectionId
     }
 }
 

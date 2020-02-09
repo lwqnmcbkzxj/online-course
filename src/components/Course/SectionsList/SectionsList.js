@@ -3,8 +3,7 @@ import s from './SectionsList.module.css';
 import { NavLink } from 'react-router-dom';
 
 const SectionsList = (props) => {
-    console.log(props)
-    let sectCounter = 1;
+    let sectCounter = props.currentSectionId;
     for (let section of props.sections) {
         if (section.lessons) {
             for (let lesson of section.lessons) {
@@ -12,30 +11,14 @@ const SectionsList = (props) => {
                     props.setCurrentSectionId(sectCounter);
             }
         }
-
-
         sectCounter++;
     }
 
-    let toggleCurrentSection = (sectionId) => {
+    let setCurrentSection = (sectionId) => {        
         props.setCurrentSectionId(sectionId);
-    }
+    }   
+   
 
-    let addSection = () => {
-        let newSection = {            
-            title: "NEW SECTION",
-            lessons: []
-        }
-        props.addSection(newSection);
-    }
-    let addLesson = () => {
-        let newLesson = {            
-           
-        }
-        props.addLesson(newLesson);
-    }
-
-    debugger
     return (
         <div className={s.sectionList}>
             {
@@ -47,17 +30,18 @@ const SectionsList = (props) => {
                                 section.lessons ? 
                                     section.lessons.map(lesson =>
                                         <li key={"l"+lesson.id}>
-                                            <NavLink className={s.item} to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { toggleCurrentSection(section.id) }}>
+                                            <NavLink className={s.item} to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { setCurrentSection(section.id) }}>
                                                 {lesson.title}
                                             </NavLink>
                                         </li>)
                                     : null
                             }
-                            <button className={s.addLessonBtn}onClick={addLesson}>+ Add lesson</button> 
-
+                            <NavLink className={s.addLessonBtn} to={`/course/add/lesson`} onClick={() => { setCurrentSection(section.id) }}>+ Add lesson</NavLink>
                         </ul>
 
-                        {section == props.sections[props.sections.length - 1] ? <button className={s.addSectionBtn}onClick={addSection}>+ Add section</button> : null}
+                        {section == props.sections[props.sections.length - 1] ?
+                            <NavLink className={s.addSectionBtn} to={`/course/add/section`} >+ Add section</NavLink>
+                            : null}
                     </div>
                 )
             }

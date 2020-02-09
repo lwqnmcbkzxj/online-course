@@ -1,6 +1,5 @@
 import React from 'react';
 import SectionsList from './SectionsList';
-import Axios from 'axios';
 import { connect } from 'react-redux';
 import { getSections, setCurrentSectionId, addSection, addLesson } from '../../../redux/course-reducer';
 

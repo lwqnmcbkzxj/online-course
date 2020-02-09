@@ -6,7 +6,6 @@ import { withRouter } from 'react-router';
 
 class LessonContainer extends React.Component {
     componentDidMount() {
-        console.log(this.props)
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         this.props.getLesson(lessonId);       
     }

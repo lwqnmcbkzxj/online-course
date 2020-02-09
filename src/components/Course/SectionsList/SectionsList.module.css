@@ -21,3 +21,15 @@
 .activeLink {
     font-weight: bold;
 }
+
+.addLessonBtn {
+    margin-top: 10px;
+    display: block;
+}
+
+.addSectionBtn {
+    font-weight: bold;
+    font-size: 20px;
+    margin-top: 20px;
+    display: block;
+}
