@@ -1,10 +1,10 @@
 import React from 'react';
 import Lesson from './Lesson';
 import { connect } from 'react-redux';
-import { getLesson, setCurrentLessonId,setCurrentSectionId } from '../../../redux/course-reducer';
+import { getLesson, setCurrentLessonId,setCurrentSectionId, completeLesson } from '../../../redux/course-reducer';
 import { withRouter } from 'react-router';
 
-class LessonContainer extends React.Component {
+class LessonContainer extends React.Component {    
     componentDidMount() {
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         this.props.getLesson(lessonId);       
@@ -28,6 +28,7 @@ let mapStateToProps = (state) => {
         lesson: state.course.lesson,
         currentLessonId: state.course.currentLessonId,
         currentSectionId: state.course.currentSectionId,
+        editMode: state.edit.editMode
     }
 }
 
@@ -35,4 +36,4 @@ let mapStateToProps = (state) => {
 
 let WithUrlDataContainerComponent = withRouter(LessonContainer);
 
-export default connect(mapStateToProps, { getLesson, setCurrentLessonId, setCurrentSectionId  })(WithUrlDataContainerComponent);
+export default connect(mapStateToProps, { getLesson, setCurrentLessonId, setCurrentSectionId, completeLesson  })(WithUrlDataContainerComponent);

@@ -2,8 +2,7 @@ const TOGGLE_EDIT_MODE = 'TOGGLE-EDIT-MODE';
 
 
 let initialState = {  
-    editModeActive: false,
-    
+    editMode: false    
 }
 
 const editReducer = (state = initialState, action) => {
@@ -11,7 +10,7 @@ const editReducer = (state = initialState, action) => {
         case TOGGLE_EDIT_MODE: {
             return {
                 ...state,
-                editModeActive: action.editState
+                editMode: action.editState
             }
         }
        

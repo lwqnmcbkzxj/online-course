@@ -13,7 +13,8 @@ class HeaderContainer extends React.Component {
 let mapStateToProps = (state) => {
     return {
         user: state.user.info,
-        editModeActive : state.edit.editModeActive
+        editMode: state.edit.editMode,
+        currentLessonId: state.course.currentLessonId
     }
 }
 

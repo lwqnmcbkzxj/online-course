@@ -14,6 +14,7 @@
     font-size: 20px;
     font-weight: bold;
 }
+
 .title {
     font-size: 22px;
     font-weight: bold;
@@ -27,31 +28,14 @@
     margin-top: 20px;
 
 }
+
 .lesson button {
     background: #000;
     color: #fff;
     padding: 10px 50px;
 }
-.lesson button:hover{
+
+.lesson button:hover {
     box-shadow: 1px 1px 2px #818181;
     cursor: pointer;
- }
-.lessonText {
-    margin: 30px 0;    
-}
-.lessonText p {
-    margin: 10px 0;
-    line-height: 25px;
-
-}
-
-.task p {
-   margin: 10px 0;
-}
-
-.task img {
-    width: 70%;
-    height: 70%;
-    margin: 20px auto;
-    display: block;
 }

@@ -1,6 +1,6 @@
 .sectionList {
     border-right: 1px solid #000;
-    padding: 20px 20px 20px 40px;
+    padding: 20px;
 }
 
 .section {
@@ -14,12 +14,19 @@
 }
 
 .lessons {
-    padding-left: 5px;
+    padding-left: 10px;
     margin-top: 10px;
 }
-
+.item {
+    margin: 5px 0;
+}
 .activeLink {
     font-weight: bold;
+}
+
+.sectionContent {
+    display: flex;
+    align-items: center;
 }
 
 .addLessonBtn {
@@ -30,6 +37,6 @@
 .addSectionBtn {
     font-weight: bold;
     font-size: 20px;
-    margin-top: 20px;
+    margin-top: 10px;
     display: block;
 }

@@ -3,14 +3,21 @@ import { sectionsAPI } from '../api/api';
 
 
 const SET_LESSON = 'SET_LESSON';
-const SET_CURRENT_LESSON_ID = 'SET_CURRENT_LESSON_ID';
 const SET_SECTIONS = 'SET_SECTIONS_DATA';
-const SET_CURRENT_SECTION_ID = 'SET_CURRENT_SECTION_ID';
-const DELETE_LESSON = 'DELETE_LESSON';
-const EDIT_LESSON = 'EDIT_LESSON';
+
 const ADD_SECTION = 'ADD_SECTION';
 const ADD_LESSON = 'ADD_LESSON';
 
+const DELETE_LESSON = 'DELETE_LESSON';
+const DELETE_SECTION = 'DELETE_SECTION';
+
+const COMPLETE_LESSON = 'COMPLETE_LESSON';
+const COMPLETE_SECTION = 'COMPLETE_SECTION';
+
+
+
+const SET_CURRENT_SECTION_ID = 'SET_CURRENT_SECTION_ID';
+const SET_CURRENT_LESSON_ID = 'SET_CURRENT_LESSON_ID';
 
 
 let initialState = {
@@ -61,7 +68,7 @@ const courseReducer = (state = initialState, action) => {
 
             let newSection = {
                 id: maxId + 1,
-                title: action.section.title,
+                title: "NEW SECTION",
                 lessons: []
             }
 
@@ -94,6 +101,59 @@ const courseReducer = (state = initialState, action) => {
             };
         }
 
+        case DELETE_SECTION: {
+            return {
+                ...state,
+                sections: state.sections.filter(section => section.id != action.sectionId)
+            };
+        }
+
+        case DELETE_LESSON: {
+            return {
+                ...state,
+                sections: state.sections.map(section => {
+                    let newLessons = section.lessons.filter(lesson => lesson.id != action.lessonId);
+                    return { ...section, lessons: newLessons };
+                })
+            };
+        }
+
+        case COMPLETE_LESSON: {
+            return {
+                ...state,
+                sections: state.sections.map(section => {
+                    let newLessons = [];
+
+                    section.lessons.map(lesson => {
+                        if (lesson.id == action.lessonId && !lesson.completed)
+                            newLessons.push({ ...lesson, completed: true });
+                        else
+                            newLessons.push({ ...lesson });
+                    })
+                    return { ...section, lessons: newLessons };
+                })
+            };
+        }
+        case COMPLETE_SECTION: {
+            let allCompleted = true;
+            for (let section of state.sections) {
+                if (section.id == action.sectionId) {
+                    for (let lesson of section.lessons) {
+                        if (!lesson.completed)
+                            allCompleted = false
+                    }
+                }
+            }
+            return {
+                ...state,
+                sections: state.sections.map(section => {
+                    if (section.id == action.sectionId && allCompleted)
+                        return { ...section, completed: true };
+
+                    return { ...section };
+                })
+            };
+        }
 
         default:
             return state;
@@ -111,13 +171,15 @@ export const getSections = () => (dispatch) => {
                     "title": "Lecture on Egypt",
                     "id": 1,
                     "section_position": 1,
-                    "content_type": 0
+                    "content_type": 0,
+                    "completed": false
                 },
                 {
                     "title": "Lecture on Greece",
                     "id": 2,
                     "section_position": 2,
-                    "content_type": 0
+                    "content_type": 0,
+                    "completed": false
                 }
             ]
         },
@@ -129,13 +191,17 @@ export const getSections = () => (dispatch) => {
                     "title": "Task 5",
                     "id": 4,
                     "section_position": 1,
-                    "content_type": 1
+                    "content_type": 1,
+                    "completed": false
+
                 },
                 {
                     "title": "2",
                     "id": 7,
                     "section_position": 2,
-                    "content_type": 0
+                    "content_type": 0,
+                    "completed": false
+
                 }
             ]
         },
@@ -153,20 +219,27 @@ export const getLesson = (lessonId) => (dispatch) => {
         "title": `TITLE + ${lessonId}`,
         "elements": [
             {
-                "text": "\"Ancient Egypt was famous for physics\"",
-                "media": null
+                "text": `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
+                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
+                "media": null,
+                "type": "2"
             },
             {
                 "text": "Egyptian Music",
-                "media": null
+                "media": "https://avatars.mds.yandex.net/get-zen_doc/1056701/pub_5d1d190224e56600ad2b5699_5d1d19621fd98a00ad4d2da6/scale_1200",
+                "type": "1"
             },
             {
-                "text": null,
-                "media": "https:\/\/youtube.com"
+                "text": "заголовок для видео",
+                "media": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
+                "type": "0"
             },
             {
                 "text": "Привет там",
-                "media": null
+                "media": `veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
+                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
+                "type": "2"
             }
         ]
     }
@@ -193,16 +266,46 @@ export const setLesson = (lesson) => {
     }
 }
 
-
-
-export const addSection = (section) => {
-    //Запрос на сервер ----
+export const addSection = () => {
     return {
         type: ADD_SECTION,
-        section
     }
 }
 
+export const addLesson = (sectionId) => {
+    return {
+        type: ADD_LESSON,
+        sectionId
+    }
+}
+
+
+const deleteSectionSuccess = (sectionId) => {
+    return {
+        type: DELETE_SECTION,
+        sectionId
+    }
+}
+
+const deleteLessonSuccess = (lessonId) => {
+    return {
+        type: DELETE_LESSON,
+        lessonId
+    }
+}
+
+const completeLessonSuccess = (lessonId) => {
+    return {
+        type: COMPLETE_LESSON,
+        lessonId
+    }
+}
+const completeSectionSuccess = (sectionId) => {
+    return {
+        type: COMPLETE_SECTION,
+        sectionId
+    }
+}
 
 
 export const setCurrentSectionId = (sectionId) => {
@@ -219,13 +322,36 @@ export const setCurrentLessonId = (lessonId) => {
     }
 }
 
-export const addLesson = (lesson, sectionId) => {
-    return {
-        type: ADD_LESSON,
-        lesson,
-        sectionId
-    }
+
+
+//THUNKS
+export const completeLesson = (lessonId, sectionId) => (dispatch) => {
+    dispatch(completeLessonSuccess(lessonId));
+    dispatch(completeSection(sectionId));
+
+    //Запрос
 }
+
+export const completeSection = (sectionId) => (dispatch) => {
+    dispatch(completeSectionSuccess(sectionId));
+
+    //Запрос
+}
+
+
+export const deleteSection = (sectionId) => (dispatch) => {
+    dispatch(deleteSectionSuccess(sectionId));
+
+    //Запрос
+}
+
+
+export const deleteLesson = (lessonId) => (dispatch) => {
+    dispatch(deleteLessonSuccess(lessonId));
+
+    //Запрос
+}
+
 
 
 

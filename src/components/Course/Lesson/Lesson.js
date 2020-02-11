@@ -1,25 +1,37 @@
 import React from 'react';
 import s from './Lesson.module.css';
 
-import Media from './Media/Media'
-import Task from './Task/Task'
-import { editLesson } from '../../../redux/course-reducer';
-const Lesson = (props) => {
-    console.log(props.currentSectionId)
+import Video from './LessonElements/Video'
+import Picture from './LessonElements/Picture'
+import Text from './LessonElements/Text'
 
+const Lesson = (props) => {
+    let completeLesson = (lessonId) => {
+        props.completeLesson(lessonId, props.currentSectionId);
+    }
+    let key = 0;
     return (
-        <div className={s.lesson}>             
+        <div className={s.lesson}>
             <h1 className={s.title}>{props.lesson.title}</h1>
-            
-            <Media media={props.lesson.media} /> 
-            
-            <div className={s.lessonText}>
-                <h2>Lecture notes</h2>
-                <p>{props.lesson.text}</p>               
-            </div>
-            {/* <Task task={props.lesson.task} />        */}
-            <div className={s.buttonHolder}> <button>Complete</button></div>
-        </div>        
+
+            {
+                props.lesson.elements ? props.lesson.elements.map(lessonElement =>
+                    
+                    <div className={s.lessonElement} key={key}>
+                        {
+                            key++,
+                            lessonElement.type == 0 ? <Video {...lessonElement} />
+                                : lessonElement.type == 1 ? <Picture {...lessonElement} />
+                                    : lessonElement.type == 2 ? <Text {...lessonElement} /> : null                                   
+                            
+                        }
+                        
+                    </div>
+                    
+                ) : null
+            }
+            <div className={s.buttonHolder} onClick={() => { completeLesson(props.lesson.id) }}> <button>Complete</button></div>
+        </div>
     );
 }
 export default Lesson;
