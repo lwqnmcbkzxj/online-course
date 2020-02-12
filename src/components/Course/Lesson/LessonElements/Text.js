@@ -1,11 +1,12 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
-const Task = (props) => {
+const Text = (props) => {
     return (
         <div className={s.text}>
+            <h2> Lecture notes</h2>
             <p>{props.text}</p>
         </div>
-    ); 
+    );
 }
-export default Task;
+export default Text;

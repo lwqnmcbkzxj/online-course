@@ -2,80 +2,100 @@ import React from 'react';
 import s from './SectionsList.module.css';
 import { NavLink } from 'react-router-dom';
 
-const SectionsList = (props) => {
-    let sectCounter;
-    for (let section of props.sections) {
-        sectCounter = section.id;
-        if (section.lessons) {
-            for (let lesson of section.lessons) {
-                if (lesson.id == props.currentLessonId)
-                    props.setCurrentSectionId(sectCounter);
+
+class SectionsList extends React.Component {
+    state = {
+        visibleSections: []
+    }
+
+    componentDidMount() {
+        let sectCounter;
+        for (let section of this.props.sections) {
+            sectCounter = section.id;
+            if (section.lessons) {
+                for (let lesson of section.lessons) {
+                    if (lesson.id == this.props.currentLessonId) {
+                        this.props.setCurrentSectionId(sectCounter);
+                        console.log('s')
+                    }
+                }
             }
         }
     }
 
-    let setCurrentSection = (sectionId) => {
-        props.setCurrentSectionId(sectionId);
+    setCurrentSection = (sectionId) => {
+        this.props.setCurrentSectionId(sectionId);
     }
 
 
-    let addLesson = (sectionId) => {
-        setCurrentSection(sectionId);
-        props.addLesson(sectionId);
+    addLesson = (sectionId) => {
+        this.setCurrentSection(sectionId);
+        this.props.addLesson(sectionId);
     }
 
-    let addSection = () => {
-        props.addSection();
+    addSection = () => {
+        this.props.addSection();
     }
 
 
-    let deleteLesson = (lessonId) => {
-        props.deleteLesson(lessonId);
+    deleteLesson = (lessonId) => {
+        this.props.toggleModalVisible()
+        this.props.setModalFunction(this.props.deleteLesson, lessonId)
     }
 
-    let deleteSection = (sectionId) => {
-        props.deleteSection(sectionId);
+    deleteSection = (sectionId) => {
+        this.props.toggleModalVisible()
+        this.props.setModalFunction(this.props.deleteSection, sectionId)
     }
 
-    let showDeleteAlert = () => {
-        
+    toggleSection = (sectionId) => {
+        let visibleSections = [...this.state.visibleSections];
+        if (visibleSections.indexOf(sectionId) == -1)
+            visibleSections.push(sectionId);
+        else {
+            let index = visibleSections.indexOf(sectionId)
+            visibleSections.splice(index, 1)
+        }
+        this.setState({ visibleSections })
     }
-    console.log(props)
-    return (
-        <div className={s.sectionList}>
-            {
-                props.sections.map(section =>
-                    <div className={s.section} key={"s" + section.id}>
 
-                        <div className={s.sectionContent}>
-                            {props.editMode && <div><i className="fa fa-trash-o" aria-hidden="true" onClick={() => { deleteSection(section.id) }}></i></div>}
-                            {section.completed && <div><i className="fa fa-check" aria-hidden="true"></i></div>}
-                            <h1 className={s.sectionName}>{section.title}</h1>
+    render() {
+        return (
+            <div className={s.sectionList}>
+                {
+                    this.props.sections.map(section =>
+                        <div className={s.section} key={"s" + section.id} >
+
+                            <div className={s.sectionContent}>
+                                {this.props.editMode && <div><i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i></div>}
+                                {section.completed && <div><i className="fa fa-check" aria-hidden="true"></i></div>}
+                                <h1 className={s.sectionName} onClick={() => { this.toggleSection(section.id) }}>{section.title}</h1>
+                            </div>
+
+
+                            <ul className={this.state.visibleSections.some(id => id == section.id) ? s.lessonsVisibile : s.lessonsHidden} >
+                                {
+                                    section.lessons ?
+                                        section.lessons.map(lesson =>
+                                            <li key={"l" + lesson.id}>
+                                                <div className={s.item} >
+                                                    {this.props.editMode && <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id) }}></i>}
+                                                    {lesson.completed && <i className="fa fa-check" aria-hidden="true"></i>}
+                                                    <NavLink to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { this.setCurrentSection(section.id) }}>
+                                                        {lesson.title}
+                                                    </NavLink>
+                                                </div>
+                                            </li>)
+                                        : null
+                                }
+                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id) }}>+ Add lesson</button>}
+                            </ul>
                         </div>
-
-
-                        <ul className={s.lessons}>
-                            {
-                                section.lessons ?
-                                    section.lessons.map(lesson =>
-                                        <li key={"l" + lesson.id}>
-                                            <div className={s.item} >
-                                                {props.editMode && <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { deleteLesson(lesson.id) }}></i>}
-                                                {lesson.completed && <i className="fa fa-check" aria-hidden="true"></i>}
-                                                <NavLink to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { setCurrentSection(section.id) }}>
-                                                    {lesson.title}
-                                                </NavLink>
-                                            </div>
-                                        </li>)
-                                    : null
-                            }
-                            {props.editMode && <button className={s.addLessonBtn} onClick={() => { addLesson(section.id) }}>+ Add lesson</button>}
-                        </ul>
-                    </div>
-                )
-            }
-            {props.editMode && <button className= {s.addSectionBtn} onClick={addSection}>+ Add section</button>}
-        </div>
-    );
+                    )
+                }
+                {this.props.editMode && <button className={s.addSectionBtn} onClick={this.addSection}>+ Add section</button>}
+            </div>
+        );
+    }
 }
 export default SectionsList;

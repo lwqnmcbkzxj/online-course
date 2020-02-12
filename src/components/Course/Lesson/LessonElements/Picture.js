@@ -1,15 +1,15 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
-const Media = (props) => {
+const Picture = (props) => {
 
     return (
         props.media ?
             <div className={s.picture}>
                 <h2>{props.text}</h2>
-                <img src={props.media} alt = "picture"/>
+                <img src={props.media} alt="picture" />
             </div>
-            : null
+        : null
     );
 }
-export default Media;
+export default Picture;

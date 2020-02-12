@@ -1,7 +1,7 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
-const Media = (props) => {
+const Video = (props) => {
     let url = props.media ? props.media : '';
     let videoID = '';
     if (url.includes('youtube')) {
@@ -14,14 +14,7 @@ const Media = (props) => {
 
         url = videoID !== '' ? "https://www.youtube.com/embed/" + videoID : null;
     }
-
-
-
-
-
-
     return (
-
         url ?
             <div className={s.videoBlock}>
                 <h2>{props.text}</h2>
@@ -33,4 +26,8 @@ const Media = (props) => {
 
     );
 }
-export default Media;
+export default Video;
+
+
+
+

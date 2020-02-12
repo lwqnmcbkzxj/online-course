@@ -8,18 +8,31 @@
     line-height: 20px;
     font-size: 17px;
 }
+
 .sectionName {
     font-weight: bold;
     font-size: 20px;
 }
 
-.lessons {
+.sectionName:hover {
+    cursor: pointer;
+}
+
+
+.lessonsVisibile {   
     padding-left: 10px;
     margin-top: 10px;
+    display: block;
 }
+
+.lessonsHidden {
+    display: none;
+}
+
 .item {
     margin: 5px 0;
 }
+
 .activeLink {
     font-weight: bold;
 }

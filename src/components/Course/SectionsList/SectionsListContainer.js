@@ -1,7 +1,8 @@
 import React from 'react';
 import SectionsList from './SectionsList';
 import { connect } from 'react-redux';
-import { getSections, setCurrentSectionId, addSection, addLesson, deleteSection, deleteLesson } from '../../../redux/course-reducer';
+import {  setCurrentSectionId, toggleModalVisible, setModalFunction } from '../../../redux/course-reducer';
+import { getSections, addSection, addLesson, deleteSection, deleteLesson } from '../../../redux/sectionsList-reducer';
 
 
 class SectionsListContainer extends React.Component {
@@ -10,15 +11,15 @@ class SectionsListContainer extends React.Component {
     }
 
     render() {
-        return <SectionsList {...this.props} sections={this.props.sections} currentSectionId={this.props.currentSectionId} />
+        return <SectionsList {...this.props}/>
     }
 }
 
 let mapStateToProps = (state) => ({
-    sections: state.course.sections,
+    sections: state.sectionsList.sections,
     currentSectionId: state.course.currentSectionId,
     currentLessonId: state.course.currentLessonId,
-    editMode: state.edit.editMode,
+    editMode: state.course.editMode,
 })
 
 
@@ -26,5 +27,6 @@ let mapStateToProps = (state) => ({
 export default connect(mapStateToProps, {
     getSections, setCurrentSectionId,
     addSection, addLesson,
-    deleteSection, deleteLesson
+    deleteSection, deleteLesson,
+    toggleModalVisible, setModalFunction
 })(SectionsListContainer);

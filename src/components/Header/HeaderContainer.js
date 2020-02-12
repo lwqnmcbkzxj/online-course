@@ -1,7 +1,7 @@
 import React from 'react';
 import Header from './Header'
 import { connect } from 'react-redux';
-import { toggleEditMode } from '../../redux/edit-reducer';
+import { toggleEditMode } from '../../redux/course-reducer';
 
 class HeaderContainer extends React.Component {
     render() {
@@ -13,7 +13,7 @@ class HeaderContainer extends React.Component {
 let mapStateToProps = (state) => {
     return {
         user: state.user.info,
-        editMode: state.edit.editMode,
+        editMode: state.course.editMode,
         currentLessonId: state.course.currentLessonId
     }
 }

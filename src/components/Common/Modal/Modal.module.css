@@ -1,0 +1,28 @@
+.modal {
+    padding: 15px 30px 25px 30px;
+    width: 200px;
+    border-radius: 10px;
+    position: absolute;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    background: #000;
+    color: #fff;
+    text-align: center;
+    position: fixed;
+}
+
+.options {
+    margin-top: 20px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: space-around;
+    font-weight: 300;
+    color: #e7e7e7;
+}
+
+.options button:hover {
+    color: #fff;
+    cursor: pointer;
+}
