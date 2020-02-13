@@ -40,6 +40,9 @@
     cursor: pointer;
 }
 
+
+
+
 .addElements {
     margin: 20px 0 0 20px;
     display: flex;
@@ -50,4 +53,24 @@
 .addElements button{   
     font-size: 18px;
     margin-bottom: 5px;
+}
+
+.elementHeader {
+    margin-left: -40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+input {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 2px 5px;
+    font-weight: normal;
+    overflow: hidden;
 }

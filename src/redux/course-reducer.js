@@ -1,6 +1,3 @@
-import { lessonsAPI } from '../api/api';
-import { sectionsAPI } from '../api/api';
-
 
 const SET_CURRENT_SECTION_ID = 'SET_CURRENT_SECTION_ID';
 const SET_CURRENT_LESSON_ID = 'SET_CURRENT_LESSON_ID';
@@ -44,7 +41,7 @@ const courseReducer = (state = initialState, action) => {
         case SET_MODAL_FUNCTION: {
             return {
                 ...state,
-                modalFunction: { func: action.func, data: action.data }
+                modalFunction: { func: action.func, data: action.data, text: action.text }
             };
         }
         case TOGGLE_EDIT_MODE: {
@@ -78,13 +75,19 @@ export const toggleModalVisible = () => {
         type: TOGGLE_MODAL_VISIBLE,
     }
 }
-export const setModalFunction = (func, data) => {
-    return {
+
+export const setModalFunction = (func, data, text) => (dispatch) => {
+    dispatch(toggleModalVisible());
+
+    dispatch({
         type: SET_MODAL_FUNCTION,
         func,
-        data
-    }
+        data,
+        text
+    })
 }
+
+
 export const toggleEditMode = (editState) => {
     return {
         type: TOGGLE_EDIT_MODE,

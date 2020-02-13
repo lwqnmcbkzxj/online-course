@@ -1,4 +1,4 @@
-import { sectionsAPI } from '../api/api';
+import { sectionsListAPI, lessonAPI } from '../api/api';
 
 const SET_SECTIONS = 'SET_SECTIONS_DATA';
 
@@ -11,19 +11,18 @@ const DELETE_SECTION = 'DELETE_SECTION';
 const COMPLETE_LESSON = 'COMPLETE_LESSON';
 const COMPLETE_SECTION = 'COMPLETE_SECTION';
 
-let initialState = {  
+let initialState = {
     sections: []
 }
 
 const sectionsListReducer = (state = initialState, action) => {
     switch (action.type) {
         case SET_SECTIONS: {
-
             return {
                 ...state,
                 sections: action.sections,
             }
-        } 
+        }
 
         case ADD_SECTION: {
             let maxId = 0;
@@ -102,7 +101,7 @@ const sectionsListReducer = (state = initialState, action) => {
         }
         case COMPLETE_SECTION: {
             let allCompleted = true;
-            for (let section of state.sections) {
+            for (let section of this.state.sections) {
                 if (section.id == action.sectionId) {
                     for (let lesson of section.lessons) {
                         if (!lesson.completed)
@@ -127,56 +126,9 @@ const sectionsListReducer = (state = initialState, action) => {
 
 
 export const getSections = () => (dispatch) => {
-    let response = [
-        {
-            "id": 1,
-            "title": "Section 1 intro",
-            "lessons": [
-                {
-                    "title": "Lecture on Egypt",
-                    "id": 1,
-                    "section_position": 1,
-                    "content_type": 0,
-                    "completed": false
-                },
-                {
-                    "title": "Lecture on Greece",
-                    "id": 2,
-                    "section_position": 2,
-                    "content_type": 0,
-                    "completed": false
-                }
-            ]
-        },
-        {
-            "id": 3,
-            "title": "Section 3 Experimental Physics",
-            "lessons": [
-                {
-                    "title": "Task 5",
-                    "id": 4,
-                    "section_position": 1,
-                    "content_type": 1,
-                    "completed": false
-
-                },
-                {
-                    "title": "2",
-                    "id": 7,
-                    "section_position": 2,
-                    "content_type": 0,
-                    "completed": false
-
-                }
-            ]
-        },
-    ]
-    dispatch(setSections(response));
-
-
-    // sectionsAPI.getSections().then((response) => {
-    //     dispatch(setSections(response));
-    // })    
+    sectionsListAPI.getSections().then((response) => {
+        dispatch(setSections(response));
+    })
 }
 
 export const setSections = (sections) => {
@@ -186,13 +138,13 @@ export const setSections = (sections) => {
     }
 }
 
-export const addSection = () => {
+const addSectionSuccess = () => {
     return {
         type: ADD_SECTION,
     }
 }
 
-export const addLesson = (sectionId) => {
+const addLessonSuccess = (sectionId) => {
     return {
         type: ADD_LESSON,
         sectionId
@@ -227,33 +179,54 @@ const completeSectionSuccess = (sectionId) => {
 }
 
 //THUNKS
-export const completeLesson = (lessonId, sectionId) => (dispatch) => {
-    dispatch(completeLessonSuccess(lessonId));
-    dispatch(completeSection(sectionId));
+export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {
+    lessonAPI.completeLesson(lessonId, contentType).then();
 
-    //Запрос
+    dispatch(completeSection(sectionId));
 }
 
 export const completeSection = (sectionId) => (dispatch) => {
-    dispatch(completeSectionSuccess(sectionId));
-
-    //Запрос
+    // let allCompleted = false;
+    // if (allCompleted) {
+    //     dispatch(completeSectionSuccess(sectionId));
+    //     sectionsListAPI.completeSection(sectionId);
+    // }
 }
-
 
 export const deleteSection = (sectionId) => (dispatch) => {
     dispatch(deleteSectionSuccess(sectionId));
+    sectionsListAPI.deleteSection(sectionId).then((response) => {
+        if (response.status != "ok") {
 
-    //Запрос
+        }
+    })
 }
-
 
 export const deleteLesson = (lessonId) => (dispatch) => {
     dispatch(deleteLessonSuccess(lessonId));
 
-    //Запрос
+    lessonAPI.deleteLesson(lessonId).then((response) => {
+        if (response.status != "ok") {
+
+        }
+    })
 }
 
+export const addSection = () => (dispatch) => {
+    sectionsListAPI.addSection().then((response) => {
+        if (response.status == "ok") {
+            dispatch(getSections());
+        }
+    })
+}
+
+export const addLesson = (sectionId, contentType) => (dispatch) => {
+    lessonAPI.addLesson(sectionId, contentType).then((response) => {
+        if (response.status == "ok") {
+            dispatch(getSections());
+        }
+    })
+}
 
 
 export default sectionsListReducer;

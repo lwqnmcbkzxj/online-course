@@ -1,33 +1,50 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
-const Video = (props) => {
-    let url = props.media ? props.media : '';
-    let videoID = '';
-    if (url.includes('youtube')) {
-
-        if (url.includes('watch'))
-            videoID = url.split('/')[3].split('=')[1];
-        else if (url.includes('embed'))
-            videoID = url.split('/')[4];
-
-
-        url = videoID !== '' ? "https://www.youtube.com/embed/" + videoID : null;
+class Video extends React.Component {
+    state = {
+        media: "",
     }
-    return (
-        url ?
-            <div className={s.videoBlock}>
-                <h2>{props.text}</h2>
-                <div className={s.video}>
-                    <iframe src={url} frameBorder="0" title="YT-video" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
-                </div>
-            </div>
-            : null
+    componentDidUpdate(prevProps) {
+        if (this.props.media !== prevProps.media) {
+            if (this.props.media !== null) {
+                this.setState({ media: this.props.media });
 
-    );
+                if (this.state.media.includes('youtube')) {
+                    let videoID = '';
+
+                    if (this.state.media.includes('watch'))
+                        videoID = this.state.media.split('/')[3].split('=')[1];
+                    else if (this.state.media.includes('embed'))
+                        videoID = this.state.media.split('/')[4];
+
+                    this.setState({ media: videoID !== '' ? "https://www.youtube.com/embed/" + videoID : "" });
+                }
+            }
+            else
+                this.setState({ media: "" });
+        }
+    }
+    deleteElement = (position) => {
+        this.props.deleteElement(position);
+    }
+    render() {
+        return (
+            this.props.editMode ?
+                <div>
+                    <div className={s.elementHeader}>
+                        <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteElement(this.props.id) }}></i>
+                        <i className="fa fa-arrows" aria-hidden="true"></i>
+                        <h2>Video</h2>
+                    </div>
+                    <input defaultValue={this.state.media} placeholder={"http://"} />
+                </div>
+                : this.state.media ?
+                    <div className={s.videoBlock}>
+                        <iframe src={this.state.media} frameBorder="0" title="YT-video" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowFullScreen></iframe>
+                    </div>
+                    : null
+        );
+    }
 }
 export default Video;
-
-
-
-

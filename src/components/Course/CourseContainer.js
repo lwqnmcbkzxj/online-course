@@ -5,7 +5,7 @@ import { toggleModalVisible } from '../../redux/course-reducer';
 
 
 
-class CourseContainer extends React.Component {    
+class CourseContainer extends React.Component {
     render() {
         return <Course {...this.props} />
     }

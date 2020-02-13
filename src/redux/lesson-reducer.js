@@ -1,4 +1,4 @@
-import { lessonAPI } from '../api/api';
+import { lessonAPI, lessonElementsAPI } from '../api/api';
 import { setCurrentLessonId } from './course-reducer';
 const SET_LESSON = 'SET_LESSON';
 const ADD_ELEMENT = 'ADD_ELEMENT';
@@ -24,7 +24,7 @@ const lessonReducer = (state = initialState, action) => {
             let newElement = {
                 text: '',
                 position: state.lesson.elements.length + 1,
-                type: action.elemType
+                type: action.elementType
             }
             return {
                 ...state,
@@ -37,7 +37,7 @@ const lessonReducer = (state = initialState, action) => {
                 ...state,
                 lesson: {
                     ...state.lesson,
-                    elements: state.lesson.elements.filter(element => element.position != action.position)
+                    elements: state.lesson.elements.filter(element => element.id != action.id)
                 }
             };
         }
@@ -47,7 +47,7 @@ const lessonReducer = (state = initialState, action) => {
                 lesson: {
                     ...state.lesson,
                     elements: state.lesson.elements.map(element => {
-                        if (element.position == action.position)
+                        if (element.id == action.id)
                             return { ...action.element };
 
                         return element
@@ -61,10 +61,10 @@ const lessonReducer = (state = initialState, action) => {
                 lesson: {
                     ...state.lesson,
                     elements: state.lesson.elements.map(element => {
-                        if (element.position == action.oldPosition)
-                            return { ...element, position: action.newPosition };
-                        else if (element.position == action.newPosition)
-                            return { ...element, position: action.oldPosition };
+                        // if (element.position == action.oldPosition)
+                        //     return { ...element, position: action.newPosition };
+                        // else if (element.position == action.newPosition)
+                        //     return { ...element, position: action.oldPosition };
 
                         return element
                     })
@@ -78,47 +78,10 @@ const lessonReducer = (state = initialState, action) => {
 
 
 export const getLesson = (lessonId) => (dispatch) => {
-    var response = {
-        "id": lessonId,
-        "title": `TITLE + ${lessonId}`,
-        "elements": [
-            {
-                "text": `Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. 
-                Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-                "media": null,
-                "type": "2",
-                "position": 1
-            },
-            {
-                "text": "Egyptian Music",
-                "media": "https://avatars.mds.yandex.net/get-zen_doc/1056701/pub_5d1d190224e56600ad2b5699_5d1d19621fd98a00ad4d2da6/scale_1200",
-                "type": "1",
-                "position": 2
-            },
-            {
-                "text": "Заголовок для видео",
-                "media": "https://www.youtube.com/watch?v=2lAe1cqCOXo",
-                "type": "0",
-                "position": 3
-            },
-            {
-                "text": "Привет там",
-                "media": `veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. 
-                Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum.`,
-                "type": "2",
-                "position": 4
-            }
-        ]
-    }
-    dispatch(setLesson(response));
-    dispatch(setCurrentLessonId(lessonId));
-
-
-    // lessonsAPI.getLesson(lessonId).then((response) => {
-    //     dispatch(setLesson(response));
-    //     dispatch(setCurrentLesson(lessonId));
-    // })    
+    lessonAPI.getLesson(lessonId).then((response) => {
+        dispatch(setLesson(response));
+        dispatch(setCurrentLessonId(lessonId));
+    })    
 }
 
 export const setLesson = (lesson) => {
@@ -128,30 +91,49 @@ export const setLesson = (lesson) => {
     }
 }
 
-export const addElement = (lessonId, elemType) => {
+const addElementSuccess = (elementType) => {
     return {
-        type: ADD_ELEMENT,
-        elemType
+        type: ADD_ELEMENT,        
+        elementType
     }
 }
-
-export const deleteElement = (lessonId, position) => {
+const deleteElementSuccess = (id) => {
     return {
         type: DELETE_ELEMENT,
-        position
+        id
     }
 }
-export const editElement = (lessonId, position, element) => {
+const editElementSuccess = (id, data) => {
     return {
         type: EDIT_ELEMENT,
-        position,
-        element
+        id,
+        data
     }
 }
 
-export const changeElementPosition = (lessonId, oldPosition, newPosition) => {
+
+export const addElement = (lessonId, data, elementType) => (dispatch) => {
+    dispatch(addElementSuccess(elementType));
+    lessonElementsAPI.addArticleLessonElement(lessonId, data, elementType)    
+}
+export const deleteElement = (elementId) => (dispatch) => {
+    dispatch(deleteElementSuccess(elementId));
+    lessonElementsAPI.deleteArticleLessonElement(elementId);
+}
+export const editElement = (elementId, data, elementType) => (dispatch) => {
+    dispatch(editElementSuccess(elementId,data));
+
+    if (elementType === 0)        
+        lessonElementsAPI.editArticleElementText(elementId, data);
+    else
+        lessonElementsAPI.editArticleElementMedia(elementId, data);        
+}
+
+
+export const changeElementPosition = (elementId, oldPosition, newPosition) => {
     return {
         type: CHANGE_ELEMENT_POSITION,
+        elementId,
         oldPosition,
         newPosition
     }

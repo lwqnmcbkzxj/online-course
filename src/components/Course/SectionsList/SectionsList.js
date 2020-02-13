@@ -14,10 +14,8 @@ class SectionsList extends React.Component {
             sectCounter = section.id;
             if (section.lessons) {
                 for (let lesson of section.lessons) {
-                    if (lesson.id == this.props.currentLessonId) {
+                    if (lesson.id == this.props.currentLessonId)
                         this.props.setCurrentSectionId(sectCounter);
-                        console.log('s')
-                    }
                 }
             }
         }
@@ -28,9 +26,10 @@ class SectionsList extends React.Component {
     }
 
 
-    addLesson = (sectionId) => {
+    addLesson = (sectionId, contentType) => {
+
         this.setCurrentSection(sectionId);
-        this.props.addLesson(sectionId);
+        this.props.addLesson(sectionId, contentType);
     }
 
     addSection = () => {
@@ -39,13 +38,11 @@ class SectionsList extends React.Component {
 
 
     deleteLesson = (lessonId) => {
-        this.props.toggleModalVisible()
-        this.props.setModalFunction(this.props.deleteLesson, lessonId)
+        this.props.setModalFunction(this.props.deleteLesson, lessonId, 'Lesson')
     }
 
     deleteSection = (sectionId) => {
-        this.props.toggleModalVisible()
-        this.props.setModalFunction(this.props.deleteSection, sectionId)
+        this.props.setModalFunction(this.props.deleteSection, sectionId, 'Section')
     }
 
     toggleSection = (sectionId) => {
@@ -88,7 +85,8 @@ class SectionsList extends React.Component {
                                             </li>)
                                         : null
                                 }
-                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id) }}>+ Add lesson</button>}
+                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 0) }}>+ Add lesson</button>}
+                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 1) }}>+ Add task</button>}
                             </ul>
                         </div>
                     )

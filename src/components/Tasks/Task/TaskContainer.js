@@ -1,10 +1,9 @@
 import React from 'react';
 import Task from './Task';
-import Axios from 'axios';
 import { connect } from 'react-redux';
 import { setTask } from '../../../redux/task-reducer';
 import { withRouter } from 'react-router';
-import { tasksAPI } from '../../../api/api';
+
 class TaskContainer extends React.Component {
 
     componentDidMount() {
