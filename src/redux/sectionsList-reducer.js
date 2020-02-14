@@ -8,6 +8,9 @@ const ADD_LESSON = 'ADD_LESSON';
 const DELETE_LESSON = 'DELETE_LESSON';
 const DELETE_SECTION = 'DELETE_SECTION';
 
+const EDIT_SECTION = 'EDIT_SECTION';
+const EDIT_LESSON = 'EDIT_LESSON';
+
 const COMPLETE_LESSON = 'COMPLETE_LESSON';
 const COMPLETE_SECTION = 'COMPLETE_SECTION';
 
@@ -83,6 +86,33 @@ const sectionsListReducer = (state = initialState, action) => {
             };
         }
 
+        case EDIT_SECTION: {
+            return {
+                ...state,
+                sections: state.sections.map(section => {
+                    if (section.id === action.sectionId)                     
+                        return { ...section, title: action.title };
+                    return section;
+                })
+            };
+        }
+        case EDIT_LESSON: {
+            return {
+                ...state,
+                sections: state.sections.map(section => {
+                    if (section.id === action.sectionId) {
+                        section.lessons.map(lesson => {
+                            if (lesson.id === +action.lessonId)
+                                return { ...lesson, title: action.title };
+                            
+                            return lesson;
+                        });
+                    }                  
+                        
+                    return section;
+                })
+            };
+        }  
         case COMPLETE_LESSON: {
             return {
                 ...state,
@@ -165,6 +195,21 @@ const deleteLessonSuccess = (lessonId) => {
     }
 }
 
+const editSectionSuccess = (sectionId, title) => {
+    return {
+        type: EDIT_SECTION,
+        sectionId,
+        title
+    }
+}
+const editLessonSuccess = (sectionId, lessonId, title) => {
+    return {
+        type: EDIT_LESSON,
+        sectionId,
+        lessonId,
+        title
+    }
+}
 const completeLessonSuccess = (lessonId) => {
     return {
         type: COMPLETE_LESSON,
@@ -228,5 +273,12 @@ export const addLesson = (sectionId, contentType) => (dispatch) => {
     })
 }
 
-
+export const editSection = (sectionId, title) => (dispatch) => {
+    dispatch(editSectionSuccess(sectionId, title));
+    sectionsListAPI.editSection(sectionId, title);
+}
+export const editLesson = (sectionId, lessonId, title) => (dispatch) => {
+    dispatch(editLessonSuccess(sectionId, lessonId, title));
+    lessonAPI.editLesson(lessonId, title);
+}
 export default sectionsListReducer;

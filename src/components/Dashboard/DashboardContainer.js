@@ -4,11 +4,12 @@ import SelfInfoContainer from './SelfInfo/SelfInfoContainer';
 import OverallStats from './OverallStats/OverallStats';
 
 
-const Dashboard = (props) => {
+const Dashboard = () => {
+    let isAdmin = true;
     return (
         <div className={s.dashboard}>
             <SelfInfoContainer />
-            {props.role ? <OverallStats /> : null}
+            {isAdmin ? <OverallStats /> : null}
         </div>        
     );
 }

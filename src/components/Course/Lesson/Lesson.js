@@ -13,15 +13,15 @@ const Lesson = (props) => {
 
     return (
         <div className={s.lesson}>
-            {props.isFirstLesson ? <h1>{props.sectionTitle}</h1> : null}
-            <h1 className={s.title}>{props.lesson.title}</h1>
+            {props.isFirstLesson ? <h1 className={s.sectionTitle}>{props.sectionTitle}</h1> : null}
+            <h1 className={s.lessonTitle}>{props.lessonTitle}</h1>
             {
                 props.lesson.elements ? props.lesson.elements.map(element =>
                     <div className={s.lessonElement} key={element.id}>
                         {
-                            element.type == 0 ? <Video {...element} />
+                            element.type == 0 ? <Text {...element} />
                                 : element.type == 1 ? <Picture {...element} />
-                                    : element.type == 2 ? <Text  {...element} /> : null
+                                    : element.type == 2 ? <Video  {...element} /> : null
                         }
                     </div>
                 ) : null

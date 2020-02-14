@@ -5,18 +5,26 @@ class Picture extends React.Component {
     state = {
         media: "",
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.media !== prevProps.media) {
-            if (this.props.media !== null) {
-                this.setState({ media: this.props.media });
-            }
-            else
-                this.setState({ media: "" });
+    componentDidMount(prevProps) {
+        if (this.props.media !== null) {
+            this.setState({ media: this.props.media });
         }
+        else
+            this.setState({ media: "" });
     }
     deleteElement = (position) => {
         this.props.deleteElement(position);
     }
+    editElement = (elementId) => {
+        this.props.editElement(elementId, this.state.media, this.props.type);
+    }
+
+    onTextChange = (e) => {
+        this.setState({
+            media: e.currentTarget.value
+        })
+    }
+
     render() {
         return (
             this.props.editMode ?
@@ -26,11 +34,11 @@ class Picture extends React.Component {
                         <i className="fa fa-arrows" aria-hidden="true"></i>
                         <h2>Picture</h2>
                     </div>
-                    <input defaultValue={this.state.media} placeholder={"http://"} />
+                    <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                 </div>
                 : this.state.media ?
                     <div className={s.picture}>
-                        <img src={s.media} />
+                        <img src={this.state.media} />
                     </div>
                     : null
         );

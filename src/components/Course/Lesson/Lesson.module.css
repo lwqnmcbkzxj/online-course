@@ -15,10 +15,14 @@
     font-weight: bold;
 }
 
-.title {
+.lessonTitle, .sectionTitle {
     font-size: 22px;
     font-weight: bold;
     margin-bottom: 30px;
+}
+
+.sectionTitle {    
+    margin-bottom: 5px;
 }
 
 .lesson .buttonHolder {

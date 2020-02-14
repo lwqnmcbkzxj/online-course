@@ -3,9 +3,9 @@ import Axios from 'axios';
 const instance = Axios.create({
     // withCredentials: true,   
     // baseURL: "http://online-course.dig-studio.ru/api/",
-    baseURL: "http://8d63c1fe.ngrok.io",
+    baseURL: "http://566df1cc.ngrok.io",
     headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTU5MjI2MSwicm9sZSI6MCwiaWQiOjIsImlhdCI6MTU4MTU1NjI2MX0.e0P2GASdtz1Hc26HJp2Npaqxk_e69_UYWE_oysHnuT4"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTY0NDI4OSwicm9sZSI6MCwiaWQiOjMsImlhdCI6MTU4MTYwODI4OX0.vWaBreggK8tCLemHufg2_V6WQF3q5cQ9AxOB-6Aek1k"
     }
 });
 
@@ -16,10 +16,13 @@ export const sectionsListAPI = {
     },
 
     addSection() {
-        return instance.post(`complete-section`, { "id": 1 })
+        return instance.post(`sections`, { "title": "NEW SECTION" })
             .then(response => response.data);
     },
-
+    editSection(sectionId, title) {
+        return instance.post(`sections/edit`, { "id": sectionId, "title": title })
+            .then(response => response.data);
+    },
     deleteSection(sectionId) {
         return instance.delete(`sections`, { "data": { "id": sectionId } })
             .then(response => response.data);
@@ -35,9 +38,12 @@ export const lessonAPI = {
         return instance.post(`lessons`, { "section_id": sectionId, "content_type": type })
             .then(response => response.data);
     },
-
+    editLesson(lessonId, title) {
+        return instance.post(`lessons/edit`, { "id": lessonId, "title": title })
+            .then(response => response.data);
+    },
     deleteLesson(lessonid) {
-        return instance.delete(`lessons/article`, { "data": { "id": lessonid } })
+        return instance.delete(`lessons`, { "data": { "id": lessonid } })
             .then(response => response.data);
     },
     completeLesson(lessonId, contentType) {
@@ -47,8 +53,8 @@ export const lessonAPI = {
 }
 
 export const lessonElementsAPI = {
-    addArticleLessonElement(lessonId, data, elementType) {
-        return instance.post(`lessons/article`, { "lesson_id": lessonId, "data": data, "type": elementType })
+    addArticleLessonElement(lessonId, elementType) {
+        return instance.post(`lessons/article`, { "lesson_id": lessonId, "type": elementType })
             .then(response => response.data);
     },
 
@@ -79,3 +85,9 @@ export const tasksAPI = {
     }
 }
 
+export const userAPI = {
+    getUserInfo() {
+        return instance.get(`user-info`)
+            .then(response => response.data);
+    }, 
+}

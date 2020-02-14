@@ -7,33 +7,36 @@ import Text from './LessonElements/Text'
 
 const LessonEdit = (props) => {
     let addElement = (elementType) => {
-        props.addElement(props.lesson.id, props.lesson.type, elementType);
+        props.addElement(props.lesson.id, elementType);
     }
 
     let deleteElement = (elementId) => {
         props.setModalFunction(props.deleteElement, elementId, 'Element');
     }
 
+    let editElement = (elementId, data, elementType) => {
+        props.editElement(elementId, data, elementType)
+    }
+
+    let editLesson = (e) => {
+        props.editLesson(props.currentSectionId, props.lesson.id, e.currentTarget.value)
+    }
+
+    let editSection = (e) => {
+        props.editSection(props.currentSectionId, e.currentTarget.value)        
+    }
     return (
         <div className={s.lesson}>
-            {props.isFirstLesson ?
-                props.editMode ?
-                    <input defaultValue={props.sectionTitle}/> :
-                    <h1>{props.sectionTitle}</h1> 
-                : null}
+            { props.isFirstLesson ? <input defaultValue={props.sectionTitle} onBlur={(e) => { editSection(e) }}/> : null}
+            <input defaultValue={props.lessonTitle} placeholder={"Write title here"} onBlur={(e) => { editLesson(e) }} />
 
-            <div className={s.elementHeader}>
-                <i className="fa fa-trash-o" style={{ visibility: "hidden" }} aria-hidden="true" onClick={() => { }}></i>
-                <i className="fa fa-arrows" aria-hidden="true"></i>
-                <input defaultValue={props.lesson.title} placeholder={"Write title here"} />
-            </div>
             {
                 props.lesson.elements ? props.lesson.elements.map(element =>
                     <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
                         {
-                            element.type == 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} />
-                                : element.type == 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} />
-                                    : element.type == 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} /> : null
+                            element.type == 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                : element.type == 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                    : element.type == 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} /> : null
 
                         }
 

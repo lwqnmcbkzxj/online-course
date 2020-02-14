@@ -3,13 +3,12 @@ import { setCurrentLessonId } from './course-reducer';
 const SET_LESSON = 'SET_LESSON';
 const ADD_ELEMENT = 'ADD_ELEMENT';
 const DELETE_ELEMENT = 'DELETE_ELEMENT';
-const EDIT_ELEMENT = 'EDIT_ELEMENT';
+const EDIT_ELEMENT_TEXT = 'EDIT_ELEMENT_TEXT';
+const EDIT_ELEMENT_MEDIA = 'EDIT_ELEMENT_MEDIA';
 const CHANGE_ELEMENT_POSITION = 'CHANGE_ELEMENT_POSITION';
 
 let initialState = {
-    lesson: {
-
-    }
+    lesson: { }
 }
 
 const lessonReducer = (state = initialState, action) => {
@@ -19,7 +18,8 @@ const lessonReducer = (state = initialState, action) => {
                 ...state,
                 lesson: action.lesson
             };
-        }
+        }        
+            
         case ADD_ELEMENT: {
             let newElement = {
                 text: '',
@@ -41,16 +41,31 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
-        case EDIT_ELEMENT: {
+        case EDIT_ELEMENT_TEXT: {
             return {
                 ...state,
                 lesson: {
                     ...state.lesson,
                     elements: state.lesson.elements.map(element => {
                         if (element.id == action.id)
-                            return { ...action.element };
+                            return { ...element, text: action.text };
 
                         return element
+                    })
+                }
+            };
+        }
+            
+        case EDIT_ELEMENT_MEDIA: {
+            return {
+                ...state,
+                lesson: {
+                    ...state.lesson,
+                    elements: state.lesson.elements.map(element => {
+                        if (element.id == action.id)                            
+                            return { ...element, media: action.media };
+
+                        return element;
                     })
                 }
             };
@@ -91,6 +106,17 @@ export const setLesson = (lesson) => {
     }
 }
 
+// export const editLesson = (lessonId, title) => (dispatch) => {
+//     dispatch(editLessonSuccess(title));
+//     lessonAPI.editLesson(lessonId, title)    
+// }
+
+// const editLessonSuccess = (title) => {
+//     return {
+//         type: EDIT_LESSON,        
+//         title
+//     }
+// }
 const addElementSuccess = (elementType) => {
     return {
         type: ADD_ELEMENT,        
@@ -103,30 +129,39 @@ const deleteElementSuccess = (id) => {
         id
     }
 }
-const editElementSuccess = (id, data) => {
+const editElementTextSuccess = (id, text) => {
     return {
-        type: EDIT_ELEMENT,
+        type: EDIT_ELEMENT_TEXT,
         id,
-        data
+        text
+    }
+}
+const editElementMediaSuccess = (id, media) => {
+    return {
+        type: EDIT_ELEMENT_MEDIA,
+        id,
+        media
     }
 }
 
-
-export const addElement = (lessonId, data, elementType) => (dispatch) => {
+export const addElement = (lessonId, elementType) => (dispatch) => {
     dispatch(addElementSuccess(elementType));
-    lessonElementsAPI.addArticleLessonElement(lessonId, data, elementType)    
+    lessonElementsAPI.addArticleLessonElement(lessonId, elementType)    
 }
 export const deleteElement = (elementId) => (dispatch) => {
     dispatch(deleteElementSuccess(elementId));
     lessonElementsAPI.deleteArticleLessonElement(elementId);
 }
 export const editElement = (elementId, data, elementType) => (dispatch) => {
-    dispatch(editElementSuccess(elementId,data));
-
-    if (elementType === 0)        
-        lessonElementsAPI.editArticleElementText(elementId, data);
-    else
-        lessonElementsAPI.editArticleElementMedia(elementId, data);        
+    if (elementType === 0) {
+        dispatch(editElementTextSuccess(elementId, data));
+        lessonElementsAPI.editArticleElementText(elementId, data);        
+    }    
+    else {
+        dispatch(editElementMediaSuccess(elementId, data));
+        lessonElementsAPI.editArticleElementMedia(elementId, data);       
+        
+    }
 }
 
 

@@ -5,18 +5,25 @@ class Text extends React.Component {
     state = {
         text: "",
     }
-    componentDidUpdate(prevProps) {
-        if (this.props.text !== prevProps.text) {
-            if (this.props.text !== null)
-                this.setState({ text: this.props.text })
-            else 
-                this.setState({ text: "" })                
-        }
+    componentDidMount(prevProps) {        
+        if (this.props.text !== null)
+            this.setState({ text: this.props.text })
+        else 
+            this.setState({ text: "" })                
     }
 
     deleteElement = (position) => {
         this.props.deleteElement(position);
     }
+    editElement = (elementId) => {
+        this.props.editElement(elementId, this.state.text, this.props.type);
+    }
+
+    onTextChange = (e) => {
+        this.setState({
+           text: e.currentTarget.value
+       })
+   }
 
     render() {
         return (
@@ -27,7 +34,7 @@ class Text extends React.Component {
                         <i className="fa fa-arrows" aria-hidden="true"></i>
                         <h2>Text</h2>
                     </div>
-                    <textarea defaultValue={this.state.text} placeholder={"Write text here"} />
+                    <textarea defaultValue={this.state.text} placeholder={"Write text here"} onChange={this.onTextChange} onBlur={()=>{this.editElement(this.props.id)}}/>
                 </div>
                 : this.state.text ?
                     <div className={s.text}>
