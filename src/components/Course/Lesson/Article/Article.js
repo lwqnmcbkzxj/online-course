@@ -1,12 +1,12 @@
 import React from 'react';
-import s from './Lesson.module.css';
+import s from './Article.module.css';
 
-import Video from './LessonElements/Video'
-import Picture from './LessonElements/Picture'
-import Text from './LessonElements/Text'
-import Task from './LessonElements/Task'
+import Video from './ArticleElements/Video'
+import Picture from './ArticleElements/Picture'
+import Text from './ArticleElements/Text'
 
 const Lesson = (props) => {
+
     let completeLesson = (lessonId, type) => {
         props.completeLesson(lessonId, props.currentSectionId, type);
     }
@@ -21,8 +21,7 @@ const Lesson = (props) => {
                         {
                             element.type == 0 ? <Text {...element} />
                                 : element.type == 1 ? <Picture {...element} />
-                                    : element.type == 2 ? <Video  {...element} />
-                                        : element.type == 3 ? <Task  {...element} /> : null
+                                    : element.type == 2 ? <Video  {...element} /> : null
                         }
                     </div>
                 ) : null

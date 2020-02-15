@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './LessonElements.module.css';
+import s from './ArticleElements.module.css';
 
 class Text extends React.Component {
     state = {
@@ -12,12 +12,11 @@ class Text extends React.Component {
             this.setState({ text: "" })                
     }
 
-    deleteElement = (elementId) => {
-        this.props.deleteElement(elementId);
+    deleteElement = (position) => {
+        this.props.deleteElement(position);
     }
-
     editElement = (elementId) => {
-        this.props.editElement(elementId, this.state.media, this.props.type);
+        this.props.editElement(elementId, this.state.text, this.props.type);
     }
 
     onTextChange = (e) => {

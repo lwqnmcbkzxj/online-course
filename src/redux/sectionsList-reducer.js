@@ -97,13 +97,14 @@ const sectionsListReducer = (state = initialState, action) => {
             };
         }
         case EDIT_LESSON: {
+            debugger
             return {
                 ...state,
-                sections: state.sections.map(section => {
+                sections: state.sections.map(section => {                    
                     if (section.id === action.sectionId) {
-                        section.lessons.map(lesson => {
-                            if (lesson.id === +action.lessonId)
-                                return { ...lesson, title: action.title };
+                       section.lessons = section.lessons.map(lesson => {
+                            if (lesson.id === +action.lessonId)                            
+                                return { ...lesson,  title: action.title };                            
                             
                             return lesson;
                         });

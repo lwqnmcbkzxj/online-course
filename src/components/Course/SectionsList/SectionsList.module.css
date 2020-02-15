@@ -31,7 +31,18 @@
 
 .item {
     margin: 5px 0;
+    display: flex;
+    flex-direction: row;
+    align-items: flex-start;
 }
+
+.serviceBlock {
+    margin-top: 3px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
 
 .activeLink {
     font-weight: bold;
@@ -39,7 +50,7 @@
 
 .sectionContent {
     display: flex;
-    align-items: center;
+    align-items: flex-start;
 }
 
 .addLessonBtn {

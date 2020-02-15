@@ -64,7 +64,11 @@ class SectionsList extends React.Component {
                         <div className={s.section} key={"s" + section.id} >
 
                             <div className={s.sectionContent}>
-                                {this.props.editMode && <div><i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i></div>}
+                                {this.props.editMode &&
+                                    <div className={s.serviceBlock}>
+                                        <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i>
+                                        <i className="fa fa-arrows" aria-hidden="true"></i>
+                                    </div>}
                                 {section.completed && <div><i className="fa fa-check" aria-hidden="true"></i></div>}
                                 <h1 className={s.sectionName} onClick={() => { this.toggleSection(section.id) }}>{section.title}</h1>
                             </div>
@@ -76,7 +80,11 @@ class SectionsList extends React.Component {
                                         section.lessons.map(lesson =>
                                             <li key={"l" + lesson.id}>
                                                 <div className={s.item} >
-                                                    {this.props.editMode && <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id) }}></i>}
+                                                    {this.props.editMode &&
+                                                        <div className={s.serviceBlock}>
+                                                            <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id) }}></i>
+                                                            <i className="fa fa-arrows" aria-hidden="true"></i>
+                                                        </div> }
                                                     {lesson.completed && <i className="fa fa-check" aria-hidden="true"></i>}
                                                     <NavLink to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { this.setCurrentSection(section.id) }}>
                                                         {lesson.title}

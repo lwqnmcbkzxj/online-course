@@ -1,5 +1,80 @@
-.task .imageHolder {
-    margin: 10px auto;
-    text-align: center;
-    width: 70%;
+.lesson {
+    margin: 30px 50px;
 }
+
+.lesson p {
+    line-height: 22px;
+    font-size: 22px;
+    font-weight: 300;
+    white-space: pre-line;
+    width: 100%;
+}
+
+.lesson h2 {
+    font-size: 20px;
+    font-weight: bold;
+}
+
+.lessonTitle, .sectionTitle {
+    font-size: 22px;
+    font-weight: bold;
+    margin-bottom: 20px;
+}
+
+.sectionTitle {    
+    margin-bottom: 5px;
+}
+
+.lesson .buttonHolder {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-top: 20px;
+
+}
+
+.lesson .buttonHolder button {
+    background: #000;
+    color: #fff;
+    padding: 10px 50px;
+}
+
+.lesson .buttonHolder  button:hover {
+    box-shadow: 1px 1px 2px #818181;
+    cursor: pointer;
+}
+
+
+
+/*
+.addElements {
+    margin: 20px 0 0 20px;
+    display: flex;
+    flex-direction: column;
+    align-items: start;
+}
+
+.addElements button{   
+    font-size: 18px;
+    margin-bottom: 5px;
+}
+
+.elementHeader {
+    margin-left: -40px;
+    display: flex;
+    flex-direction: row;
+    justify-content: start;
+    align-items: center;
+}
+
+input {
+    font-family: 'Exo 2', sans-serif;
+    font-weight: bold;
+    font-size: 16px;
+    height: 20px;
+    width: 100%;
+    margin-bottom: 5px;
+    padding: 2px 5px;
+    font-weight: normal;
+    overflow: hidden;
+} */

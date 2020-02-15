@@ -58,11 +58,18 @@ export const setUserStats = (stats) => {
     }
 }
 
-
 export const getUserInfo = () => (dispatch) => {
     userAPI.getUserInfo().then((response) => {
         dispatch(setUserStats(response.stats));
         dispatch(setUserInfo(response.info));
+    })    
+}
+
+export const loginUser = (email, password) => (dispatch) => {
+    userAPI.login(email, password).then((response) => {
+        if (response.token) {
+            getUserInfo();
+        }            
     })    
 }
 export default userReducer;

@@ -3,9 +3,9 @@ import Axios from 'axios';
 const instance = Axios.create({
     // withCredentials: true,   
     // baseURL: "http://online-course.dig-studio.ru/api/",
-    baseURL: "http://566df1cc.ngrok.io",
+    baseURL: "http://2e6fcd53.ngrok.io",
     headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTY0NDI4OSwicm9sZSI6MCwiaWQiOjMsImlhdCI6MTU4MTYwODI4OX0.vWaBreggK8tCLemHufg2_V6WQF3q5cQ9AxOB-6Aek1k"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTc1MDYzMiwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTcxNDYzMn0.jXkFfTUjfwva9Us6leAu4H4Qd5LqR3L_mnz_ZNZ5Upo"
     }
 });
 
@@ -52,13 +52,13 @@ export const lessonAPI = {
     },
 }
 
-export const lessonElementsAPI = {
-    addArticleLessonElement(lessonId, elementType) {
+export const articleElementsAPI = {
+    addArticleElement(lessonId, elementType) {
         return instance.post(`lessons/article`, { "lesson_id": lessonId, "type": elementType })
             .then(response => response.data);
     },
 
-    deleteArticleLessonElement(elementId) {
+    deleteArticleElement(elementId) {
         return instance.delete(`lessons/article`, { "data": { "id": elementId } })
             .then(response => response.data);
     }, 
@@ -69,6 +69,26 @@ export const lessonElementsAPI = {
     },    
     editArticleElementMedia(elementId, data) {
         return instance.post(`lessons/article/edit-media`, { "id": elementId, "media": data })
+            .then(response => response.data);
+    },
+}
+
+export const taskElementsAPI = {
+    addTaskElement(lessonId, elementType, data) {
+        return instance.post(`lessons/task`, { "lesson_id": lessonId, "type": elementType, "data": data })
+            .then(response => response.data);
+    },
+    deleteTaskElement(elementId) {
+        return instance.delete(`lessons/task`, { "data": { "id": elementId } })
+            .then(response => response.data);
+    }, 
+
+    editTaskElementText(elementId, data) {
+        return instance.post(`lessons/task/edit-text`, { "id": elementId, "text": data })
+            .then(response => response.data);
+    },    
+    editTaskElementMedia(elementId, data) {
+        return instance.post(`lessons/task/edit-media`, { "id": elementId, "media": data })
             .then(response => response.data);
     }
 }
@@ -85,9 +105,17 @@ export const tasksAPI = {
     }
 }
 
+
+
+
 export const userAPI = {
     getUserInfo() {
         return instance.get(`user-info`)
             .then(response => response.data);
     }, 
+
+    login(email, password) {
+        return instance.post(`login`, {"email": email, "password":password})
+            .then(response => response.data);
+    }
 }

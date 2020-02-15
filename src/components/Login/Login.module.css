@@ -1,0 +1,44 @@
+.login {
+    width: 400px;
+    margin: 0 auto;
+    padding-top: 30px;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+}
+
+.login form {
+    width: 100%;
+}
+
+
+.login h1 {
+    text-align: center;
+    font-weight: bold;
+    font-size: 22px;
+    margin-bottom: 20px;
+}
+
+.login form input {
+    padding: 15px 10px;
+    width: 100%;
+    box-sizing: border-box;
+}
+
+.login button {
+    display: block;
+    margin: 10px auto;
+    width: 100%;
+    font-weight: bold;
+    padding: 0;
+}
+
+.login button.active {    
+    background: #000;
+    color: #c6a951;
+    font-weight: normal;
+    padding: 10px;
+
+}
+

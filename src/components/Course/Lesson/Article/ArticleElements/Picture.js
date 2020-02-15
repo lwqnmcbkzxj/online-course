@@ -1,5 +1,5 @@
 import React from 'react';
-import s from './LessonElements.module.css';
+import s from './ArticleElements.module.css';
 
 class Picture extends React.Component {
     state = {
@@ -12,12 +12,11 @@ class Picture extends React.Component {
         else
             this.setState({ media: "" });
     }
-    deleteElement = (elementId) => {
-        this.props.deleteElement(elementId);
+    deleteElement = (position) => {
+        this.props.deleteElement(position);
     }
-
     editElement = (elementId) => {
-        this.props.editElement(elementId, this.state.media);
+        this.props.editElement(elementId, this.state.media, this.props.type);
     }
 
     onTextChange = (e) => {
@@ -41,7 +40,7 @@ class Picture extends React.Component {
                     <div className={s.picture}>
                         <img src={this.state.media} />
                     </div>
-                    : null
+                    : null 
         );
     }
 }
