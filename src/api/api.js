@@ -1,11 +1,10 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    // withCredentials: true,   
     // baseURL: "http://online-course.dig-studio.ru/api/",
-    baseURL: "http://2e6fcd53.ngrok.io",
+    baseURL: "http://8d5d134a.ngrok.io",
     headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTc1MDYzMiwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTcxNDYzMn0.jXkFfTUjfwva9Us6leAu4H4Qd5LqR3L_mnz_ZNZ5Upo"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTg0MzY2NSwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTgwNzY2NX0.zIpZkVCvYgS9Nsz4O3f_saX21RCdabfK28T7zvAk4d8"
     }
 });
 
@@ -90,7 +89,11 @@ export const taskElementsAPI = {
     editTaskElementMedia(elementId, data) {
         return instance.post(`lessons/task/edit-media`, { "id": elementId, "media": data })
             .then(response => response.data);
-    }
+    },
+    editTaskQuiz(elementId, data) {
+        return instance.post(`lessons/task/edit-quiz`, { "id": elementId, "json_options": data[0], "json_answers": data[1] })
+            .then(response => response.data);
+    },
 }
 
 export const tasksAPI = {

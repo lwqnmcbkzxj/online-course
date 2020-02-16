@@ -3,8 +3,11 @@ import { setCurrentLessonId } from './course-reducer';
 const SET_LESSON = 'SET_LESSON';
 const ADD_ELEMENT = 'ADD_ELEMENT';
 const DELETE_ELEMENT = 'DELETE_ELEMENT';
+
 const EDIT_ELEMENT_TEXT = 'EDIT_ELEMENT_TEXT';
 const EDIT_ELEMENT_MEDIA = 'EDIT_ELEMENT_MEDIA';
+const EDIT_TASK_QUIZ = 'EDIT_ELEMENEDIT_TASK_QUIZT_MEDIA';
+
 const CHANGE_ELEMENT_POSITION = 'CHANGE_ELEMENT_POSITION';
 
 let initialState = {
@@ -70,6 +73,21 @@ const lessonReducer = (state = initialState, action) => {
                     elements: state.lesson.elements.map(element => {
                         if (element.id == action.id)
                             return { ...element, media: action.media };
+
+                        return element;
+                    })
+                }
+            };
+        }
+        case EDIT_TASK_QUIZ: {
+            debugger
+            return {
+                ...state,
+                lesson: {
+                    ...state.lesson,
+                    elements: state.lesson.elements.map(element => {
+                        if (element.id == action.id)
+                            return { ...element, json_quiz_options: action.data[0],  json_quiz_answers: action.data[1]};
 
                         return element;
                     })
@@ -151,7 +169,13 @@ const editElementMediaSuccess = (id, media) => {
         media
     }
 }
-
+const editElementQuizSuccess = (id, data) => {
+    return {
+        type: EDIT_TASK_QUIZ,
+        id,
+        data
+    }
+}
 export const addElement = (lessonId, elementType, lessonType) => (dispatch) => {
     dispatch(addElementSuccess(elementType));
 
@@ -164,12 +188,7 @@ export const addElement = (lessonId, elementType, lessonType) => (dispatch) => {
 
 export const addTaskElement = (lessonId, elementType, data) => (dispatch) => {
     dispatch(addElementSuccess(elementType, data));
-
-    if (data[0] !== null)
-        data[0] = JSON.stringify(data[0])
-
-    if (data[1] !== null)
-        data[1] = JSON.stringify(data[1])
+    
     taskElementsAPI.addTaskElement(lessonId, elementType, data);
 }
 export const deleteElement = (elementId, lessonType) => (dispatch) => {
@@ -181,6 +200,7 @@ export const deleteElement = (elementId, lessonType) => (dispatch) => {
         taskElementsAPI.deleteTaskElement(elementId);
 }
 export const editElement = (elementId, data, elementType, lessonType) => (dispatch) => {
+    debugger
     if (elementType === 0) {
         dispatch(editElementTextSuccess(elementId, data));
 
@@ -188,6 +208,10 @@ export const editElement = (elementId, data, elementType, lessonType) => (dispat
             articleElementsAPI.editArticleElementText(elementId, data);
         else
             taskElementsAPI.editTaskElementText(elementId, data);
+    }
+    else if (elementType === 3) {
+        dispatch(editElementQuizSuccess(elementId, data));
+        taskElementsAPI.editTaskQuiz(elementId, data);        
     }
     else {
         dispatch(editElementMediaSuccess(elementId, data));

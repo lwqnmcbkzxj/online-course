@@ -27,7 +27,7 @@ const Lesson = (props) => {
                     </div>
                 ) : null
             }
-            <div className={s.buttonHolder} onClick={() => { completeLesson(props.lesson.id, props.lesson.type) }}> <button>Complete</button></div>
+            <div className={s.buttonHolder} onClick={() => { completeLesson(props.lesson.id, props.lesson.type) }}> <button>Complete lesson</button></div>
         </div>
     );
 }

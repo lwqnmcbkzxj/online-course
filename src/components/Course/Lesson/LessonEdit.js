@@ -8,21 +8,27 @@ import Task from './LessonElements/Task'
 
 const LessonEdit = (props) => {
 
-    let addTaskElement = (taskType) => { 
+    let addTaskElement = (taskType) => {
         let options = null;
         let answers = null;
         if (taskType === 1) {
             answers = [''];
-            options = ['', '', '', ''];            
+            options = ['', ''];
         } else if (taskType === 2) {
             answers = ['', ''];
-            options = ['', '', '', ''];
-        } else if (taskType === 3) {           
+            options = ['', ''];
+        } else if (taskType === 3) {
             answers = [''];
+            options = [''];
         }
-       
-        
-        props.addTaskElement(props.lesson.id, 3, [options, answers]);   
+
+        if (answers !== null)
+            answers = JSON.stringify(answers)
+
+        if (options !== null)
+            options = JSON.stringify(options)
+
+        props.addTaskElement(props.lesson.id, 3, [options, answers]);
     }
 
     let addElement = (elementType) => {
@@ -42,11 +48,12 @@ const LessonEdit = (props) => {
     }
 
     let editSection = (e) => {
-        props.editSection(props.currentSectionId, e.currentTarget.value)        
+        props.editSection(props.currentSectionId, e.currentTarget.value)
     }
+
     return (
-        <div className={s.lesson}> 
-            {props.isFirstLesson ?  <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }}/>: null}
+        <div className={s.lesson}>
+            {props.isFirstLesson ? <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }} /> : null}
             <input defaultValue={props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { editLesson(e) }} />
 
             {
@@ -56,9 +63,7 @@ const LessonEdit = (props) => {
                             element.type == 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
                                 : element.type == 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
                                     : element.type == 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                        : element.type == 3  ? <Task {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement}/>
-                                            : null
-
+                                        : null
                         }
 
                     </div>
@@ -72,8 +77,16 @@ const LessonEdit = (props) => {
                 <button onClick={() => { addElement(2) }}>+ Add video</button>
             </div>
 
-            {props.lesson.type === 1 ? 
-                <div className={s.addElements}>                    
+
+            {props.lesson.elements ? props.lesson.elements.map(element =>
+                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
+                    {element.type == 3 ? <Task {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} /> : null}
+                </div>
+            ) : null}
+
+
+            {props.lesson.type === 1 ?
+                <div className={s.addElements}>
                     <h2>Task</h2>
                     <button onClick={() => { addTaskElement(1) }}>+ Add one choise test</button>
                     <button onClick={() => { addTaskElement(2) }}>+ Add multichoise test</button>
