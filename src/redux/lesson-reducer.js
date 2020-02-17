@@ -80,14 +80,14 @@ const lessonReducer = (state = initialState, action) => {
             };
         }
         case EDIT_TASK_QUIZ: {
-            debugger
             return {
                 ...state,
                 lesson: {
                     ...state.lesson,
                     elements: state.lesson.elements.map(element => {
-                        if (element.id == action.id)
-                            return { ...element, json_quiz_options: action.data[0],  json_quiz_answers: action.data[1]};
+                        if (element.id == action.id) 
+                            return  { ...element, json_quiz_options: action.data[0],  json_quiz_answers: action.data[1] };
+                        
 
                         return element;
                     })
@@ -200,7 +200,6 @@ export const deleteElement = (elementId, lessonType) => (dispatch) => {
         taskElementsAPI.deleteTaskElement(elementId);
 }
 export const editElement = (elementId, data, elementType, lessonType) => (dispatch) => {
-    debugger
     if (elementType === 0) {
         dispatch(editElementTextSuccess(elementId, data));
 

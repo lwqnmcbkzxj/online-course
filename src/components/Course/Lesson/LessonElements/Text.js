@@ -17,7 +17,7 @@ class Text extends React.Component {
     }
 
     editElement = (elementId) => {
-        this.props.editElement(elementId, this.state.media, this.props.type);
+        this.props.editElement(elementId, this.state.text, this.props.type);
     }
 
     onTextChange = (e) => {

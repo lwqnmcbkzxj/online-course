@@ -2,9 +2,9 @@ import Axios from 'axios';
 
 const instance = Axios.create({
     // baseURL: "http://online-course.dig-studio.ru/api/",
-    baseURL: "http://8d5d134a.ngrok.io",
+    baseURL: "http://8896a965.ngrok.io",
     headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTg0MzY2NSwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTgwNzY2NX0.zIpZkVCvYgS9Nsz4O3f_saX21RCdabfK28T7zvAk4d8"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTkwNjUzNywicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTg3MDUzN30._l8IYInjeU__dHx43pzachbZMdrpGs7EPZRJKG5DJJ8"
     }
 });
 
