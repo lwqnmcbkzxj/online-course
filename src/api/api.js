@@ -1,10 +1,11 @@
 import Axios from 'axios';
-
+import returnUserToken from "../redux/user-reducer";
+// let token = "Bearer " + returnUserToken();
 const instance = Axios.create({
     // baseURL: "http://online-course.dig-studio.ru/api/",
-    baseURL: "http://8896a965.ngrok.io",
+    baseURL: "http://38df15df.ngrok.io",
     headers: {
-        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTkwNjUzNywicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTg3MDUzN30._l8IYInjeU__dHx43pzachbZMdrpGs7EPZRJKG5DJJ8"
+        "Authorization": "Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MTk5MTg3Miwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MTk1NTg3Mn0.uh6IGBsSiMlRmc830f-8FcVdA9Bhb3-ZRRvRQm2x9hs"
     }
 });
 
@@ -25,7 +26,7 @@ export const sectionsListAPI = {
     deleteSection(sectionId) {
         return instance.delete(`sections`, { "data": { "id": sectionId } })
             .then(response => response.data);
-    },  
+    }, 
 }
 export const lessonAPI = {
     getLesson(id) {

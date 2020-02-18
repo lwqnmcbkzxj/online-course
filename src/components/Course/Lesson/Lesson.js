@@ -27,7 +27,10 @@ const Lesson = (props) => {
                     </div>
                 ) : null
             }
-            <div className={s.buttonHolder} onClick={() => { completeLesson(props.lesson.id, props.lesson.type) }}> <button>Complete lesson</button></div>
+            {!props.completedLessonsIds.some(id => id == props.id) ?  <div className={s.buttonHolder}>
+                <button onClick={() => { completeLesson(props.lesson.id, props.lesson.type) }}>Complete lesson
+                </button></div> : null}
+           
         </div>
     );
 }

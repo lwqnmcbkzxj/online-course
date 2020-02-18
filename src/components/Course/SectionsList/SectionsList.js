@@ -57,6 +57,7 @@ class SectionsList extends React.Component {
     }
 
     render() {
+        debugger
         return (
             <div className={s.sectionList}>
                 {
@@ -69,7 +70,7 @@ class SectionsList extends React.Component {
                                         <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i>
                                         <i className="fa fa-arrows" aria-hidden="true"></i>
                                     </div>}
-                                {section.completed && <div><i className="fa fa-check" aria-hidden="true"></i></div>}
+                                {this.props.completedSectionsIds.some(id => id == section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
                                 <h1 className={s.sectionName} onClick={() => { this.toggleSection(section.id) }}>{section.title}</h1>
                             </div>
 
@@ -84,8 +85,11 @@ class SectionsList extends React.Component {
                                                         <div className={s.serviceBlock}>
                                                             <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id) }}></i>
                                                             <i className="fa fa-arrows" aria-hidden="true"></i>
-                                                        </div> }
-                                                    {lesson.completed && <i className="fa fa-check" aria-hidden="true"></i>}
+                                                        </div>}
+                                                    
+                                                    {this.props.completedLessonsIds.some(id => id == lesson.id) ?
+                                                        <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
+                                                    
                                                     <NavLink to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { this.setCurrentSection(section.id) }}>
                                                         {lesson.title}
                                                     </NavLink>

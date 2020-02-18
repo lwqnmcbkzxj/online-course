@@ -37,6 +37,9 @@
     color: #fff;
     padding: 10px 50px;
 }
+.buttonHolder button[disabled] {
+    background: #585858!important;   
+}
 
 .buttonHolder  button:hover {
     box-shadow: 1px 1px 2px #818181;

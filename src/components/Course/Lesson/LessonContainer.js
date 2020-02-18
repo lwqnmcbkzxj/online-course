@@ -4,9 +4,9 @@ import { connect } from 'react-redux';
 import Lesson from './Lesson';
 import LessonEdit from './LessonEdit';
 
-import { editSection, editLesson } from '../../../redux/sectionsList-reducer';
+import { editSection, editLesson, completeLesson } from '../../../redux/sectionsList-reducer';
 import { setCurrentLessonId, setModalFunction } from '../../../redux/course-reducer';
-import { getLesson, addElement, addTaskElement, deleteElement, editElement, changeElementPosition} from '../../../redux/lesson-reducer';
+import { getLesson, addElement, addTaskElement, deleteElement, editElement, changeElementPosition } from '../../../redux/lesson-reducer';
 
 import { withRouter } from 'react-router';
 
@@ -15,14 +15,15 @@ class LessonContainer extends React.Component {
         sectionTitle: '',
         lessonTitle: '',
         lessonId: 0,
-        isFirstLesson: false
+        isFirstLesson: false,
+        completed: false,
     }
-    
+
 
     componentWillMount() {
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         this.props.getLesson(lessonId)
-    }  
+    }
 
     componentDidUpdate(prevProps, prevState) {
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
@@ -31,19 +32,19 @@ class LessonContainer extends React.Component {
             this.props.getLesson(lessonId);
             this.setState({ lessonId });
             this.getCurrentLessonTitle(lessonId);
-            this.getCurrentSectionTitle(lessonId);               
+            this.getCurrentSectionTitle(lessonId);
         }
     }
 
     getCurrentLessonTitle = (lessonId) => {
-        this.props.sections.map(section => {            
+        this.props.sections.map(section => {
             section.lessons.map(lesson => {
                 if (lesson.id == lessonId) {
                     if (this.state.lessonTitle !== lesson.title)
-                        this.setState({ lessonTitle: lesson.title });                    
+                        this.setState({ lessonTitle: lesson.title });
                 }
-            });        
-        });    
+            });
+        });
     }
 
     getCurrentSectionTitle = (lessonId) => {
@@ -54,13 +55,13 @@ class LessonContainer extends React.Component {
                 break;
             } else
                 this.setState({ sectionTitle: '', isFirstLesson: false });
-        }              
+        }
     }
-    
+
     render() {
         return this.props.editMode ?
-            <LessonEdit {...this.props} sectionTitle={this.state.sectionTitle} lessonTitle={this.state.lessonTitle} isFirstLesson={this.state.isFirstLesson}/> :
-            <Lesson {...this.props} sectionTitle={this.state.sectionTitle} lessonTitle={this.state.lessonTitle} isFirstLesson={this.state.isFirstLesson}/>
+            <LessonEdit {...this.props} sectionTitle={this.state.sectionTitle} lessonTitle={this.state.lessonTitle} isFirstLesson={this.state.isFirstLesson} /> :
+            <Lesson {...this.props} sectionTitle={this.state.sectionTitle} lessonTitle={this.state.lessonTitle} isFirstLesson={this.state.isFirstLesson} />
     }
 }
 
@@ -71,6 +72,8 @@ let mapStateToProps = (state) => {
         lesson: state.lesson.lesson,
         currentSectionId: state.course.currentSectionId,
         editMode: state.course.editMode,
+        completedLessonsIds: state.user.completedLessonsIds,
+        completedTasksIds: state.user.completedTasksIds,
     }
 }
 
@@ -80,6 +83,7 @@ let WithUrlDataContainerComponent = withRouter(LessonContainer);
 
 export default connect(mapStateToProps, {
     getLesson, setCurrentLessonId,
+    completeLesson,
     setModalFunction,
     addElement, addTaskElement, deleteElement, editElement, changeElementPosition,
     editSection, editLesson

@@ -45,7 +45,6 @@ class Task extends React.Component {
         this.props.editElement(this.props.id, e.currentTarget.value, 0);
     }
 
-
     addOption = () => {
         let answers = this.state.answers;
         let options = [...this.state.options, ''];
@@ -53,9 +52,10 @@ class Task extends React.Component {
         this.editQuiz(options, answers);
     }
     deleteOption = (position) => {
-        let answers = this.state.answers;
+        let answers = [...this.state.answers];
         let options = [...this.state.options];
         options = this.state.options.filter((option, counter) => counter !== position);
+        answers = this.state.answers.filter((answer, counter) => answer !== position);
 
         this.editQuiz(options, answers);
     }
@@ -67,11 +67,19 @@ class Task extends React.Component {
         this.editQuiz(options, answers);
     }
 
-    editAnswer = (value, position) => {
+    editAnswer = (e, position) => {       
+        let options = this.state.options;
+        let answers = this.state.answers;
 
+        if (e.currentTarget.checked) 
+            answers[position] = position.toString();
+        else 
+            answers[position] = "";            
+        
+        this.editQuiz(options, answers); 
     }
 
-    editQuiz(options, answers) {
+    editQuiz = (options, answers) => {
         options = JSON.stringify(options);
         answers = JSON.stringify(answers);
 
@@ -86,10 +94,10 @@ class Task extends React.Component {
                 editQuiz={this.editQuiz} editQuestion={this.editQuestion}/>
         else if (this.state.type === soloTest)
             taskComponent = <Test editMode={this.props.editMode} {...this.state} id={this.props.id}
-                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption}/>
+                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption} editAnswer={this.editAnswer}/>
         else if (this.state.type === multiTest)
             taskComponent = <MultiTest editMode={this.props.editMode} {...this.state} id={this.props.id}
-                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption}/>
+                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption} editAnswer={this.editAnswer}/>
 
         return (
             this.props.editMode ?
@@ -143,8 +151,12 @@ class Test extends React.Component {
     editOption = (e, position) => {
         this.props.editOption(e.currentTarget.value, position)
     }
-
+    editAnswer = (e) => {       
+        this.props.editAnswer(e, 0);        
+    }
+    
     render() {
+        debugger
         return (
             this.state.editMode ?
                 <div>
@@ -152,7 +164,7 @@ class Test extends React.Component {
                         {this.props.options.map((option, counter) =>
                             <div className={s.testOption} key = {`c${this.props.id}.${counter}1`}>
                                 <input defaultValue={option} placeholder="Enter option here" onBlur={(e) => this.editOption(e, counter)} />
-                                <input name="test" type="radio" value={option} />
+                                <input name="test" type="radio" value={option} onChange={(e) => this.editAnswer(e, counter)} checked={this.props.answers.some(element => element == counter)}/>
                                 {this.props.options.length > 2 ? <i className="fa fa-times" aria-hidden="true" onClick={() => { this.deleteOption(counter) }}></i> : null}
                             </div>
                         )}
@@ -199,6 +211,10 @@ class MultiTest extends React.Component {
         this.props.editOption(e.currentTarget.value, position)
     }
 
+    editAnswer = (e, position) => {       
+        this.props.editAnswer(e, position);        
+    }
+
     render() {
         return (
             this.state.editMode ?
@@ -207,7 +223,7 @@ class MultiTest extends React.Component {
                         {this.props.options.map((option, counter) =>
                             <div className={s.testOption} key = {`c${this.props.id}.${counter}1`}>
                                 <input defaultValue={option} placeholder="Enter option here" onBlur={(e) => this.editOption(e, counter)}/>
-                                <input type="checkbox" value={option} />
+                                <input type="checkbox" value={option} onChange={(e) =>this.editAnswer(e, counter)} checked={this.props.answers.some(element => element == counter)}/>
                                 {this.props.options.length > 2 ? <i className="fa fa-times" aria-hidden="true" onClick={() => { this.deleteOption(counter) }}></i> : null}
                             </div>
                         )}

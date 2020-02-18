@@ -1,5 +1,5 @@
 import { sectionsListAPI, lessonAPI } from '../api/api';
-
+import { getUserInfo } from "./user-reducer"
 const SET_SECTIONS = 'SET_SECTIONS_DATA';
 
 const ADD_SECTION = 'ADD_SECTION';
@@ -169,18 +169,18 @@ export const setSections = (sections) => {
     }
 }
 
-const addSectionSuccess = () => {
+/* const addSectionSuccess = () => {
     return {
         type: ADD_SECTION,
     }
-}
+} 
 
-const addLessonSuccess = (sectionId) => {
+/* const addLessonSuccess = (sectionId) => {
     return {
         type: ADD_LESSON,
         sectionId
     }
-}
+} */
 
 const deleteSectionSuccess = (sectionId) => {
     return {
@@ -211,12 +211,12 @@ const editLessonSuccess = (sectionId, lessonId, title) => {
         title
     }
 }
-const completeLessonSuccess = (lessonId) => {
+/* const completeLessonSuccess = (lessonId) => {
     return {
         type: COMPLETE_LESSON,
         lessonId
     }
-}
+} */
 const completeSectionSuccess = (sectionId) => {
     return {
         type: COMPLETE_SECTION,
@@ -226,17 +226,28 @@ const completeSectionSuccess = (sectionId) => {
 
 //THUNKS
 export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {
-    lessonAPI.completeLesson(lessonId, contentType).then();
+    lessonAPI.completeLesson(lessonId, contentType).then((response) => {
+        if (response.status == "ok") {
+            console.log(dispatch(getUserInfo()));
+            dispatch(getUserInfo());  
+            dispatch(getSections());
+            dispatch(completeSection(sectionId));
+        }
+    });
 
-    dispatch(completeSection(sectionId));
 }
 
 export const completeSection = (sectionId) => (dispatch) => {
-    // let allCompleted = false;
-    // if (allCompleted) {
-    //     dispatch(completeSectionSuccess(sectionId));
-    //     sectionsListAPI.completeSection(sectionId);
-    // }
+    let allCompleted = false;
+    if (allCompleted) {
+        dispatch(completeSectionSuccess(sectionId));
+        sectionsListAPI.completeSection(sectionId).then((response) => {
+            if (response.status == "ok") {
+                dispatch(getUserInfo());            
+                dispatch(getSections());                
+            }
+        });
+    }
 }
 
 export const deleteSection = (sectionId) => (dispatch) => {
