@@ -16,6 +16,7 @@ $router->get('/', function () use ($router) {
 });
 $router->get('lessons/{id:[0-9]+}', 'LessonsController@getSingle');
 $router->post('lessons', 'LessonsController@add');
+$router->delete('lessons', 'LessonsController@delete');
 $router->post('lessons/task', 'LessonsController@addTaskElements');
 $router->delete('lessons/task', 'LessonsController@deleteTaskElementSingle');
 $router->post('lessons/article', 'LessonsController@addArticleElements');
@@ -35,3 +36,8 @@ $router->post('lessons/article/edit-media', 'LessonsController@editArticleMedia'
 $router->post('lessons/task/edit-text', 'LessonsController@editTaskText');
 $router->post('lessons/task/edit-media', 'LessonsController@editTaskMedia');
 $router->post('lessons/task/edit-quiz', 'LessonsController@editTaskQuiz');
+$router->post('complete-section', 'SectionController@complete');
+$router->get('user-info', 'StatsController@getStatsByUser');
+$router->get('admin-info', 'StatsController@getStatsForAdmin');
+$router->post('change-positions', 'SectionController@swap');
+$router->post('lessons/like', 'LessonsController@addLike');

@@ -7,17 +7,21 @@ use Illuminate\Http\Request;
 class LessonsController extends Controller
 {
 	public function __construct() {
-		  $this->middleware('auth');
+		  $this->middleware('auth', ['except' => ['getTasks', 'getSingle']]);
 	}
     public function getSingle($id) {
        $type = DB::select("SELECT * from lesson_info where id = ?", [$id]);
        if (empty($type)) return [];
        if ($type[0]->content_type==0)
-       return ["id" => $id, "type" => 0, "elements" =>DB::select("SELECT text, media from article_elements where lesson_id = ?", [$id])];
-       else return ["id" => $id, "type" => 1, "elements" => DB::select("SELECT json_quiz_options, text, media, json_quiz_answers from task_elements where lesson_id = ?", [$id])];
+       return ["id" => $id, "type" => 0, "elements" =>DB::select("SELECT id, type, text, media, lesson_position from article_elements where lesson_id = ?", [$id])];
+       else 
+        {  
+          DB::update('update lesson_info set viewed = viewed + 1 where id = ?', [$id]);
+          return ["id" => $id, "type" => 1, "elements" => DB::select("SELECT id, type, json_quiz_options, text, media, json_quiz_answers, lesson_position from task_elements where lesson_id = ?", [$id])];
  }
+}
    public function getTasks() {
-   	   return DB::select("SELECT id, title from lesson_info where content_type = 1");
+   	   return DB::select("SELECT id, title, viewed from lesson_info where content_type = 1");
    }
    public function add(Request $request) {
      $this->validate($request, [
@@ -27,14 +31,27 @@ class LessonsController extends Controller
        $title = $request->input('title');
        $section_id = $request->input('section_id');
        $content_type = $request->input('content_type');
+       DB::delete("delete from completed where section_id = ? and user_id = ?", [$section_id, Auth::id()]);
        DB::insert("insert into `lesson_info` (title, section_id, content_type, section_position) values (?, ?, ?, (select coalesce(t.m, 0) + 1 from (select max(section_position) as m from lesson_info where section_id=?) t))", ["New Lesson", $section_id, $content_type, $section_id]);
        return ["status" => "ok"];
 
    }
+   public function addLike(Request $request) {
+      $this->validate($request, [
+        'id' => 'required|numeric'
+    ]);
+      try {
+            DB::insert('insert into liked (user_id, lesson_id) values (?, ?)', [Auth::id(), $request->input('id')]);
+          }
+      catch (\Throwable $e) {
+        return ["error" => "liked already"];
+      }
+     return ["status" => "ok"];
+   }
    public function addTaskElements(Request $request) {
       $this->validate($request, [
         'type' => 'required|numeric',
-        'data' => 'required',
+        'data' => 'nullable',
         'lesson_id' => 'required|numeric'
     ]);
       $type = $request->input('type');
@@ -65,7 +82,7 @@ class LessonsController extends Controller
    public function addArticleElements(Request $request) {
        $this->validate($request, [
         'type' => 'required|numeric',
-        'data' => 'required',
+        'data' => 'nullable',
         'lesson_id' => 'required|numeric'
     ]);
       $type = $request->input('type');
@@ -104,6 +121,24 @@ class LessonsController extends Controller
     ]);
      $id = $request->input('id');
     DB::delete("DELETE FROM article_elements where id = ?", [$id]);
+    return ["status" => "ok"];
+   }
+    public function delete(Request $request) {
+     $this->validate($request, [
+        'id' => 'required|numeric',
+        'section_id' => 'required|numeric'
+    ]);
+    $id = $request->input('id');
+    $section_id = $request->input('section_id');
+    $all = DB::select("SELECT COUNT(*) as num FROM lesson_info WHERE section_id = ? UNION ALL SELECT COUNT(*) as num FROM completed c JOIN lesson_info l ON l.id = CASE
+               WHEN c.type IN (0)
+                   THEN  c.article_element_id
+               WHEN c.type IN (1)
+                   THEN c.task_element_id
+               END 
+WHERE l.section_id = ? UNION ALL SELECT COUNT(*) as num FROM completed WHERE article_element_id = ? or task_element_id = ?", [$section_id, $section_id, $id, $id]);
+    if ($all[0]->num - 1 == $all[1]->num && $all[2]->num == 0 && $all[1]->num >= 1) DB::insert("insert ignore into completed (user_id, section_id, type) values (?, ?, 2)", [Auth::id(), $section_id]);
+    DB::delete("DELETE FROM lesson_info where id = ?", [$id]);
     return ["status" => "ok"];
    }
    public function editArticleText(Request $request) {
@@ -159,6 +194,7 @@ class LessonsController extends Controller
         'type' => 'required|numeric'
     ]);
      $type = $request->input('type');
+     try {
        switch ($type) {
         case 0:
                DB::insert('insert into completed (user_id, type, article_element_id) values (?, 0, ?)', [Auth::id(), $request->input('id')]);
@@ -169,6 +205,10 @@ class LessonsController extends Controller
         default: return ["error" => "No such type"];
                break;
             }
+          }
+        catch (\Throwable $e) {
+          return ["error" => "wrong data"];
+        }
 
     return ["status" => "ok"];
    }

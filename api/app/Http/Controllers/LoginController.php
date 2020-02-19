@@ -10,7 +10,7 @@ $current_timestamp = Carbon::now()->timestamp;
 class LoginController extends Controller
 {
     public function __construct() {
-      $this->middleware('auth');
+      $this->middleware('auth', ['only' => ['resetPassword']]);
   }
     public function register(Request $request) {
        $this->validate($request, [
@@ -21,7 +21,12 @@ class LoginController extends Controller
        $login = $request->input('login');
        $email = $request->input('email');
        $password = Hash::make($request->input('password'));
-       DB::insert('INSERT INTO users (role, email, password) VALUES (0, ?, ?)', [$email, $password]);
+       try {
+              DB::insert('INSERT INTO users (role, email, password, login) VALUES (0, ?, ?, ?)', [$email, $password, $login]);
+         }
+        catch (\Throwable $e) {
+          return ['error' => "already exists"];
+        }
        return ['status' => 'ok'];
       
 }

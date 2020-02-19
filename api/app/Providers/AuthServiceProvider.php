@@ -39,7 +39,7 @@ class AuthServiceProvider extends ServiceProvider
                 $set = \SimpleJWT\Keys\KeySet::createFromSecret(env('APP_KEY', false));
                 $jwt = \SimpleJWT\JWT::decode($token, $set, 'HS256');
             }
-            catch (\SimpleJWT\InvalidTokenException $e) {
+            catch (\Throwable $e) {
                 return null;
 
             }
