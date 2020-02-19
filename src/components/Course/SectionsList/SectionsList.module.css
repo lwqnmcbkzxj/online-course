@@ -52,7 +52,11 @@
     display: flex;
     align-items: flex-start;
 }
-
+.sectionNameBlock {
+    display: flex;
+    width: 100%;
+    justify-content: space-between;
+}
 .addLessonBtn {
     margin-top: 10px;
     display: block;
@@ -63,4 +67,13 @@
     font-size: 20px;
     margin-top: 10px;
     display: block;
+}
+
+.fa-chevron-up {
+    transform: rotateX(0);
+}
+
+.fa-chevron-up.active {
+    transform: rotateX(180deg);
+    font-size: 20px;
 }

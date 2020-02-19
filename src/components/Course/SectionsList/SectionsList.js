@@ -37,8 +37,8 @@ class SectionsList extends React.Component {
     }
 
 
-    deleteLesson = (lessonId) => {
-        this.props.setModalFunction(this.props.deleteLesson, lessonId, 'Lesson')
+    deleteLesson = (lessonId, sectionId) => {
+        this.props.setModalFunction(this.props.deleteLesson, [lessonId,sectionId], 'Lesson')
     }
 
     deleteSection = (sectionId) => {
@@ -71,7 +71,14 @@ class SectionsList extends React.Component {
                                         <i className="fa fa-arrows" aria-hidden="true"></i>
                                     </div>}
                                 {this.props.completedSectionsIds.some(id => id == section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
-                                <h1 className={s.sectionName} onClick={() => { this.toggleSection(section.id) }}>{section.title}</h1>
+                                <div onClick={() => { this.toggleSection(section.id) }} className={s.sectionNameBlock}>
+                                <h1 className={s.sectionName} > {section.title}   </h1>
+                                   {this.state.visibleSections.some(id => id == section.id) ?
+                                            <i className="fa fa-chevron-up fa-rotate-180" aria-hidden="true"></i> : 
+                                            <i className="fa fa-chevron-up" aria-hidden="true"></i>}
+                                </div>
+                               
+                               
                             </div>
 
 
@@ -83,7 +90,7 @@ class SectionsList extends React.Component {
                                                 <div className={s.item} >
                                                     {this.props.editMode &&
                                                         <div className={s.serviceBlock}>
-                                                            <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id) }}></i>
+                                                            <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id, section.id) }}></i>
                                                             <i className="fa fa-arrows" aria-hidden="true"></i>
                                                         </div>}
                                                     

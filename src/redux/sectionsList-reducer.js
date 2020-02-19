@@ -217,34 +217,44 @@ const editLessonSuccess = (sectionId, lessonId, title) => {
         lessonId
     }
 } */
-const completeSectionSuccess = (sectionId) => {
+/* const completeSectionSuccess = (sectionId) => {
     return {
         type: COMPLETE_SECTION,
         sectionId
     }
-}
+} */
 
 //THUNKS
-export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {
+export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {    
     lessonAPI.completeLesson(lessonId, contentType).then((response) => {
         if (response.status == "ok") {
-            console.log(dispatch(getUserInfo()));
             dispatch(getUserInfo());  
-            dispatch(getSections());
-            dispatch(completeSection(sectionId));
+            dispatch(completeSection(lessonId, sectionId));
         }
     });
 
 }
 
-export const completeSection = (sectionId) => (dispatch) => {
-    let allCompleted = false;
+export const completeSection = (lessonId, sectionId) => (dispatch, getState) => {
+    let allCompleted = true;
+
+    const state = getState();
+    let completedLessonsIds = [...state.user.completedLessonsIds, +lessonId]
+    let sections = state.sectionsList.sections
+
+    for (let section of sections) {
+        if (section.id == sectionId) {
+            section.lessons.map(lesson => {
+                if (!completedLessonsIds.some(id => id === lesson.id))
+                allCompleted = false;
+            })
+        }        
+    }
+
     if (allCompleted) {
-        dispatch(completeSectionSuccess(sectionId));
         sectionsListAPI.completeSection(sectionId).then((response) => {
             if (response.status == "ok") {
                 dispatch(getUserInfo());            
-                dispatch(getSections());                
             }
         });
     }
@@ -253,18 +263,14 @@ export const completeSection = (sectionId) => (dispatch) => {
 export const deleteSection = (sectionId) => (dispatch) => {
     dispatch(deleteSectionSuccess(sectionId));
     sectionsListAPI.deleteSection(sectionId).then((response) => {
-        if (response.status != "ok") {
-
-        }
+        if (response.status != "ok") {}
     })
 }
 
-export const deleteLesson = (lessonId) => (dispatch) => {
+export const deleteLesson = (lessonId, sectionId) => (dispatch) => {
     dispatch(deleteLessonSuccess(lessonId));
-
-    lessonAPI.deleteLesson(lessonId).then((response) => {
+    lessonAPI.deleteLesson(lessonId, sectionId).then((response) => {
         if (response.status != "ok") {
-
         }
     })
 }
@@ -280,6 +286,7 @@ export const addSection = () => (dispatch) => {
 export const addLesson = (sectionId, contentType) => (dispatch) => {
     lessonAPI.addLesson(sectionId, contentType).then((response) => {
         if (response.status == "ok") {
+            dispatch(getUserInfo());
             dispatch(getSections());
         }
     })

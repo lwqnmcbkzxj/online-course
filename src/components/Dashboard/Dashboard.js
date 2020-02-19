@@ -3,7 +3,6 @@ import s from './Dashboard.module.css';
 import SelfInfoContainer from './SelfInfo/SelfInfoContainer';
 import OverallStats from './OverallStats/OverallStats';
 
-
 const Dashboard = (props) => {
     return (
         <div className={s.dashboard}>
@@ -12,4 +11,5 @@ const Dashboard = (props) => {
         </div>        
     );
 }
+
 export default Dashboard;

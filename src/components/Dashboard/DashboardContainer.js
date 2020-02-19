@@ -1,16 +1,24 @@
 import React from 'react';
 import s from './Dashboard.module.css';
-import SelfInfoContainer from './SelfInfo/SelfInfoContainer';
-import OverallStats from './OverallStats/OverallStats';
+import Dashboard from './Dashboard';
 
+import { compose } from 'redux';
+import { connect } from 'react-redux';
+import { withAuthRedirect } from '../../hoc/withAuthRedirect';
 
-const Dashboard = () => {
-    let isAdmin = true;
-    return (
-        <div className={s.dashboard}>
-            <SelfInfoContainer />
-            {isAdmin ? <OverallStats /> : null}
-        </div>        
-    );
+class DashboardContainer extends React.Component {
+    render() {
+        return (
+            <div className={s.dashboard}>
+                <Dashboard {...this.props}/>
+            </div>
+        );
+    }
 }
-export default Dashboard;
+const mapStateToProps = (state) => ({
+	role: state.user.role
+})
+
+export default compose(
+    withAuthRedirect,
+    connect(null, {  }))(DashboardContainer);

@@ -6,7 +6,7 @@ import Welcome from './components/Welcome/Welcome'
 
 import Tasks from './components/Tasks/Tasks'
 import Login from './components/Login/Login'
-import Signin from './components/Login/Signin'
+import Signup from './components/Login/Signup'
 import Dashboard from './components/Dashboard/Dashboard'
 import CourseContainer from './components/Course/CourseContainer'
 import HeaderContainer from './components/Header/HeaderContainer';
@@ -24,7 +24,7 @@ const App = (props) => {
 				<Route path="/tasks" render={() => <Tasks />} />
 				<Route path="/dashboard" render={() => <Dashboard />} />
 				<Route path="/login" render={() => <Login />} />
-				<Route path="/signin" render={() => <Signin />} />
+				<Route path="/signin" render={() => <Signup />} />
 				
 			</div>
 		</div>

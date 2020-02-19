@@ -1,8 +1,9 @@
 import { userAPI } from "../api/api";
-
+import { setToken } from "../api/api"
 const SET_USER_INFO = 'SET-USER';
 const SET_USER_STATS = 'SET-STATS';
 const SET_USER_TOKEN = 'SET_USER_TOKEN';
+const SET_USER_LOGGED = 'SET_USER_LOGGED';
 
 
 let initialState = {  
@@ -10,7 +11,8 @@ let initialState = {
     stats: null,
     completedLessonsIds: [],
     completedSectionsIds: [],    
-    token: ""
+    token: "",
+    logged: false
 }
 
 const userReducer = (state = initialState, action) => {
@@ -57,6 +59,18 @@ const userReducer = (state = initialState, action) => {
                 token: action.token,
             }
         } 
+        case SET_USER_LOGGED: {
+            return {
+                ...state, 
+                logged: action.logged
+            }
+        }
+        case SET_USER_TOKEN: {
+            return {
+                ...state, 
+                token: action.token
+            }
+        }
         default:
             return state;
     }
@@ -77,6 +91,13 @@ const setUserStats = (stats) => {
     }
 }
 
+const setUserLogged = (logged) => {
+    return {
+        type: SET_USER_LOGGED,
+        logged
+    }
+}
+
 export const getUserInfo = () => (dispatch) => {
     dispatch(setUserToken())
     userAPI.getUserInfo().then((response) => {
@@ -93,17 +114,20 @@ const setUserToken = (token) => {
     } 
 }
 
-export const returnUserToken = () => (dispatch) => {
-    return this.state.token;
-}
-
-export const loginUser = (email, password) => (dispatch) => {
+export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
         if (response.token) {
+            setToken(response.token);
+
+            dispatch(setUserLogged(setUserLogged))
             dispatch(setUserToken(response.token));
             dispatch(getUserInfo());
         }            
     })    
+}
+
+export const register = (login, email, password) => (dispatch) => {
+    userAPI.register(login, email, password)    
 }
 
 export const logout = () => (dispatch) => {

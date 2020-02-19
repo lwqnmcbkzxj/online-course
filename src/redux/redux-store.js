@@ -9,6 +9,7 @@ import courseReducer from "./course-reducer";
 import sectionsListReducer from "./sectionsList-reducer";
 import lessonReducer from "./lesson-reducer";
 
+import { reducer as formReducer } from "redux-form";
 
 import thunkMiddleware from "redux-thunk"
 
@@ -23,6 +24,8 @@ let reducers = combineReducers({
     taskPage: taskReducer,
     user: userReducer,
     users: usersReducer,
+    form: formReducer,
+
 }); 
 
 let store = createStore(reducers, applyMiddleware(thunkMiddleware));
