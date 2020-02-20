@@ -7,7 +7,7 @@ import Text from './LessonElements/Text'
 import Task from './LessonElements/Task'
 
 const LessonEdit = (props) => {
-
+    let taskCount = 0;
     let addTaskElement = (taskType) => {
         let options = null;
         let answers = null;
@@ -78,14 +78,15 @@ const LessonEdit = (props) => {
             </div>
 
 
-            {props.lesson.elements ? props.lesson.elements.map(element =>
-                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
-                    {element.type == 3 ? <Task {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} /> : null}
+            {props.lesson.elements ? props.lesson.elements.map(element => 
+                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>                    
+                    {element.type == 3 ? taskCount++ || <Task {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} /> : null}
                 </div>
+                
             ) : null}
 
 
-            {props.lesson.type === 1 ?
+            {props.lesson.type === 1  && taskCount === 0 ?
                 <div className={s.addElements}>
                     <h2>Task</h2>
                     <button onClick={() => { addTaskElement(1) }}>+ Add one choise test</button>

@@ -1,11 +1,14 @@
 import React from 'react';
 import Course from './Course';
+import { compose } from 'redux';
 import { connect } from 'react-redux';
+
 import { toggleModalVisible } from '../../redux/course-reducer';
+import { withAuthRedirect } from '../../hoc/withAuthRedirect';
 
 
 
-class CourseContainer extends React.Component {
+class CourseContainer extends React.Component {    
     render() {
         return <Course {...this.props} />
     }
@@ -18,4 +21,5 @@ let mapStateToProps = (state) => ({
 
 
 
-export default connect(mapStateToProps, { toggleModalVisible })(CourseContainer);
+export default compose(
+    connect(mapStateToProps, { toggleModalVisible }))(CourseContainer);

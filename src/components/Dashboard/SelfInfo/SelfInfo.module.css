@@ -3,13 +3,27 @@
     margin: 0 auto;
 }
 
-.stats>div, .info>div {
+.stats>div {
     display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
+    grid-template-columns: repeat(3, 1fr);
     padding: 13px 0;
     border-bottom: 1px solid #bcbcbc;
+}
+.infoBlock {
+    border-bottom: 1px solid #bcbcbc;
+
+}
+.infoBlock div {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    padding: 13px 0;    
 }
 .stats>div{    
     font-weight: bold;
     font-size: 20px;
+}
+
+.resetForm {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
 }

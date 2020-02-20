@@ -18,9 +18,9 @@ import thunkMiddleware from "redux-thunk"
 let reducers = combineReducers({
     course: courseReducer,
     sectionsList: sectionsListReducer,
-    lesson: lessonReducer,
-    
-    tasksPage: tasksReducer,
+    lesson: lessonReducer,    
+    tasksList: tasksReducer,
+
     taskPage: taskReducer,
     user: userReducer,
     users: usersReducer,

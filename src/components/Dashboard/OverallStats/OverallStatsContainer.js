@@ -1,16 +1,15 @@
 import React from 'react';
 import OverallStats from './OverallStats';
 import { connect } from 'react-redux';
-import { setOverallStats } from '../../../redux/users-reducer';
+import { getOverallStats } from '../../../redux/users-reducer';
 
 
 class OverallStatsContainer extends React.Component {    
     componentDidMount() {
-        // this.props.setOverallStats(response);
-        
+        // this.props.getOverallStats();        
     }
     render() {
-        return <OverallStats {...this.props} stats={this.props.stats}/>
+        return <OverallStats {...this.props} />
     }
 }
 
@@ -20,4 +19,4 @@ let mapStateToProps = (state) => ({
 
 
 
-export default connect(mapStateToProps, { setOverallStats })(OverallStatsContainer);
+export default connect(mapStateToProps, { getOverallStats })(OverallStatsContainer);

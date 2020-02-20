@@ -1,3 +1,4 @@
+import { tasksAPI } from "../api/api";
 const SET_TASKS = 'SET_TASKS';
 
 
@@ -24,5 +25,12 @@ export const setTasks = (tasks) => {
         type: SET_TASKS,
         tasks
     }
+}
+
+
+export const getTasks = () => (dispatch) => {
+    tasksAPI.getTasks().then((response) => {
+        dispatch(setTasks(response));
+    })
 }
 export default tasksReducer;

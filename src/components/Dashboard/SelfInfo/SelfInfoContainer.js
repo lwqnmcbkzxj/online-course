@@ -1,7 +1,7 @@
 import React from 'react';
 import SelfInfo from './SelfInfo';
 import { connect } from 'react-redux';
-import {  getUserInfo } from '../../../redux/user-reducer';
+import {  getUserInfo, changePassword, changeEmail } from '../../../redux/user-reducer';
 
 
 class SelfInfoContainer extends React.Component {
@@ -9,7 +9,7 @@ class SelfInfoContainer extends React.Component {
         this.props.getUserInfo();        
     }
     render() {
-        return <SelfInfo {...this.props} info={this.props.info} stats={this.props.stats}/>
+        return <SelfInfo {...this.props}/>
     }
 }
 
@@ -20,4 +20,4 @@ let mapStateToProps = (state) => ({
  
 
 
-export default connect(mapStateToProps, {  getUserInfo })(SelfInfoContainer);
+export default connect(mapStateToProps, { getUserInfo, changePassword, changeEmail })(SelfInfoContainer);

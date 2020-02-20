@@ -1,54 +1,24 @@
 import React from 'react';
 import TasksList from './TasksList';
-import Axios from 'axios';
 import { connect } from 'react-redux';
-import { tasksAPI } from '../../../api/api';
+import { getTasks } from '../../../redux/tasks-reducer';
 
-import { setTasks } from '../../../redux/tasks-reducer';
-
-class TasksContainer extends React.Component {
+class TasksListContainer extends React.Component {
     componentDidMount() { 
-        tasksAPI.getTasks().then((response) => {
-            console.log(response)
-            this.props.setTasks(response);
-        })
-
-        // let response = [
-        //     {
-        //         id: 1,
-        //         name: 'Task 1',
-        //         likes: 0,
-        //         views: 5,
-        //         rating: 1,
-        //     },
-        //     {
-        //         id: 2,
-        //         name: 'Task 2',
-        //         likes: 3,
-        //         views: 2,
-        //         rating: 2,
-        //     },
-        //     {
-        //         id: 3,
-        //         name: 'Task 3',
-        //         likes: 2,
-        //         views: 7,
-        //         rating: 3,
-        //     }
-        // ]
-
-
-        // this.props.setTasks(response);
-
+        debugger
+        this.props.getTasks(); 
     }
     render() {
-        return <TasksList {...this.props} tasks={this.props.tasks} />
+        return <TasksList {...this.props} />
     }
 }
 
+
+
 let mapStateToProps = (state) => ({
-    tasks: state.tasksPage.tasks
+    tasks: state.tasksList.tasks
 })
 
 
-export default connect(mapStateToProps, { setTasks })(TasksContainer);
+
+export default connect(mapStateToProps, { getTasks })(TasksListContainer);

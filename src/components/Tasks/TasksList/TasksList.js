@@ -3,9 +3,10 @@ import s from './TasksList.module.css';
 import { NavLink } from 'react-router-dom';
 
 import 'font-awesome/css/font-awesome.min.css';
-import rating1 from '../../../assets/images/rating-1.png'
-import rating2 from '../../../assets/images/rating-2.png'
-import rating3 from '../../../assets/images/rating-3.png'
+import rating1 from '../../../assets/images/rating-1.png';
+import rating2 from '../../../assets/images/rating-2.png';
+import rating3 from '../../../assets/images/rating-3.png';
+
 const TasksList = (props) => {
     return (
         <div className={s.tasksList}>

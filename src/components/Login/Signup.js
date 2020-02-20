@@ -24,15 +24,15 @@ const RegisterForm = (props) => {
 const Register = (props) => {
     const onSubmit = (formData) => {
         if (formData.password === formData.repeat_password) {
-            // props.register(formData.login, formData.email, formData.password);
-            return <Redirect to={"/course"} />
+            props.register(formData.login, formData.email, formData.password);
+            return <Redirect to={"/login"} />
         }
         
     }
 
     return (
         <div className={s.login}>
-            <h1>LOGIN</h1>            
+            <h1>SIGN UP</h1>            
             <ReduxRegisterForm onSubmit={onSubmit} />
             <NavLink to="/login"><button>Log in</button></NavLink>
         </div>

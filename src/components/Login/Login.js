@@ -12,7 +12,6 @@ const LoginForm = (props) => {
     return (
         <div className = {s.login}>
             <form onSubmit={props.handleSubmit}>
-                <h1>LOGIN</h1>
                 <Field placeholder="Email" name={"email"} component="input"/>
                 <Field placeholder="Password" name={"password"} type = "password" component="input"/>
                 <button className={s.active}>Log in</button>
@@ -28,7 +27,8 @@ const Login = (props) => {
     if (props.logged) return <Redirect to={"/course"} />
 
     return (
-        <div className = {s.login}>
+        <div className={s.login}>
+            <h1>LOGIN</h1>            
             <ReduxLoginForm onSubmit={onSubmit} />
             <NavLink to="/signin"><button>Sign in</button></NavLink>
         </div>

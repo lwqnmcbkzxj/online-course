@@ -1,21 +1,15 @@
 import Axios from 'axios';
-import store from '../redux/redux-store';
-
 
 const instance = Axios.create({
-    baseURL: "http://d032b60a.ngrok.io",
+    baseURL: "http://f9059276.ngrok.io",
     headers: {
         "Authorization": ""
     }
-    
 });
 
 export const setToken = (token) => {
-    debugger
-    // let u = store.getState().user;
     instance.defaults.headers.Authorization = "Bearer " + token;
 }
-//eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCIsImtpZCI6IkJIdUFoNGQifQ.eyJpc3MiOiJtZSIsImV4cCI6MTU4MjA2NjAwMiwicm9sZSI6MSwiaWQiOjMsImlhdCI6MTU4MjAzMDAwMn0.xi5obkkr3e0au9oqhchu-b5tKeWmG2Jq2DRPAxvtvCU
 
 
 export const sectionsListAPI = {
@@ -146,5 +140,19 @@ export const userAPI = {
                 return response.data
             }
         );
+    },
+    changePassword(password) {
+        return instance.post(`password-reset`, { password })
+            .then((response) => {
+                return response.data
+            }
+        );
+    },
+
+    getAdminInfo() {
+        return instance.get(`admin-info`).then((response) => {
+            return response.data
+        }
+    );
     }
 }

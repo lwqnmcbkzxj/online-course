@@ -270,7 +270,10 @@ export const deleteSection = (sectionId) => (dispatch) => {
 export const deleteLesson = (lessonId, sectionId) => (dispatch) => {
     dispatch(deleteLessonSuccess(lessonId));
     lessonAPI.deleteLesson(lessonId, sectionId).then((response) => {
-        if (response.status != "ok") {
+        if (response.status === "ok") {
+            dispatch(getUserInfo());
+            dispatch(getSections());
+
         }
     })
 }
@@ -285,7 +288,7 @@ export const addSection = () => (dispatch) => {
 
 export const addLesson = (sectionId, contentType) => (dispatch) => {
     lessonAPI.addLesson(sectionId, contentType).then((response) => {
-        if (response.status == "ok") {
+        if (response.status === "ok") {
             dispatch(getUserInfo());
             dispatch(getSections());
         }

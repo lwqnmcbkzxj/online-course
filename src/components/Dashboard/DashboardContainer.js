@@ -7,6 +7,9 @@ import { connect } from 'react-redux';
 import { withAuthRedirect } from '../../hoc/withAuthRedirect';
 
 class DashboardContainer extends React.Component {
+    componentDidMount() {
+        
+    }
     render() {
         return (
             <div className={s.dashboard}>
@@ -21,4 +24,4 @@ const mapStateToProps = (state) => ({
 
 export default compose(
     withAuthRedirect,
-    connect(null, {  }))(DashboardContainer);
+    connect(mapStateToProps, {  }))(DashboardContainer);

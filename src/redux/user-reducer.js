@@ -38,7 +38,6 @@ const userReducer = (state = initialState, action) => {
                     sectionsIds = ids; 
             }  
 
-            debugger
             return {
                 ...state,
                 stats: {
@@ -97,6 +96,12 @@ const setUserLogged = (logged) => {
         logged
     }
 }
+const setUserToken = (token) => {
+    return {
+        type: SET_USER_TOKEN,
+        token
+    } 
+}
 
 export const getUserInfo = () => (dispatch) => {
     dispatch(setUserToken())
@@ -107,12 +112,6 @@ export const getUserInfo = () => (dispatch) => {
     })    
 }
 
-const setUserToken = (token) => {
-    return {
-        type: SET_USER_TOKEN,
-        token
-    } 
-}
 
 export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
@@ -135,6 +134,18 @@ export const logout = () => (dispatch) => {
         if (response.token) {
             
         }            
+    })    
+}
+
+
+export const changePassword = (password) => (dispatch) => {
+    userAPI.changePassword(password).then((response) => {
+                 
+    })    
+}
+export const changeEmail = () => (dispatch) => {
+    userAPI.changeEmail().then((response) => {
+                 
     })    
 }
 export default userReducer;

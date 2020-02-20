@@ -21,6 +21,8 @@ class LessonContainer extends React.Component {
 
 
     componentWillMount() {
+        debugger
+
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         this.props.getLesson(lessonId)
     }

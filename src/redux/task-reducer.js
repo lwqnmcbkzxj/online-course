@@ -1,13 +1,10 @@
+import { tasksAPI } from "../api/api";
+
 const SET_TASK_DATA = 'SEND-TASK-DATA';
 
 
 let initialState = {
-    task: {
-        id: null,
-        type: null,
-        img: null,
-        text: null,
-    }
+    task: { }
 }
 
 const taskReducer = (state = initialState, action) => {
@@ -33,5 +30,13 @@ export const setTask = (task) => {
     }
 }
 
+
+
+export const getTask = (taskId) => (dispatch) => {
+    tasksAPI.getTask(taskId).then((response) => {
+        dispatch(setTask(response));
+        return response;
+    })
+}
 
 export default taskReducer;

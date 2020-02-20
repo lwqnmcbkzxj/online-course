@@ -1,6 +1,7 @@
 import React from 'react';
 import Header from './Header'
 import { connect } from 'react-redux';
+
 import { toggleEditMode } from '../../redux/course-reducer';
 import { getUserInfo } from '../../redux/user-reducer';
 
@@ -22,5 +23,4 @@ let mapStateToProps = (state) => {
     }
 }
 
-
-export default connect(mapStateToProps, { toggleEditMode, getUserInfo })(HeaderContainer);
+export default connect(mapStateToProps, { toggleEditMode, getUserInfo  })(HeaderContainer);
