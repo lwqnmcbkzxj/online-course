@@ -1,7 +1,7 @@
 import React from 'react';
 import SelfInfo from './SelfInfo';
 import { connect } from 'react-redux';
-import {  getUserInfo, changePassword, changeEmail } from '../../../redux/user-reducer';
+import {  getUserInfo, changePassword, logout } from '../../../redux/user-reducer';
 
 
 class SelfInfoContainer extends React.Component {
@@ -20,4 +20,4 @@ let mapStateToProps = (state) => ({
  
 
 
-export default connect(mapStateToProps, { getUserInfo, changePassword, changeEmail })(SelfInfoContainer);
+export default connect(mapStateToProps, { getUserInfo, changePassword, logout })(SelfInfoContainer);

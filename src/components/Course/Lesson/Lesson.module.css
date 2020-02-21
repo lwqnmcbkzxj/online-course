@@ -82,3 +82,14 @@ input {
     font-weight: normal;
     overflow: hidden;
 }
+
+.publishCheckboxBlock {
+    display: flex;
+    margin: 0 auto;
+    justify-content: center;
+    align-items: center;
+}
+
+.publishCheckboxBlock input {    
+    width: auto;    
+}

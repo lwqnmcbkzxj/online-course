@@ -16,7 +16,6 @@ class SelfInfo extends React.Component {
         },
         progressPercent: 100,
         visibleEmail: '',
-        emailFormVisible: false,
         passwordFormVisible: false,
     }
     componentDidUpdate(prevProps) {
@@ -44,11 +43,7 @@ class SelfInfo extends React.Component {
         }
     }
 
-    toggleEmailChangeForm = () => {
-        this.setState({
-            emailFormVisible: !this.state.emailFormVisible
-        })
-    }
+    
     togglePasswordChangeForm = () => {
         this.setState({
             passwordFormVisible: !this.state.passwordFormVisible
@@ -72,6 +67,10 @@ class SelfInfo extends React.Component {
     changePassword = (formData) => {
         if (formData.password === formData['repeat-password']) 
             this.props.changePassword(formData.password);            
+    }
+
+    logout = () => {
+        this.props.logout();
     }
     render() {
         return (
@@ -107,12 +106,10 @@ class SelfInfo extends React.Component {
                     <div className={s.infoBlock}>
                         <div>
                             <div>Email</div>
-                            <div>{this.state.email}</div>
-                            <button onClick={this.toggleEmailChangeForm}>{this.state.emailFormVisible ? "Cancel" : "Change"}</button>
+                            <div>{this.state.email}</div>                           
                         </div>
-                        {this.state.emailFormVisible ? <ReduxLoginResetForm onSubmit={this.changeEmail} /> : null}
                     </div>
-
+                    <button onClick={this.logout}>Logout</button>
                 </div>
             </div>
         );
@@ -121,17 +118,6 @@ class SelfInfo extends React.Component {
 export default SelfInfo;
 
 
-const EmailResetForm = (props) => {
-    return (
-        <form onSubmit={props.handleSubmit} className={s.resetForm}>
-            <div>New email</div>
-            <div>
-                <Field placeholder="Email" name={"email"} component="input" />
-                <button className={s.active}>Save email</button>
-            </div>
-        </form>
-    );
-}
 const PasswordResetForm = (props) => {
     return (
         <form onSubmit={props.handleSubmit} className={s.resetForm}>
@@ -141,8 +127,5 @@ const PasswordResetForm = (props) => {
         </form>
     );
 }
-
-
-const ReduxLoginResetForm = reduxForm({ form: 'password-reset' })(EmailResetForm);
 
 const ReduxPasswordResetForm = reduxForm({ form: 'password-reset' })(PasswordResetForm);

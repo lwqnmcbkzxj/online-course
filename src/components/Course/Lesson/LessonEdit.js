@@ -53,6 +53,10 @@ const LessonEdit = (props) => {
 
     return (
         <div className={s.lesson}>
+            <div className={s.publishCheckboxBlock}>
+                Publish
+                <input type="checkbox" />
+            </div>
             {props.isFirstLesson ? <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }} /> : null}
             <input defaultValue={props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { editLesson(e) }} />
 
@@ -60,9 +64,9 @@ const LessonEdit = (props) => {
                 props.lesson.elements ? props.lesson.elements.map(element =>
                     <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
                         {
-                            element.type == 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                : element.type == 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                    : element.type == 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                            element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                    : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
                                         : null
                         }
 
@@ -80,7 +84,13 @@ const LessonEdit = (props) => {
 
             {props.lesson.elements ? props.lesson.elements.map(element => 
                 <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>                    
-                    {element.type == 3 ? taskCount++ || <Task {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} /> : null}
+                    {element.type === 3 ? taskCount++ || <Task {...element}
+                        editMode={props.editMode}
+                        deleteElement={deleteElement}
+                        editElement={editElement}
+                        lesson={props.lesson}
+                        completedLessonsIds={props.completedLessonsIds}
+                        /> : null}
                 </div>
                 
             ) : null}

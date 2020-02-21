@@ -1,16 +1,19 @@
 import { userAPI } from "../api/api";
 import { setToken } from "../api/api"
+import Cookies from "js-cookie";
+import { getSections } from "./sectionsList-reducer";
+
 const SET_USER_INFO = 'SET-USER';
 const SET_USER_STATS = 'SET-STATS';
 const SET_USER_TOKEN = 'SET_USER_TOKEN';
 const SET_USER_LOGGED = 'SET_USER_LOGGED';
 
 
-let initialState = {  
-    info: { },
+let initialState = {
+    info: {},
     stats: null,
     completedLessonsIds: [],
-    completedSectionsIds: [],    
+    completedSectionsIds: [],
     token: "",
     logged: false
 }
@@ -23,20 +26,22 @@ const userReducer = (state = initialState, action) => {
                 info: action.info,
             }
         }
-        case SET_USER_STATS: {           
+        case SET_USER_STATS: {
             let articleIds = [];
             let tasksIds = [];
             let sectionsIds = [];
-            for (let completedElem of action.stats.completed) {
-                let ids = JSON.parse(completedElem.ids);
-                let count = completedElem.count;
-                if (completedElem.type === 0)
-                    articleIds = ids;
-                else if (completedElem.type === 1) 
-                    tasksIds = ids;
-                else if (completedElem.type === 2) 
-                    sectionsIds = ids; 
-            }  
+            if (action.stats) {
+                for (let completedElem of action.stats.completed) {
+                    let ids = JSON.parse(completedElem.ids);
+                    let count = completedElem.count;
+                    if (completedElem.type === 0)
+                        articleIds = ids;
+                    else if (completedElem.type === 1)
+                        tasksIds = ids;
+                    else if (completedElem.type === 2)
+                        sectionsIds = ids;
+                }
+            }
 
             return {
                 ...state,
@@ -49,7 +54,7 @@ const userReducer = (state = initialState, action) => {
                     }
                 },
                 completedSectionsIds: sectionsIds,
-                completedLessonsIds: [...articleIds, ...tasksIds],                
+                completedLessonsIds: [...articleIds, ...tasksIds],
             }
         }
         case SET_USER_INFO: {
@@ -57,16 +62,16 @@ const userReducer = (state = initialState, action) => {
                 ...state,
                 token: action.token,
             }
-        } 
+        }
         case SET_USER_LOGGED: {
             return {
-                ...state, 
+                ...state,
                 logged: action.logged
             }
         }
         case SET_USER_TOKEN: {
             return {
-                ...state, 
+                ...state,
                 token: action.token
             }
         }
@@ -100,7 +105,8 @@ const setUserToken = (token) => {
     return {
         type: SET_USER_TOKEN,
         token
-    } 
+    }
+
 }
 
 export const getUserInfo = () => (dispatch) => {
@@ -109,7 +115,7 @@ export const getUserInfo = () => (dispatch) => {
         dispatch(setUserStats(response.stats));
         dispatch(setUserInfo(response.info));
         return 's';
-    })    
+    })
 }
 
 
@@ -117,35 +123,48 @@ export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
         if (response.token) {
             setToken(response.token);
-
-            dispatch(setUserLogged(setUserLogged))
+            dispatch(setUserLogged(true));
             dispatch(setUserToken(response.token));
             dispatch(getUserInfo());
-        }            
-    })    
+
+
+            Cookies.set('token', response.token, { expires: 10/24 });
+        }
+    })
+}
+export const authUser = () => (dispatch) => {
+    if (Cookies.get('token')) {
+        let token = Cookies.get('token');
+        setToken(token);
+        dispatch(setUserLogged(true));
+        dispatch(setUserToken(token));
+        dispatch(getUserInfo());
+    }
 }
 
+
 export const register = (login, email, password) => (dispatch) => {
-    userAPI.register(login, email, password)    
+    userAPI.register(login, email, password)
 }
 
 export const logout = () => (dispatch) => {
-    userAPI.logout().then((response) => {
-        if (response.token) {
-            
-        }            
-    })    
+    setToken("");
+    dispatch(setUserLogged(false));
+    dispatch(setUserToken(""));
+    Cookies.remove('token');
+    dispatch(setUserInfo({}));
+    dispatch(setUserStats(null));
 }
 
 
 export const changePassword = (password) => (dispatch) => {
     userAPI.changePassword(password).then((response) => {
-                 
-    })    
+
+    })
 }
 export const changeEmail = () => (dispatch) => {
     userAPI.changeEmail().then((response) => {
-                 
-    })    
+
+    })
 }
 export default userReducer;

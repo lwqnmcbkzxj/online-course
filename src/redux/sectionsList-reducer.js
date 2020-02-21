@@ -121,7 +121,7 @@ const sectionsListReducer = (state = initialState, action) => {
                     let newLessons = [];
 
                     section.lessons.map(lesson => {
-                        if (lesson.id == action.lessonId && !lesson.completed)
+                        if (+lesson.id === +action.lessonId && !lesson.completed)
                             newLessons.push({ ...lesson, completed: true });
                         else
                             newLessons.push({ ...lesson });
@@ -143,7 +143,7 @@ const sectionsListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sections: state.sections.map(section => {
-                    if (section.id == action.sectionId && allCompleted)
+                    if (+section.id === +action.sectionId && allCompleted)
                         return { ...section, completed: true };
 
                     return { ...section };
@@ -227,7 +227,7 @@ const editLessonSuccess = (sectionId, lessonId, title) => {
 //THUNKS
 export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {    
     lessonAPI.completeLesson(lessonId, contentType).then((response) => {
-        if (response.status == "ok") {
+        if (response.status === "ok") {
             dispatch(getUserInfo());  
             dispatch(completeSection(lessonId, sectionId));
         }
@@ -243,7 +243,7 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
     let sections = state.sectionsList.sections
 
     for (let section of sections) {
-        if (section.id == sectionId) {
+        if (+section.id === +sectionId) {
             section.lessons.map(lesson => {
                 if (!completedLessonsIds.some(id => id === lesson.id))
                 allCompleted = false;
@@ -253,7 +253,7 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
 
     if (allCompleted) {
         sectionsListAPI.completeSection(sectionId).then((response) => {
-            if (response.status == "ok") {
+            if (response.status === "ok") {
                 dispatch(getUserInfo());            
             }
         });
@@ -280,7 +280,7 @@ export const deleteLesson = (lessonId, sectionId) => (dispatch) => {
 
 export const addSection = () => (dispatch) => {
     sectionsListAPI.addSection().then((response) => {
-        if (response.status == "ok") {
+        if (response.status === "ok") {
             dispatch(getSections());
         }
     })

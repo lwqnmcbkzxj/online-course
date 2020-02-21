@@ -87,6 +87,10 @@ textarea {
 .quiz .testButton{    
     width: 100%;
 }
+
+.quiz .testButton:hover label{    
+    cursor: pointer;
+}
 .quiz .testButton label{    
     width: 100%;
     display: block;
@@ -113,7 +117,9 @@ textarea {
 .task h3 {
     margin-bottom: 10px;
 }
-
+.task p {
+    margin-top: 10px;
+}
 .buttonHolder {
     display: flex;
     justify-content: center;

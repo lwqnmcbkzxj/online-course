@@ -14,7 +14,7 @@ class SectionsList extends React.Component {
             sectCounter = section.id;
             if (section.lessons) {
                 for (let lesson of section.lessons) {
-                    if (lesson.id == this.props.currentLessonId)
+                    if (+lesson.id === +this.props.currentLessonId)
                         this.props.setCurrentSectionId(sectCounter);
                 }
             }
@@ -47,7 +47,7 @@ class SectionsList extends React.Component {
 
     toggleSection = (sectionId) => {
         let visibleSections = [...this.state.visibleSections];
-        if (visibleSections.indexOf(sectionId) == -1)
+        if (visibleSections.indexOf(sectionId) === -1)
             visibleSections.push(sectionId);
         else {
             let index = visibleSections.indexOf(sectionId)
@@ -70,10 +70,10 @@ class SectionsList extends React.Component {
                                         <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i>
                                         <i className="fa fa-arrows" aria-hidden="true"></i>
                                     </div>}
-                                {this.props.completedSectionsIds.some(id => id == section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
+                                {this.props.completedSectionsIds.some(id => +id === +section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
                                 <div onClick={() => { this.toggleSection(section.id) }} className={s.sectionNameBlock}>
                                 <h1 className={s.sectionName} > {section.title}   </h1>
-                                   {this.state.visibleSections.some(id => id == section.id) ?
+                                   {this.state.visibleSections.some(id => +id === +section.id) ?
                                             <i className="fa fa-chevron-up fa-rotate-180" aria-hidden="true"></i> : 
                                             <i className="fa fa-chevron-up" aria-hidden="true"></i>}
                                 </div>
@@ -82,7 +82,7 @@ class SectionsList extends React.Component {
                             </div>
 
 
-                            <ul className={this.state.visibleSections.some(id => id == section.id) ? s.lessonsVisibile : s.lessonsHidden} >
+                            <ul className={this.state.visibleSections.some(id => +id === +section.id) ? s.lessonsVisibile : s.lessonsHidden} >
                                 {
                                     section.lessons ?
                                         section.lessons.map(lesson =>

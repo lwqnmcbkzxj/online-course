@@ -1,14 +1,25 @@
 import React from 'react';
 import s from './LessonElements.module.css';
+import Cookies from "js-cookie";
+
+import MultiTest from './TaskElements/MultiTest';
+import Test from './TaskElements/Test';
+import OpenAnswer from './TaskElements/OpenAnswer';
+
 let soloTest = 'Test with one choise';
 let multiTest = 'Test with multi choise';
 let openAnswer = 'Write answer in textfield';
 class Task extends React.Component {
     state = {
         type: '',
+        taskMessage: '',
+        completeTry: false,
     }
     componentDidMount() {
         this.setCurrentState();
+        if (!this.props.editMode) {
+            this.createTaskCookie();
+        }
     }
 
     componentDidUpdate(prevProps, prevState) {
@@ -21,7 +32,6 @@ class Task extends React.Component {
         let options = this.props.json_quiz_options;
         let answers = this.props.json_quiz_answers;
 
-        debugger
         if (options) options = JSON.parse(options);
         if (answers) answers = JSON.parse(answers);
 
@@ -67,16 +77,17 @@ class Task extends React.Component {
         this.editQuiz(options, answers);
     }
 
-    editAnswer = (e, position) => {       
+    editAnswer = (e, position) => {
+        debugger
         let options = this.state.options;
         let answers = this.state.answers;
 
-        if (e.currentTarget.checked) 
+        if (e.currentTarget.checked)
             answers[position] = position.toString();
-        else 
-            answers[position] = "";            
-        
-        this.editQuiz(options, answers); 
+        else
+            answers[position] = "";
+
+        this.editQuiz(options, answers);
     }
 
     editQuiz = (options, answers) => {
@@ -86,18 +97,85 @@ class Task extends React.Component {
         let data = [options, answers];
         this.editElement(data);
     }
-   
+
+
+    createTaskCookie = () => {
+        let lessonId = +this.props.lesson.id;
+        if (!this.props.completedLessonsIds.some(id => id === lessonId) && !Cookies.get(`task${lessonId}`)) {
+            let taskDataObject = {
+                id: lessonId,
+                startDate: Date.now(),
+                totalTime: 0,
+                firstTryTime: 0,
+                attempts: 3,
+                overAllResult: false,
+            }
+
+            Cookies.set(`task${lessonId}`, JSON.stringify(taskDataObject), { expires: 7 });
+        }
+    }
+
+    completeTask = (lessonId, status) => {
+        let now = Date.now();
+        let a = Cookies.get(`task${lessonId}`);
+        let taskObject = JSON.parse(a);
+
+        this.setState({completeTry:true});
+        taskObject.attempts--;
+       
+        if (taskObject.attempts === 2)
+            taskObject.firstTryTime = now - taskObject.startDate;
+
+        if (status) {
+            let newObj = {
+                id: taskObject.id,
+                firstTryTime: taskObject.firstTryTime,
+                overAllResult: true,
+                totalTime: now - taskObject.startDate
+            }
+            this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
+
+            // this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )
+            Cookies.remove(`task${lessonId}`);
+        } else if (taskObject.attempts === 0) {
+            let newObj = {
+                id: taskObject.id,
+                firstTryTime: taskObject.firstTryTime,
+                overAllResult: false,
+                totalTime: now - taskObject.startDate
+            }
+            Cookies.remove(`task${lessonId}`);            
+            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
+
+            // this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )            
+        } else {
+            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
+            Cookies.set(`task${lessonId}`, JSON.stringify(taskObject), { expires: 7 });
+        }
+    }
     render() {
         let taskComponent = null;
+        let propsObj = {
+            editMode: this.props.editMode,
+            lesson: this.props.lesson,
+            id: this.props.id,
+            completedLessonsIds: this.props.completedLessonsIds,
+
+            completeTask: this.completeTask,
+            editElement: this.editElement,
+            editQuiz: this.editQuiz,
+            editQuestion: this.editQuestion,
+            addOption: this.addOption,
+            deleteOption: this.deleteOption,
+            editOption: this.editOption,
+            editAnswer: this.editAnswer,
+        }
         if (this.state.type === openAnswer)
-            taskComponent = <OpenAnswer editMode={this.props.editMode} {...this.state} editElement={this.editElement}
-                editQuiz={this.editQuiz} editQuestion={this.editQuestion}/>
+            taskComponent = <OpenAnswer {...this.state} {...propsObj} />
         else if (this.state.type === soloTest)
-            taskComponent = <Test editMode={this.props.editMode} {...this.state} id={this.props.id}
-                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption} editAnswer={this.editAnswer}/>
+            taskComponent = <Test {...this.state} {...propsObj} />
         else if (this.state.type === multiTest)
-            taskComponent = <MultiTest editMode={this.props.editMode} {...this.state} id={this.props.id}
-                addOption={this.addOption} deleteOption={this.deleteOption} editOption={this.editOption} editAnswer={this.editAnswer}/>
+            taskComponent = <MultiTest {...this.state} {...propsObj} />
 
         return (
             this.props.editMode ?
@@ -107,7 +185,7 @@ class Task extends React.Component {
                         <i className="fa fa-arrows" aria-hidden="true"></i>
                         <h2>Task - {this.state.type}</h2>
                     </div>
-                    <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e)=> {this.editQuestion(e)}}/>
+                    <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e) => { this.editQuestion(e) }} />
                     <div key={this.props.id}>
                         {taskComponent}
                     </div>
@@ -118,142 +196,11 @@ class Task extends React.Component {
                     <div key={this.props.id}>
                         {taskComponent}
                     </div>
-                    <div className={s.buttonHolder}><button>Answer</button></div>
+                    {this.state.completeTry && <p>{this.state.taskMessage}</p>}
+                    
                 </div>
 
         );
     }
 }
 export default Task;
-
-class Test extends React.Component {
-    state = {
-        editMode: ''
-    }
-    componentDidMount() {
-        this.setState({ editMode: this.props.editMode })
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props !== prevProps)
-            this.setState({ editMode: this.props.editMode })
-    }
-    
-    addOption = () => {
-        this.props.addOption();
-    }
-
-    deleteOption = (position) => {
-        this.props.deleteOption(position);
-        this.setState({ editMode: !this.state.editMode });
-        this.setState({ editMode: !this.state.editMode });
-    }
-
-    editOption = (e, position) => {
-        this.props.editOption(e.currentTarget.value, position)
-    }
-    editAnswer = (e) => {       
-        this.props.editAnswer(e, 0);        
-    }
-    
-    render() {
-        debugger
-        return (
-            this.state.editMode ?
-                <div>
-                    <form >
-                        {this.props.options.map((option, counter) =>
-                            <div className={s.testOption} key = {`c${this.props.id}.${counter}1`}>
-                                <input defaultValue={option} placeholder="Enter option here" onBlur={(e) => this.editOption(e, counter)} />
-                                <input name="test" type="radio" value={option} onChange={(e) => this.editAnswer(e, counter)} checked={this.props.answers.some(element => element == counter)}/>
-                                {this.props.options.length > 2 ? <i className="fa fa-times" aria-hidden="true" onClick={() => { this.deleteOption(counter) }}></i> : null}
-                            </div>
-                        )}
-                    </form>
-                    <button onClick={this.addOption}>+ Add option</button>
-                </div> :
-                <div>
-
-                    <div className={s.quiz}>
-                        {this.props.options.map((option, counter) =>
-                            <div className={s.testButton} key={`c${this.props.id}.${counter}2`}>
-                                <input type="radio" id={`c${this.props.id}.${counter}`} value={option} name={`test${this.props.id}`} />
-                                <label htmlFor={`c${this.props.id}.${counter}`}>{option ? option : "Option"}</label>
-                            </div>
-                        )}
-                    </div>
-                </div>
-        );
-    }
-}
-class MultiTest extends React.Component {
-    state = {
-        editMode: ''
-    }
-    componentDidMount() {
-        this.setState({ editMode: this.props.editMode })
-    }
-    componentDidUpdate(prevProps) {
-        if (this.props !== prevProps)
-            this.setState({ editMode: this.props.editMode })
-    }
-
-    addOption = () => {
-        this.props.addOption();
-    }
-
-    deleteOption = (position) => {
-        this.props.deleteOption(position);
-        this.setState({ editMode: !this.state.editMode });
-        this.setState({ editMode: !this.state.editMode });
-    }
-
-    editOption = (e, position) => {
-        this.props.editOption(e.currentTarget.value, position)
-    }
-
-    editAnswer = (e, position) => {       
-        this.props.editAnswer(e, position);        
-    }
-
-    render() {
-        return (
-            this.state.editMode ?
-                <div>
-                    <form >
-                        {this.props.options.map((option, counter) =>
-                            <div className={s.testOption} key = {`c${this.props.id}.${counter}1`}>
-                                <input defaultValue={option} placeholder="Enter option here" onBlur={(e) => this.editOption(e, counter)}/>
-                                <input type="checkbox" value={option} onChange={(e) =>this.editAnswer(e, counter)} checked={this.props.answers.some(element => element == counter)}/>
-                                {this.props.options.length > 2 ? <i className="fa fa-times" aria-hidden="true" onClick={() => { this.deleteOption(counter) }}></i> : null}
-                            </div>
-                        )}
-                    </form>
-                    <button onClick={this.addOption}>+ Add option</button>
-    
-                </div> :
-                <div className={s.quiz}>
-                    {this.props.options.map((option, counter) =>
-                        <div className={s.testButton} key = {`c${this.props.id}.${counter}2`}>
-                            <input type="checkbox" id={`c${this.props.id}.${counter}`} value={option} />
-                            <label htmlFor={`c${this.props.id}.${counter}`}>{option ? option : "Option"}</label>
-                        </div>
-                    )}
-                </div>
-    
-        );
-    }
-}
-const OpenAnswer = (props) => {
-    let editAnswer = (e) => {
-        let answers = props.answers;
-        answers[0] = e.currentTarget.value;
-
-        props.editQuiz(props.options, answers)
-    }   
-
-    return (
-        props.editMode ?
-            <input defaultValue={props.answers} placeholder={"Enter correct answer here"} onBlur={(e) => { editAnswer(e) }} />
-            : <input placeholder={"Enter your answer here"} />
-    );
-}

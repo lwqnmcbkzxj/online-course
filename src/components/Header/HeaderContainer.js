@@ -7,7 +7,7 @@ import { getUserInfo } from '../../redux/user-reducer';
 
 class HeaderContainer extends React.Component {   
     componentDidMount() {
-        this.props.getUserInfo()
+        // this.props.getUserInfo()
     }
     render() {
         return <Header {...this.props} />

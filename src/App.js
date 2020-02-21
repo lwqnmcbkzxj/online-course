@@ -1,6 +1,6 @@
 import React from 'react';
 import { Route } from "react-router-dom";
-import { withRouter, Redirect } from 'react-router';
+import { Redirect } from 'react-router';
 import './App.css';
 
 import Welcome from './components/Welcome/Welcome'

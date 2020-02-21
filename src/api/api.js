@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://f9059276.ngrok.io",
+    baseURL: "http://f757b407.ngrok.io",
     headers: {
         "Authorization": ""
     }
@@ -100,6 +100,7 @@ export const taskElementsAPI = {
             .then(response => response.data);
     },
     editTaskQuiz(elementId, data) {
+        debugger
         return instance.post(`lessons/task/edit-quiz`, { "id": elementId, "json_options": data[0], "json_answers": data[1] })
             .then(response => response.data);
     },
