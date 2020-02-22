@@ -109,7 +109,7 @@ class SelfInfo extends React.Component {
                             <div>{this.state.email}</div>                           
                         </div>
                     </div>
-                    <button onClick={this.logout}>Logout</button>
+                    <div className={s.buttonHolder}><button onClick={this.logout}>Logout</button></div>
                 </div>
             </div>
         );

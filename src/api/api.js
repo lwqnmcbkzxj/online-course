@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://f757b407.ngrok.io",
+    baseURL: "http://1b6e2bb0.ngrok.io",
     headers: {
         "Authorization": ""
     }
@@ -54,8 +54,12 @@ export const lessonAPI = {
         return instance.delete(`lessons`, { "data": { "id": lessonId, "section_id": sectionId } })
             .then(response => response.data);
     },
-    completeLesson(lessonId, contentType) {
-        return instance.post(`complete`, { "id": lessonId, "type": contentType })
+    completeLesson(lessonId, contentType, data) {
+        return instance.post(`complete`, { "id": lessonId, "type": contentType, "data": data })
+            .then(response => response.data);
+    },
+    changePublishStatus(id, type) {
+        return instance.post(`change-publish-status`, { "id": id, "type": type})
             .then(response => response.data);
     },
 }

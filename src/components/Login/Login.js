@@ -27,7 +27,10 @@ class Login extends React.Component {
         this.props.login(formData.email, formData.password);
     }
     render() {
-        if (this.props.logged) return <Redirect to={"/course"} />
+        if (this.props.logged) {
+            // let currentNotCompletedLesson = getFirstNotCompletedLesson();
+            return <Redirect to={"/course"} />
+        }
 
         return (
             <div className={s.login}>
@@ -45,7 +48,7 @@ class Login extends React.Component {
 const ReduxLoginForm = reduxForm({ form: 'login' })(LoginForm)
 
 const mapStateToProps = (state) => ({
-    logged: state.user.logged
+    logged: state.user.logged,
 })
 
 export default connect(mapStateToProps, { login, authUser })(Login);

@@ -1,7 +1,6 @@
 import { userAPI } from "../api/api";
 import { setToken } from "../api/api"
 import Cookies from "js-cookie";
-import { getSections } from "./sectionsList-reducer";
 
 const SET_USER_INFO = 'SET-USER';
 const SET_USER_STATS = 'SET-STATS';
@@ -33,7 +32,6 @@ const userReducer = (state = initialState, action) => {
             if (action.stats) {
                 for (let completedElem of action.stats.completed) {
                     let ids = JSON.parse(completedElem.ids);
-                    let count = completedElem.count;
                     if (completedElem.type === 0)
                         articleIds = ids;
                     else if (completedElem.type === 1)
@@ -56,13 +54,7 @@ const userReducer = (state = initialState, action) => {
                 completedSectionsIds: sectionsIds,
                 completedLessonsIds: [...articleIds, ...tasksIds],
             }
-        }
-        case SET_USER_INFO: {
-            return {
-                ...state,
-                token: action.token,
-            }
-        }
+        }        
         case SET_USER_LOGGED: {
             return {
                 ...state,
@@ -111,28 +103,23 @@ const setUserToken = (token) => {
 
 export const getUserInfo = () => (dispatch) => {
     dispatch(setUserToken())
-    userAPI.getUserInfo().then((response) => {
+    return userAPI.getUserInfo().then((response) => {
         dispatch(setUserStats(response.stats));
         dispatch(setUserInfo(response.info));
-        return 's';
     })
 }
 
 
 export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
-        if (response.token) {
-            setToken(response.token);
-            dispatch(setUserLogged(true));
-            dispatch(setUserToken(response.token));
-            dispatch(getUserInfo());
-
-
-            Cookies.set('token', response.token, { expires: 10/24 });
+        if (response.token) {  
+            Cookies.set('token', response.token, { expires: 10 / 24 });
+            dispatch(authUser());
         }
     })
 }
 export const authUser = () => (dispatch) => {
+    debugger
     if (Cookies.get('token')) {
         let token = Cookies.get('token');
         setToken(token);

@@ -39,7 +39,7 @@ class Picture extends React.Component {
                 </div>
                 : this.state.media ?
                     <div className={s.picture}>
-                        <img src={this.state.media} alt="picture"/>
+                        <img src={this.state.media} alt="pictureBlockImage"/>
                     </div>
                     : null
         );

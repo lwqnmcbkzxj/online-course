@@ -1,49 +1,73 @@
 import React from 'react';
-import { Route } from "react-router-dom";
-import { Redirect } from 'react-router';
 import './App.css';
+import { Route } from "react-router-dom";
+import { Switch } from 'react-router';
+import { withRouter } from 'react-router'
 
-import Welcome from './components/Welcome/Welcome'
+import { authUser } from './redux/user-reducer';
+import { initApp } from './redux/app-reducer';
+import { connect } from 'react-redux';
+import { compose } from 'redux';
 
-import Tasks from './components/Tasks/Tasks'
-import Login from './components/Login/Login'
+import Preloader from './components/Common/Preloader/Preloader';
+
+import Welcome from './components/Welcome/Welcome';
+import Tasks from './components/Tasks/Tasks';
+import NotFound from './components/NotFound/NotFound';
+import Login from './components/Login/Login';
 import Signup from './components/Login/Signup'
-import DashboardContainer from './components/Dashboard/DashboardContainer'
-import CourseContainer from './components/Course/CourseContainer'
+import DashboardContainer from './components/Dashboard/DashboardContainer';
+import CourseContainer from './components/Course/CourseContainer';
 import HeaderContainer from './components/Header/HeaderContainer';
 
 
 class App extends React.Component {
-	state = {
-		firstInit: true
+	componentDidMount() {		
+		this.props.authUser();		
 	}
-	
-	render() {
-		if (this.state.firstInit) {
-			this.setState({ firstInit: false });
-			return <Redirect to="/welcome" />;
+	componentWillUpdate() {
+		debugger
+		if (this.props.startPageName === 'welcome') {
+			let appInit = this.props.initApp();
+			appInit.then(() => {
+				this.props.history.push(`/course/lesson/${this.props.firstNotCompletedLessonId}`);
+			})
 		}
+	}
+	render() {
+		if (this.props.history.location.pathname === '/')
+			this.props.history.push("/welcome");
+
+		// if (!this.props.initialized)
+		// 	return <Preloader />;
 		return (
 			<div className="app-wrapper">
-				<Route path="/" render={() => <HeaderContainer />}/>
+				<Route path="/" render={() => <HeaderContainer />} />
 
 				<div className='app-container'>
-					<Route path="/welcome" render={() => <Welcome />} />
-
-					<Route path="/course" render={() => <CourseContainer />} />
-					<Route path="/tasks" render={() => <Tasks />} />
-					<Route path="/dashboard" render={() => <DashboardContainer />} />
-					<Route path="/login" render={() => <Login />} />
-					<Route path="/signin" render={() => <Signup />} />
-
+					<Switch>
+						<Route exact path="/welcome" render={() => <Welcome />} />
+						<Route path="/course" render={() => <CourseContainer />} />
+						<Route path="/tasks" render={() => <Tasks />} />
+						<Route path="/dashboard" render={() => <DashboardContainer />} />
+						<Route exact path="/login" render={() => <Login />} />
+						<Route exact path="/signin" render={() => <Signup />} />
+						<Route component={NotFound} />
+					</Switch>
 				</div>
 			</div>
 		);
 	}
 }
 
-export default App;
+
+let mapStateToProps = (state) => ({
+	initialized: state.app.initialized,
+	firstNotCompletedLessonId: state.app.firstNotCompletedLessonId,
+	startPageName: state.app.startPageName
+})
 
 
-
-
+export default compose(
+	withRouter,
+	connect(mapStateToProps, { authUser, initApp }))(App);

@@ -1,5 +1,7 @@
 import { lessonAPI, articleElementsAPI, taskElementsAPI } from '../api/api';
 import { setCurrentLessonId } from './course-reducer';
+import { getSections } from './sectionsList-reducer';
+
 const SET_LESSON = 'SET_LESSON';
 const ADD_ELEMENT = 'ADD_ELEMENT';
 const DELETE_ELEMENT = 'DELETE_ELEMENT';
@@ -252,6 +254,19 @@ export const changeElementPosition = (elementId, oldPosition, newPosition) => {
         oldPosition,
         newPosition
     }
+}
+
+export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {
+    let id = 0;
+    if (type === 'section')
+        id = sectionId;
+    else if (type === 'lesson')
+        id = lessonId;
+    
+    lessonAPI.changePublishStatus(id, type).then(() => {
+        dispatch(getSections());
+        dispatch(getLesson(lessonId));
+    })
 }
 
 export default lessonReducer;

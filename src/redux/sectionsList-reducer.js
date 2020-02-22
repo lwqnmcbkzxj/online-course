@@ -49,8 +49,8 @@ const sectionsListReducer = (state = initialState, action) => {
             let maxId = 0;
             for (let section of state.sections) {
                 for (let lesson of section.lessons) {
-                    if (lesson.id > maxId)
-                        maxId = lesson.id
+                    if (+lesson.id > +maxId)
+                        maxId = +lesson.id
                 }
             }
             let newLesson = {
@@ -61,7 +61,7 @@ const sectionsListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sections: state.sections.map(section => {
-                    if (section.id == action.sectionId) {
+                    if (+section.id === +action.sectionId) {
                         section.lessons = [...section.lessons, newLesson];
                     }
                     return section;
@@ -72,7 +72,7 @@ const sectionsListReducer = (state = initialState, action) => {
         case DELETE_SECTION: {
             return {
                 ...state,
-                sections: state.sections.filter(section => section.id != action.sectionId)
+                sections: state.sections.filter(section => +section.id !== +action.sectionId)
             };
         }
 
@@ -80,7 +80,7 @@ const sectionsListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sections: state.sections.map(section => {
-                    let newLessons = section.lessons.filter(lesson => lesson.id != action.lessonId);
+                    let newLessons = section.lessons.filter(lesson => +lesson.id !== +action.lessonId);
                     return { ...section, lessons: newLessons };
                 })
             };
@@ -103,7 +103,7 @@ const sectionsListReducer = (state = initialState, action) => {
                 sections: state.sections.map(section => {                    
                     if (section.id === action.sectionId) {
                        section.lessons = section.lessons.map(lesson => {
-                            if (lesson.id === +action.lessonId)                            
+                            if (+lesson.id === +action.lessonId)                            
                                 return { ...lesson,  title: action.title };                            
                             
                             return lesson;
@@ -133,7 +133,7 @@ const sectionsListReducer = (state = initialState, action) => {
         case COMPLETE_SECTION: {
             let allCompleted = true;
             for (let section of this.state.sections) {
-                if (section.id == action.sectionId) {
+                if (+section.id === +action.sectionId) {
                     for (let lesson of section.lessons) {
                         if (!lesson.completed)
                             allCompleted = false
@@ -157,7 +157,7 @@ const sectionsListReducer = (state = initialState, action) => {
 
 
 export const getSections = () => (dispatch) => {
-    sectionsListAPI.getSections().then((response) => {
+    return sectionsListAPI.getSections().then((response) => {
         dispatch(setSections(response));
     })
 }
@@ -245,7 +245,7 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
     for (let section of sections) {
         if (+section.id === +sectionId) {
             section.lessons.map(lesson => {
-                if (!completedLessonsIds.some(id => id === lesson.id))
+                if (!completedLessonsIds.some(id => +id === +lesson.id))
                 allCompleted = false;
             })
         }        
@@ -263,7 +263,7 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
 export const deleteSection = (sectionId) => (dispatch) => {
     dispatch(deleteSectionSuccess(sectionId));
     sectionsListAPI.deleteSection(sectionId).then((response) => {
-        if (response.status != "ok") {}
+        if (response.status !== "ok") {}
     })
 }
 
@@ -303,4 +303,6 @@ export const editLesson = (sectionId, lessonId, title) => (dispatch) => {
     dispatch(editLessonSuccess(sectionId, lessonId, title));
     lessonAPI.editLesson(lessonId, title);
 }
+
+
 export default sectionsListReducer;

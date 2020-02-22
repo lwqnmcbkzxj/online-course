@@ -1,10 +1,10 @@
-
 const SET_CURRENT_SECTION_ID = 'SET_CURRENT_SECTION_ID';
 const SET_CURRENT_LESSON_ID = 'SET_CURRENT_LESSON_ID';
 
 const TOGGLE_MODAL_VISIBLE = 'TOGGLE_MODAL_VISIBLE';
 const SET_MODAL_FUNCTION = 'SET_MODAL_FUNCTION';
 const TOGGLE_EDIT_MODE = 'TOGGLE-EDIT-MODE';
+
 
 
 
@@ -94,5 +94,7 @@ export const toggleEditMode = (editState) => {
         editState
     }
 }
+
+
 
 export default courseReducer;

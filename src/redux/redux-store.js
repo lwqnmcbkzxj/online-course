@@ -8,6 +8,7 @@ import usersReducer from "./users-reducer";
 import courseReducer from "./course-reducer";
 import sectionsListReducer from "./sectionsList-reducer";
 import lessonReducer from "./lesson-reducer";
+import appReducer from "./app-reducer";
 
 import { reducer as formReducer } from "redux-form";
 
@@ -24,6 +25,7 @@ let reducers = combineReducers({
     taskPage: taskReducer,
     user: userReducer,
     users: usersReducer,
+    app: appReducer,
     form: formReducer,
 
 }); 

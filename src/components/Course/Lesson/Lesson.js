@@ -7,38 +7,13 @@ import Text from './LessonElements/Text'
 import Task from './LessonElements/Task'
 
 const Lesson = (props) => {    
-    let completeLesson = (lessonId, type) => {
-        props.completeLesson(lessonId, props.currentSectionId, type);
+    let completeLesson = (lessonId, type, data = null) => {
+        // props.completeLesson(lessonId, props.currentSectionId, type, data);
         goToNextLesson();
     }
 
     let goToNextLesson = () => {
-        let position = 0;
-        let sectPos = 0;
-        let lesPos = 0;
-        props.sections.map((section, sectionCounter) => {
-            if (section.id === props.currentSectionId) {
-                sectPos = sectionCounter;
-                section.lessons.map((lesson, lessonCounter) => {
-                    if (lesson.id === +props.lesson.id) {
-                        lesPos = lessonCounter;
-                    }
-                })
-            }
-        })
-
-        let nextId = 0;
-        if (props.sections[sectPos].lessons[lesPos + 1]) {
-            nextId = props.sections[sectPos].lessons[lesPos + 1].id;
-        } else {
-            while (nextId !== 0) {
-                sectPos++;
-                if (props.sections[sectPos].lessons)
-                    nextId = props.sections[sectPos].lessons[0];
-            }
-        }
-
-        props.history.push(`/course/lesson/${nextId}`)
+        props.goToNextLesson();
     }
     return (
         <div className={s.lesson}>

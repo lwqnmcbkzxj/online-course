@@ -37,6 +37,7 @@ iframe {
 
 
 .elementHeader {
+    margin-bottom: 10px;
     margin-left: -40px;
     display: flex;
     flex-direction: row;

@@ -51,12 +51,14 @@ const LessonEdit = (props) => {
         props.editSection(props.currentSectionId, e.currentTarget.value)
     }
 
+    let togglePublish = (type) => {
+        props.togglePublish(props.lesson.id, props.currentSectionId, type)
+    }
+    debugger
     return (
         <div className={s.lesson}>
-            <div className={s.publishCheckboxBlock}>
-                Publish
-                <input type="checkbox" />
-            </div>
+            {props.isFirstLesson ? <div className={s.publishCheckboxBlock}> Publish section<input type="checkbox" checked={props.publishedSection} onChange={() => { togglePublish('section') }} /> </div> : null}
+            <div className={s.publishCheckboxBlock}> Publish lesson<input type="checkbox" checked={props.publishedLesson} onChange={() => { togglePublish('lesson') }} /> </div>
             {props.isFirstLesson ? <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }} /> : null}
             <input defaultValue={props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { editLesson(e) }} />
 
@@ -82,25 +84,26 @@ const LessonEdit = (props) => {
             </div>
 
 
-            {props.lesson.elements ? props.lesson.elements.map(element => 
-                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>                    
-                    {element.type === 3 ? taskCount++ || <Task {...element}
-                        editMode={props.editMode}
-                        deleteElement={deleteElement}
-                        editElement={editElement}
-                        lesson={props.lesson}
-                        completedLessonsIds={props.completedLessonsIds}
+            {props.lesson.elements ? props.lesson.elements.map(element =>
+                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
+                    {element.type === 3 ? taskCount++ ||
+                        <Task {...element}
+                            editMode={props.editMode}
+                            deleteElement={deleteElement}
+                            editElement={editElement}
+                            lesson={props.lesson}
+                            completedLessonsIds={props.completedLessonsIds}
                         /> : null}
                 </div>
-                
+
             ) : null}
 
 
-            {props.lesson.type === 1  && taskCount === 0 ?
+            {props.lesson.type === 1 && taskCount === 0 ?
                 <div className={s.addElements}>
                     <h2>Task</h2>
-                    <button onClick={() => { addTaskElement(1) }}>+ Add one choise test</button>
-                    <button onClick={() => { addTaskElement(2) }}>+ Add multichoise test</button>
+                    <button onClick={() => { addTaskElement(1) }}>+ Add one choice test</button>
+                    <button onClick={() => { addTaskElement(2) }}>+ Add multichoice test</button>
                     <button onClick={() => { addTaskElement(3) }}>+ Add open answer</button>
                 </div>
                 : null}

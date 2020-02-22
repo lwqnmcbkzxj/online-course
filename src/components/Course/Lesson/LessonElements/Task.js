@@ -6,8 +6,8 @@ import MultiTest from './TaskElements/MultiTest';
 import Test from './TaskElements/Test';
 import OpenAnswer from './TaskElements/OpenAnswer';
 
-let soloTest = 'Test with one choise';
-let multiTest = 'Test with multi choise';
+let soloTest = 'Test with one choice';
+let multiTest = 'Test with multi choice';
 let openAnswer = 'Write answer in textfield';
 class Task extends React.Component {
     state = {
@@ -135,7 +135,7 @@ class Task extends React.Component {
             }
             this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
 
-            // this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )
             Cookies.remove(`task${lessonId}`);
         } else if (taskObject.attempts === 0) {
             let newObj = {
@@ -147,7 +147,7 @@ class Task extends React.Component {
             Cookies.remove(`task${lessonId}`);            
             this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
 
-            // this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )            
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )            
         } else {
             this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
             Cookies.set(`task${lessonId}`, JSON.stringify(taskObject), { expires: 7 });

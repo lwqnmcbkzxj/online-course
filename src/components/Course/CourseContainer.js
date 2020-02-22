@@ -4,11 +4,9 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { toggleModalVisible } from '../../redux/course-reducer';
-import { withAuthRedirect } from '../../hoc/withAuthRedirect';
 
 
-
-class CourseContainer extends React.Component {    
+class CourseContainer extends React.Component {     
     render() {
         return <Course {...this.props} />
     }
@@ -16,7 +14,7 @@ class CourseContainer extends React.Component {
 
 let mapStateToProps = (state) => ({
     modalIsVisible: state.course.modalIsVisible,
-    modalFunction: state.course.modalFunction
+    modalFunction: state.course.modalFunction,
 })
 
 
