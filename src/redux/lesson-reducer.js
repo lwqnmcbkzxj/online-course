@@ -12,8 +12,11 @@ const EDIT_TASK_QUIZ = 'EDIT_ELEMENEDIT_TASK_QUIZT_MEDIA';
 
 const CHANGE_ELEMENT_POSITION = 'CHANGE_ELEMENT_POSITION';
 
+const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+
 let initialState = {
-    lesson: {}
+    lesson: {},
+    lessonIsFetching: false
 }
 
 const lessonReducer = (state = initialState, action) => {
@@ -32,6 +35,7 @@ const lessonReducer = (state = initialState, action) => {
                 type: action.elementType,
                 json_quiz_options: action.data[0],
                 json_quiz_answers: action.data[1],
+                is_answer: action.isAnswer
             }
             return {
                 ...state,
@@ -112,6 +116,12 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
+        case TOGGLE_IS_FETCHING: {
+            return {
+                ...state,
+                lessonIsFetching: action.isFetching
+           }
+        }
         default:
             return state;
     }
@@ -119,9 +129,13 @@ const lessonReducer = (state = initialState, action) => {
 
 
 export const getLesson = (lessonId) => (dispatch) => {
+    debugger
+    dispatch(toggleIsFetching(true));
     lessonAPI.getLesson(lessonId).then((response) => {
         dispatch(setLesson(response));
         dispatch(setCurrentLessonId(lessonId));
+        dispatch(toggleIsFetching(false));
+
         return response;
     })
 }
@@ -133,21 +147,11 @@ export const setLesson = (lesson) => {
     }
 }
 
-// export const editLesson = (lessonId, title) => (dispatch) => {
-//     dispatch(editLessonSuccess(title));
-//     lessonAPI.editLesson(lessonId, title)    
-// }
-
-// const editLessonSuccess = (title) => {
-//     return {
-//         type: EDIT_LESSON,        
-//         title
-//     }
-// }
-const addElementSuccess = (elementType, data = "") => {
+const addElementSuccess = (elementType, isAnswer, data = "") => {
     return {
         type: ADD_ELEMENT,
         elementType,
+        isAnswer,
         data
     }
 }
@@ -178,13 +182,14 @@ const editElementQuizSuccess = (id, data) => {
         data
     }
 }
-export const addElement = (lessonId, elementType, lessonType) => (dispatch) => {
-    dispatch(addElementSuccess(elementType));
+export const addElement = (lessonId, elementType, lessonType, isAnswer) => (dispatch) => {
+    debugger
+    dispatch(addElementSuccess(elementType, isAnswer));
 
     if (lessonType === 0)
         articleElementsAPI.addArticleElement(lessonId, elementType);
     else
-        taskElementsAPI.addTaskElement(lessonId, elementType);
+        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer);
 
 }
 
@@ -225,26 +230,6 @@ export const editElement = (elementId, data, elementType, lessonType) => (dispat
     }
 }
 
-// export const addTaskElement = (lessonId, elementType) => (dispatch) => {
-//     dispatch(addElementSuccess(elementType));
-//     taskElementsAPI.addTaskElement(lessonId, elementType);
-// }
-// export const deleteTaskElement = (elementId) => (dispatch) => {
-//     dispatch(deleteElementSuccess(elementId));
-//     taskElementsAPI.deleteTaskElement(elementId);   
-
-// }
-// export const editTaskElement = (elementId, data, elementType) => (dispatch) => {
-//     if (elementType === 0) {
-//         dispatch(editElementTextSuccess(elementId, data));
-//         taskElementsAPI.editTaskElementText(elementId, data);        
-//     }    
-//     else {
-//         dispatch(editElementMediaSuccess(elementId, data));
-//         taskElementsAPI.editTaskElementMedia(elementId, data); 
-//     }
-// }
-
 
 
 export const changeElementPosition = (elementId, oldPosition, newPosition) => {
@@ -267,6 +252,13 @@ export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {
         dispatch(getSections());
         dispatch(getLesson(lessonId));
     })
+}
+
+const toggleIsFetching = (isFetching) => {
+    return {
+        type: TOGGLE_IS_FETCHING,
+        isFetching
+    }
 }
 
 export default lessonReducer;

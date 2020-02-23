@@ -31,8 +31,8 @@ const LessonEdit = (props) => {
         props.addTaskElement(props.lesson.id, 3, [options, answers]);
     }
 
-    let addElement = (elementType) => {
-        props.addElement(props.lesson.id, elementType, props.lesson.type);
+    let addElement = (elementType, isAnswer = false) => {
+        props.addElement(props.lesson.id, elementType, props.lesson.type, isAnswer);
     }
 
     let deleteElement = (elementId) => {
@@ -54,7 +54,7 @@ const LessonEdit = (props) => {
     let togglePublish = (type) => {
         props.togglePublish(props.lesson.id, props.currentSectionId, type)
     }
-    debugger
+    
     return (
         <div className={s.lesson}>
             {props.isFirstLesson ? <div className={s.publishCheckboxBlock}> Publish section<input type="checkbox" checked={props.publishedSection} onChange={() => { togglePublish('section') }} /> </div> : null}
@@ -62,20 +62,16 @@ const LessonEdit = (props) => {
             {props.isFirstLesson ? <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }} /> : null}
             <input defaultValue={props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { editLesson(e) }} />
 
-            {
-                props.lesson.elements ? props.lesson.elements.map(element =>
-                    <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
-                        {
-                            element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                    : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                        : null
-                        }
-
-                    </div>
-
-                ) : null
-            }
+            {props.lesson.elements ? props.lesson.elements.map(element =>
+                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
+                    {!element.is_answer ?
+                        element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                            : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                    : null
+                        : null}
+                </div>
+            ) : null}
 
             <div className={s.addElements}>
                 <button onClick={() => { addElement(0) }}>+ Add text</button>
@@ -98,7 +94,6 @@ const LessonEdit = (props) => {
 
             ) : null}
 
-
             {props.lesson.type === 1 && taskCount === 0 ?
                 <div className={s.addElements}>
                     <h2>Task</h2>
@@ -107,6 +102,29 @@ const LessonEdit = (props) => {
                     <button onClick={() => { addTaskElement(3) }}>+ Add open answer</button>
                 </div>
                 : null}
+
+
+            {props.lesson.type === 1 ?
+                <div className={s.answerBlock}>
+                    <h2>Answer</h2>
+                    {props.lesson.elements ? props.lesson.elements.map(element =>
+                        <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
+                            {element.is_answer ?
+                                element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                    : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                        : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
+                                            : null
+                                : null}
+                        </div>
+                    ) : null}
+                    <div className={s.addElements}>
+                        <button onClick={() => { addElement(0, true) }}>+ Add text</button>
+                        <button onClick={() => { addElement(1, true) }}>+ Add picture</button>
+                        <button onClick={() => { addElement(2, true) }}>+ Add video</button>
+                    </div>
+                </div>
+                : null}
+
         </div>
     );
 }

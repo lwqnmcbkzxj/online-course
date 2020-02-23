@@ -93,3 +93,8 @@ input {
 .publishCheckboxBlock input {    
     width: auto;    
 }
+
+
+.answerBlock {
+    margin-top: 20px;
+}

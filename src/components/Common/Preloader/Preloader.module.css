@@ -1,5 +1,6 @@
 .preloader {
     width: 100px;
     height: 100px;
-    margin: 0 auto;
+    margin: 0 auto; 
+    margin-top: calc(50vh - 100px);
 }

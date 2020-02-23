@@ -13,7 +13,7 @@ class Header extends React.Component {
             <header className={s.header}>
                 <NavLink className={s.item + ' ' + s.courseName} to="/course">Creativity in Physics</NavLink> 
                 <div className={s.options}>
-                    <NavLink className={s.item} to={`/course/lesson/${this.props.currentLessonId}`} activeClassName={s.activeLink}>Course</NavLink>
+                    <NavLink className={s.item} to={`/course/lesson/${this.props.firstNotCompletedLessonId}`} activeClassName={s.activeLink}>Course</NavLink>
                     <NavLink className={s.item} to="/tasks" activeClassName={s.activeLink}>Tasks</NavLink>
     
                     {this.props.user.role ? 

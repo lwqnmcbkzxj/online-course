@@ -7,7 +7,7 @@ import rating1 from '../../../assets/images/rating-1.png';
 import rating2 from '../../../assets/images/rating-2.png';
 import rating3 from '../../../assets/images/rating-3.png';
 
-const TasksList = (props) => {
+const TasksList = (props) => {    
     return (
         <div className={s.tasksList}>
            {
@@ -18,7 +18,7 @@ const TasksList = (props) => {
                             <div className={s.stats}>
                                 <div className={s.rating}> <img src={ task.rating === 1 ? rating1 : task.rating === 2 ? rating2 : rating3 } alt="rating-img"/></div>
                                 <div className={s.likes}><i className="fa fa-heart" aria-hidden="true"></i> {task.likes}</div>
-                                <div className={s.views}><i className="fa fa-eye" aria-hidden="true"></i> {task.views}</div>
+                                <div className={s.views}><i className="fa fa-eye" aria-hidden="true"></i> {task.viewed}</div>
                             </div>
                         </div>
 

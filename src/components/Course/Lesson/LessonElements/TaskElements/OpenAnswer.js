@@ -21,8 +21,8 @@ const OpenAnswer = (props) => {
     return (
         props.editMode ?
             <input defaultValue={props.answers} placeholder={"Enter correct answer here"} onBlur={(e) => { editAnswer(e) }} />
-            : <ReduxOpenAnswerForm onSubmit={completeTask} {...props}/>
-            
+            : <ReduxOpenAnswerForm onSubmit={completeTask} {...props} />
+
     );
 }
 
@@ -31,7 +31,7 @@ const OpenAnswer = (props) => {
 const OpenAnswerForm = (props) => {
     return (
         <form onSubmit={props.handleSubmit}>
-            <Field name="answer" placeholder={"Enter your answer here"} component="input"/>
+            <Field name="answer" placeholder={"Enter your answer here"} component="input" />
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
                     <button>Answer</button> : null}

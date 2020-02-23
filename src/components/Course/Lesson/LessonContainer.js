@@ -3,6 +3,7 @@ import { connect } from 'react-redux';
 
 import Lesson from './Lesson';
 import LessonEdit from './LessonEdit';
+import Preloader from '../../Common/Preloader/Preloader';
 
 import { editSection, editLesson, completeLesson } from '../../../redux/sectionsList-reducer';
 import { setCurrentLessonId, setModalFunction } from '../../../redux/course-reducer';
@@ -33,10 +34,11 @@ class LessonContainer extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
+
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
-        if (+lessonId !== +prevState.lessonId ||
+        if (this.props.sections.length && (+lessonId !== +prevState.lessonId ||
             this.state.sectionTitle !== prevState.sectionTitle ||
-            this.state.lessonTitle !== prevState.lessonTitle) {
+            this.state.lessonTitle !== prevState.lessonTitle)) {
 
             this.props.getLesson(lessonId);
             this.setState({ lessonId });
@@ -47,34 +49,38 @@ class LessonContainer extends React.Component {
         }
 
         if (this.props.sections.length > 0 && prevProps.sections.length > 0) {
-            let currentSection = {};
-            let prevCurrentSection ={};
-            let currentLesson = {};
-            let prevCurrentLesson = {};
-
-            this.props.sections.map(section => {
-                section.lessons.map(lesson => {
-                    if (+lesson.id === +lessonId) {
-                        currentSection = section;
-                        currentLesson = lesson;
-                    }
-                })
-            });
-            prevProps.sections && prevProps.sections.map(section => {
-                section.lessons.map(lesson => {
-                    if (+lesson.id === +lessonId) {
-                        prevCurrentSection = section;
-                        prevCurrentLesson = lesson;
-                    }
-                })
-            })
-
-            if (currentSection.publish !== prevCurrentSection.publish || currentLesson.publish !== prevCurrentLesson.publish) {
-                this.getIsPublished(lessonId);
-            }
+            this.checkCanGetIsPublished(lessonId, prevProps);
         }
     }
 
+
+    checkCanGetIsPublished = (lessonId, prevProps) => {
+        let currentSection = {};
+        let prevCurrentSection = {};
+        let currentLesson = {};
+        let prevCurrentLesson = {};
+
+        this.props.sections.map(section => {
+            section.lessons.map(lesson => {
+                if (+lesson.id === +lessonId) {
+                    currentSection = section;
+                    currentLesson = lesson;
+                }
+            })
+        });
+        prevProps.sections && prevProps.sections.map(section => {
+            section.lessons.map(lesson => {
+                if (+lesson.id === +lessonId) {
+                    prevCurrentSection = section;
+                    prevCurrentLesson = lesson;
+                }
+            })
+        })
+
+        if (currentSection.publish !== prevCurrentSection.publish || currentLesson.publish !== prevCurrentLesson.publish) {
+            this.getIsPublished(lessonId);
+        }
+    }
     getCurrentLessonTitle = (lessonId) => {
         this.props.sections.map(section => {
             section.lessons.map(lesson => {
@@ -113,10 +119,9 @@ class LessonContainer extends React.Component {
 
     getIsPublished = (lessonId) => {
         this.props.sections.map(section => {
-            if (+section.id === +this.props.currentSectionId)
-                this.setState({ publishedSection: section.publish });
             section.lessons.map(lesson => {
                 if (+lesson.id === +lessonId) {
+                    this.setState({ publishedSection: section.publish });
                     this.setState({ publishedLesson: lesson.publish });
                 }
             })
@@ -127,31 +132,43 @@ class LessonContainer extends React.Component {
         let sectPos = 0;
         let lesPos = 0;
         this.props.sections.map((section, sectionCounter) => {
-            if (section.id === this.props.currentSectionId) {
-                sectPos = sectionCounter;
-                section.lessons.map((lesson, lessonCounter) => {
-                    if (lesson.id === +this.props.lesson.id) {
-                        lesPos = lessonCounter;
-                    }
-                })
-            }
-        })
+            section.lessons.map((lesson, lessonCounter) => {
+                if (lesson.id === +this.props.lesson.id) {
+                    lesPos = lessonCounter;
+                    sectPos = sectionCounter;
 
+                }
+            })
+        })
+        lesPos++;
         let nextId = this.props.lesson.id;
-        if (this.props.sections[sectPos].lessons[lesPos + 1]) {
-            nextId = this.props.sections[sectPos].lessons[lesPos + 1].id;
-        } else {
-            while (nextId !== 0) {
+        let lessons = this.props.sections[sectPos].lessons;
+        // If published lesson in currentSection
+        while (lesPos !== lessons.length) {
+            if (lessons[lesPos] && lessons[lesPos].publish) {
+                nextId = lessons[lesPos].id;
+                break
+            }
+            lesPos++;
+        }
+        //If no published lessons in currentSection
+        if (nextId === this.props.lesson.id) {
+            while (nextId === this.props.lesson.id) {
                 sectPos++;
-                if (this.props.sections[sectPos].lessons[0])
-                    nextId = this.props.sections[sectPos].lessons[0].id;
+                let lessons = this.props.sections[sectPos].lessons;
+                for (let i = 0; i < lessons.length; i++) {
+                    if (lessons[i].publish) {
+                        nextId = lessons[i].id;
+                        break;
+                    }
+                }
             }
         }
-
         this.props.history.push(`/course/lesson/${nextId}`)
     }
-
     render() {
+        if (this.props.lessonIsFetching)
+            return <Preloader />
         return this.props.editMode ?
             <LessonEdit {...this.props}
                 sectionTitle={this.state.sectionTitle}
@@ -179,6 +196,7 @@ let mapStateToProps = (state) => {
         currentSectionId: state.course.currentSectionId,
         editMode: state.course.editMode,
         completedLessonsIds: state.user.completedLessonsIds,
+        lessonIsFetching: state.lesson.lessonIsFetching
     }
 }
 

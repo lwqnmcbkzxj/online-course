@@ -6,7 +6,7 @@ import { getSections, addSection, addLesson, deleteSection, deleteLesson } from 
 
 
 class SectionsListContainer extends React.Component {
-    componentDidMount() {
+    componentWillMount() {
         this.props.getSections();
     }
 

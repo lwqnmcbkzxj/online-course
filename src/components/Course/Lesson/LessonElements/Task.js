@@ -120,9 +120,9 @@ class Task extends React.Component {
         let a = Cookies.get(`task${lessonId}`);
         let taskObject = JSON.parse(a);
 
-        this.setState({completeTry:true});
+        this.setState({ completeTry: true });
         taskObject.attempts--;
-       
+
         if (taskObject.attempts === 2)
             taskObject.firstTryTime = now - taskObject.startDate;
 
@@ -133,10 +133,12 @@ class Task extends React.Component {
                 overAllResult: true,
                 totalTime: now - taskObject.startDate
             }
-            this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
 
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj));
+            this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
             Cookies.remove(`task${lessonId}`);
+            this.props.showAnswerBlock();
+
         } else if (taskObject.attempts === 0) {
             let newObj = {
                 id: taskObject.id,
@@ -144,10 +146,11 @@ class Task extends React.Component {
                 overAllResult: false,
                 totalTime: now - taskObject.startDate
             }
-            Cookies.remove(`task${lessonId}`);            
-            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
 
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj) )            
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj));
+            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
+            Cookies.remove(`task${lessonId}`);
+            this.props.showAnswerBlock();
         } else {
             this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
             Cookies.set(`task${lessonId}`, JSON.stringify(taskObject), { expires: 7 });
@@ -197,7 +200,7 @@ class Task extends React.Component {
                         {taskComponent}
                     </div>
                     {this.state.completeTry && <p>{this.state.taskMessage}</p>}
-                    
+
                 </div>
 
         );

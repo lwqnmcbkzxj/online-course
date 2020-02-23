@@ -42,7 +42,7 @@ class MultiTest extends React.Component {
                     correct = false;
             }
         }
-        
+
         if (correct)
             this.props.completeTask(+this.props.lesson.id, true)
         else
@@ -63,7 +63,7 @@ class MultiTest extends React.Component {
                             </div>
                         )}
                     </form>
-                    <button onClick={this.addOption}>+ Add option</button>
+                    {this.props.options.length <= 8 ? <button onClick={this.addOption}>+ Add option</button> : null}
 
                 </div> :
                 <ReduxMultiTestForm onSubmit={this.completeTask} {...this.props} />
@@ -77,13 +77,13 @@ const MultiTestForm = (props) => {
     return (
         <form onSubmit={props.handleSubmit}>
             <div className={s.quiz}>
-            {props.options.map((option, counter) =>
-                <div className={s.testButton} key={`c${props.id}.${counter}2`}>
-                    <Field name={`opt${counter}`} id={`c${props.id}.${counter}`} component="input" type="checkbox"/>
-                    <label htmlFor={`c${props.id}.${counter}`}>{option ? option : "Option"}</label>
-                </div>
-            )}
-           </div>
+                {props.options.map((option, counter) =>
+                    <div className={s.testButton} key={`c${props.id}.${counter}2`}>
+                        <Field name={`opt${counter}`} id={`c${props.id}.${counter}`} component="input" type="checkbox" />
+                        <label htmlFor={`c${props.id}.${counter}`}>{option ? option : "Option"}</label>
+                    </div>
+                )}
+            </div>
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
                     <button>Answer</button> : null}

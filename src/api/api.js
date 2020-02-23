@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://1b6e2bb0.ngrok.io",
+    baseURL: "http://ffc35315.ngrok.io",
     headers: {
         "Authorization": ""
     }
@@ -86,8 +86,9 @@ export const articleElementsAPI = {
 }
 
 export const taskElementsAPI = {
-    addTaskElement(lessonId, elementType, data) {
-        return instance.post(`lessons/task`, { "lesson_id": lessonId, "type": elementType, "data": data })
+    addTaskElement(lessonId, elementType,data, isAnswer =false) {
+        debugger
+        return instance.post(`lessons/task`, { "lesson_id": lessonId, "type": elementType, "data": data, "is_answer": isAnswer })
             .then(response => response.data);
     },
     deleteTaskElement(elementId) {

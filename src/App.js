@@ -5,7 +5,7 @@ import { Switch } from 'react-router';
 import { withRouter } from 'react-router'
 
 import { authUser } from './redux/user-reducer';
-import { initApp } from './redux/app-reducer';
+import { initApp, setStartPagename } from './redux/app-reducer';
 import { connect } from 'react-redux';
 import { compose } from 'redux';
 
@@ -23,23 +23,21 @@ import HeaderContainer from './components/Header/HeaderContainer';
 
 class App extends React.Component {
 	componentDidMount() {		
-		this.props.authUser();		
+		this.props.authUser();
+		this.props.initApp();
 	}
 	componentWillUpdate() {
-		debugger
-		if (this.props.startPageName === 'welcome') {
-			let appInit = this.props.initApp();
-			appInit.then(() => {
-				this.props.history.push(`/course/lesson/${this.props.firstNotCompletedLessonId}`);
-			})
+		if (this.props.startPageName === 'welcome') {			
+			this.props.setStartPagename('course');			
+			this.props.history.push(`/course/lesson/${this.props.firstNotCompletedLessonId}`);			
 		}
 	}
 	render() {
 		if (this.props.history.location.pathname === '/')
 			this.props.history.push("/welcome");
 
-		// if (!this.props.initialized)
-		// 	return <Preloader />;
+		if (!this.props.initialized)
+			return <Preloader />;
 		return (
 			<div className="app-wrapper">
 				<Route path="/" render={() => <HeaderContainer />} />
@@ -63,11 +61,11 @@ class App extends React.Component {
 
 let mapStateToProps = (state) => ({
 	initialized: state.app.initialized,
-	firstNotCompletedLessonId: state.app.firstNotCompletedLessonId,
+	firstNotCompletedLessonId: state.course.firstNotCompletedLessonId,
 	startPageName: state.app.startPageName
 })
 
 
 export default compose(
 	withRouter,
-	connect(mapStateToProps, { authUser, initApp }))(App);
+	connect(mapStateToProps, { authUser, initApp, setStartPagename }))(App);
