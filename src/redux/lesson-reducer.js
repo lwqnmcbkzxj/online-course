@@ -122,6 +122,7 @@ const lessonReducer = (state = initialState, action) => {
                 lessonIsFetching: action.isFetching
            }
         }
+        
         default:
             return state;
     }
@@ -129,7 +130,6 @@ const lessonReducer = (state = initialState, action) => {
 
 
 export const getLesson = (lessonId) => (dispatch) => {
-    debugger
     dispatch(toggleIsFetching(true));
     lessonAPI.getLesson(lessonId).then((response) => {
         dispatch(setLesson(response));
@@ -147,7 +147,7 @@ export const setLesson = (lesson) => {
     }
 }
 
-const addElementSuccess = (elementType, isAnswer, data = "") => {
+const addElementSuccess = (elementType, data = "", isAnswer, ) => {
     return {
         type: ADD_ELEMENT,
         elementType,
@@ -183,20 +183,24 @@ const editElementQuizSuccess = (id, data) => {
     }
 }
 export const addElement = (lessonId, elementType, lessonType, isAnswer) => (dispatch) => {
-    debugger
-    dispatch(addElementSuccess(elementType, isAnswer));
+    // dispatch(addElementSuccess(elementType, '', isAnswer));
 
     if (lessonType === 0)
-        articleElementsAPI.addArticleElement(lessonId, elementType);
+        articleElementsAPI.addArticleElement(lessonId, elementType).then(() => {
+            dispatch(getLesson(lessonId))
+        });
     else
-        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer);
+        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer).then(() => {
+            dispatch(getLesson(lessonId))
+        });
 
 }
 
 export const addTaskElement = (lessonId, elementType, data) => (dispatch) => {
-    dispatch(addElementSuccess(elementType, data));
-    
-    taskElementsAPI.addTaskElement(lessonId, elementType, data);
+    // dispatch(addElementSuccess(elementType, data));    
+    taskElementsAPI.addTaskElement(lessonId, elementType, data).then(() => {
+        dispatch(getLesson(lessonId))
+    });;
 }
 export const deleteElement = (elementId, lessonType) => (dispatch) => {
     dispatch(deleteElementSuccess(elementId));
@@ -207,7 +211,6 @@ export const deleteElement = (elementId, lessonType) => (dispatch) => {
         taskElementsAPI.deleteTaskElement(elementId);
 }
 export const editElement = (elementId, data, elementType, lessonType) => (dispatch) => {
-    debugger
     if (elementType === 0) {
         dispatch(editElementTextSuccess(elementId, data));
 
@@ -229,7 +232,10 @@ export const editElement = (elementId, data, elementType, lessonType) => (dispat
             taskElementsAPI.editTaskElementMedia(elementId, data);
     }
 }
+export const likeLesson = (lessonId) => (dispatch) => {
+    lessonAPI.likeLesson(lessonId);
 
+}
 
 
 export const changeElementPosition = (elementId, oldPosition, newPosition) => {

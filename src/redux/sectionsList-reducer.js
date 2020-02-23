@@ -97,7 +97,6 @@ const sectionsListReducer = (state = initialState, action) => {
             };
         }
         case EDIT_LESSON: {
-            debugger
             return {
                 ...state,
                 sections: state.sections.map(section => {                    
@@ -225,8 +224,8 @@ const editLessonSuccess = (sectionId, lessonId, title) => {
 } */
 
 //THUNKS
-export const completeLesson = (lessonId, sectionId, contentType) => (dispatch) => {    
-    lessonAPI.completeLesson(lessonId, contentType).then((response) => {
+export const completeLesson = (lessonId, sectionId, contentType, data) => (dispatch) => {    
+    lessonAPI.completeLesson(lessonId, contentType, data).then((response) => {
         if (response.status === "ok") {
             dispatch(getUserInfo());  
             dispatch(completeSection(lessonId, sectionId));

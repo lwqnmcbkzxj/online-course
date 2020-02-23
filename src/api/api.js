@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://ffc35315.ngrok.io",
+    baseURL: "http://3e44a919.ngrok.io",
     headers: {
         "Authorization": ""
     }
@@ -42,6 +42,10 @@ export const lessonAPI = {
             .then(response => response.data);
     },
 
+    likeLesson(lessonId) {
+        return instance.post(`lessons/like`, {"id":lessonId})
+            .then(response => response.data);
+    },
     addLesson(sectionId, type) {
         return instance.post(`lessons`, { "section_id": sectionId, "content_type": type })
             .then(response => response.data);
@@ -55,8 +59,18 @@ export const lessonAPI = {
             .then(response => response.data);
     },
     completeLesson(lessonId, contentType, data) {
-        return instance.post(`complete`, { "id": lessonId, "type": contentType, "data": data })
-            .then(response => response.data);
+        if (data) {
+            return instance.post(`complete`, {
+                "id": lessonId, "type": contentType,
+                "attempts": data.attempts,
+                "total_time": data.total_time,
+                "first_try_time": data.first_try_time,
+                "overall_result": data.overall_result
+            }).then(response => response.data);
+        } else {
+            return instance.post(`complete`, { "id": lessonId, "type": contentType }).then(response => response.data);
+        }
+        
     },
     changePublishStatus(id, type) {
         return instance.post(`change-publish-status`, { "id": id, "type": type})
@@ -87,7 +101,6 @@ export const articleElementsAPI = {
 
 export const taskElementsAPI = {
     addTaskElement(lessonId, elementType,data, isAnswer =false) {
-        debugger
         return instance.post(`lessons/task`, { "lesson_id": lessonId, "type": elementType, "data": data, "is_answer": isAnswer })
             .then(response => response.data);
     },
@@ -104,8 +117,7 @@ export const taskElementsAPI = {
         return instance.post(`lessons/task/edit-media`, { "id": elementId, "media": data })
             .then(response => response.data);
     },
-    editTaskQuiz(elementId, data) {
-        debugger
+    editTaskQuiz(elementId, data) {        
         return instance.post(`lessons/task/edit-quiz`, { "id": elementId, "json_options": data[0], "json_answers": data[1] })
             .then(response => response.data);
     },

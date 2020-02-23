@@ -28,7 +28,11 @@ class Test extends React.Component {
         this.props.editOption(e.currentTarget.value, position)
     }
     editAnswer = (e, position) => {
-        this.props.editAnswer(e, position);
+        let answers = this.props.answers;
+        if (e.currentTarget.checked)
+            answers[0] = position.toString();    
+
+        this.props.editQuiz(this.props.options, answers);
     }
 
 

@@ -132,6 +132,8 @@ export const getFirstNotCompletedLessonId = () => (dispatch, getState) => {
             for (let j = 0; j < lessons.length; j++) {
                 if (!completedLessonsIds.some(id => +id === +lessons[j].id)) {
                     dispatch(setFirstNotCompletedLessonId(+lessons[j].id));
+                    dispatch(setCurrentLessonId(+lessons[j].id));
+                    
                     return +lessons[j].id;
                 }
             }

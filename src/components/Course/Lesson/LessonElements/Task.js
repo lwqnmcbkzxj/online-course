@@ -41,6 +41,7 @@ class Task extends React.Component {
             this.setState({ "type": soloTest, options, answers })
         else if (answers.length > 1)
             this.setState({ "type": multiTest, options, answers });
+
     }
 
     deleteElement = (elementId) => {
@@ -76,19 +77,7 @@ class Task extends React.Component {
         options[position] = value;
         this.editQuiz(options, answers);
     }
-
-    editAnswer = (e, position) => {
-        debugger
-        let options = this.state.options;
-        let answers = this.state.answers;
-
-        if (e.currentTarget.checked)
-            answers[position] = position.toString();
-        else
-            answers[position] = "";
-
-        this.editQuiz(options, answers);
-    }
+   
 
     editQuiz = (options, answers) => {
         options = JSON.stringify(options);
@@ -117,8 +106,8 @@ class Task extends React.Component {
 
     completeTask = (lessonId, status) => {
         let now = Date.now();
-        let a = Cookies.get(`task${lessonId}`);
-        let taskObject = JSON.parse(a);
+        let taskCookie = Cookies.get(`task${lessonId}`);
+        let taskObject = JSON.parse(taskCookie);
 
         this.setState({ completeTry: true });
         taskObject.attempts--;
@@ -128,26 +117,26 @@ class Task extends React.Component {
 
         if (status) {
             let newObj = {
-                id: taskObject.id,
-                firstTryTime: taskObject.firstTryTime,
-                overAllResult: true,
-                totalTime: now - taskObject.startDate
+                attempts: taskObject.attempts,
+                first_try_time: taskObject.firstTryTime,
+                overall_result: true,
+                total_time: now - taskObject.startDate
             }
 
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj));
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
             this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
             Cookies.remove(`task${lessonId}`);
             this.props.showAnswerBlock();
 
         } else if (taskObject.attempts === 0) {
             let newObj = {
-                id: taskObject.id,
-                firstTryTime: taskObject.firstTryTime,
-                overAllResult: false,
-                totalTime: now - taskObject.startDate
+                attempts: taskObject.attempts,
+                first_try_time: taskObject.firstTryTime,
+                overall_result: false,
+                total_time: now - taskObject.startDate
             }
 
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, JSON.stringify(newObj));
+            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
             this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
             Cookies.remove(`task${lessonId}`);
             this.props.showAnswerBlock();
@@ -170,8 +159,7 @@ class Task extends React.Component {
             editQuestion: this.editQuestion,
             addOption: this.addOption,
             deleteOption: this.deleteOption,
-            editOption: this.editOption,
-            editAnswer: this.editAnswer,
+            editOption: this.editOption,            
         }
         if (this.state.type === openAnswer)
             taskComponent = <OpenAnswer {...this.state} {...propsObj} />
@@ -198,9 +186,7 @@ class Task extends React.Component {
                     <h3>{this.props.text}</h3>
                     <div key={this.props.id}>
                         {taskComponent}
-                    </div>
-                    {this.state.completeTry && <p>{this.state.taskMessage}</p>}
-
+                    </div> 
                 </div>
 
         );

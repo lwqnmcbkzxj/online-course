@@ -123,7 +123,7 @@ const PasswordResetForm = (props) => {
         <form onSubmit={props.handleSubmit} className={s.resetForm}>
             <Field placeholder="Password" name={"password"} type="password" component="input" />
             <Field placeholder="Repeat password" name={"repeat-password"} type="password" component="input" />
-            <button className={s.active}>Save password</button>
+            <button>Save password</button>
         </form>
     );
 }

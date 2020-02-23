@@ -13,7 +13,7 @@
     border-bottom: 1px solid #bcbcbc;
 
 }
-.infoBlock div {
+.infoBlock>div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     padding: 13px 0;    
@@ -33,4 +33,8 @@
     align-items: center;
     margin-top: 20px;
     font-size: 22px;
+}
+
+.resetForm input {
+    width: 90%;
 }

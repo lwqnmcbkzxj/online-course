@@ -7,7 +7,7 @@ import Preloader from '../../Common/Preloader/Preloader';
 
 import { editSection, editLesson, completeLesson } from '../../../redux/sectionsList-reducer';
 import { setCurrentLessonId, setModalFunction } from '../../../redux/course-reducer';
-import { getLesson, addElement, addTaskElement, deleteElement, editElement, changeElementPosition, togglePublish } from '../../../redux/lesson-reducer';
+import { getLesson, addElement, addTaskElement, deleteElement, editElement, changeElementPosition, togglePublish, likeLesson } from '../../../redux/lesson-reducer';
 
 import { withRouter } from 'react-router';
 
@@ -23,7 +23,7 @@ class LessonContainer extends React.Component {
     }
 
 
-    componentWillMount() {
+    componentDidMount() {
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         this.props.getLesson(lessonId);
 
@@ -34,7 +34,6 @@ class LessonContainer extends React.Component {
     }
 
     componentDidUpdate(prevProps, prevState) {
-
         let lessonId = this.props.match.params.lessonId ? this.props.match.params.lessonId : 1;
         if (this.props.sections.length && (+lessonId !== +prevState.lessonId ||
             this.state.sectionTitle !== prevState.sectionTitle ||
@@ -206,7 +205,7 @@ let WithUrlDataContainerComponent = withRouter(LessonContainer);
 
 export default connect(mapStateToProps, {
     getLesson, setCurrentLessonId,
-    completeLesson,
+    completeLesson, likeLesson,
     setModalFunction,
     addElement, addTaskElement, deleteElement, editElement, changeElementPosition,
     editSection, editLesson,

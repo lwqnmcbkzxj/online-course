@@ -9,7 +9,7 @@ import Modal from '../Common/Modal/Modal';
 
 
 class Course extends React.Component {
-    render() {
+    render() {        
         return (
             <div>
                 <div className={s.course}>

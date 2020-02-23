@@ -28,7 +28,6 @@ class Login extends React.Component {
     }
     render() {
         if (this.props.logged) {
-            // let currentNotCompletedLesson = getFirstNotCompletedLesson();
             return <Redirect to={"/course"} />
         }
 

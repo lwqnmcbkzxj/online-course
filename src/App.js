@@ -23,7 +23,7 @@ import HeaderContainer from './components/Header/HeaderContainer';
 
 class App extends React.Component {
 	componentDidMount() {		
-		this.props.authUser();
+		this.props.authUser();		
 		this.props.initApp();
 	}
 	componentWillUpdate() {
@@ -62,7 +62,10 @@ class App extends React.Component {
 let mapStateToProps = (state) => ({
 	initialized: state.app.initialized,
 	firstNotCompletedLessonId: state.course.firstNotCompletedLessonId,
-	startPageName: state.app.startPageName
+	currentSectionId: state.course.currentSectionId,
+	startPageName: state.app.startPageName,
+	logged: state.user.logged,
+	
 })
 
 

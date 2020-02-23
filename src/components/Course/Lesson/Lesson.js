@@ -12,14 +12,19 @@ class Lesson extends React.Component {
         answerElements: [],
         articleElements: []
     }
+
+    componentDidMount() {
+        this.setLessonBlock(true);
+        this.setLessonBlock(false);
+    }
     componentDidUpdate(prevProps) {
-        if (this.props !== prevProps) {
+        if (this.props !== prevProps || this.props.editMode !== prevProps.editMode) {
             this.setLessonBlock(true);
             this.setLessonBlock(false);
         }
     }
-    completeLesson = (lessonId, type, data = null) => {
-        // this.props.completeLesson(lessonId, this.props.currentSectionId, type, data);
+    completeLesson = (lessonId = this.props.lesson.id, sectionId = this.props.currentSectionId, data = null) => {
+        this.props.completeLesson(lessonId, sectionId, this.props.lesson.type, data);
     }
 
     showAnswerBlock = () => {
@@ -29,10 +34,17 @@ class Lesson extends React.Component {
         this.props.goToNextLesson();
     }
 
+    likeLesson = () => {
+        this.props.likeLesson(this.props.lesson.id);
+    }
+
     setLessonBlock = (isAnswer) => {
-        let elementsArray = [];
+        let answerElements = [];
+        let articleElements = [];
+        let taskComponent = "";
         if (this.props.lesson.elements) {
             this.props.lesson.elements.map(element => {
+
                 let component = '';
                 if (element.type === 0)
                     component = <Text {...element} />;
@@ -41,20 +53,29 @@ class Lesson extends React.Component {
                 else if (element.type === 2)
                     component = <Video {...element} />;
                 else if (element.type === 3)
-                    component =
-                        <Task  {...element}
-                            lesson={this.props.lesson}
-                            completedLessonsIds={this.props.completedLessonsIds}
-                            completeLesson={this.completeLesson} />;
+                    taskComponent = 
+                        <div className={s.lessonElement} key={`lesson-${element.id}`}>
+                            <Task  {...element}
+                                lesson={this.props.lesson}
+                                completedLessonsIds={this.props.completedLessonsIds}
+                                completeLesson={this.completeLesson} showAnswerBlock={this.showAnswerBlock} />
+                        </div>;
 
 
-                elementsArray.push(<div className={s.lessonElement} key={element.id}> {component} </div>);
+                if (element.is_answer)
+                    answerElements.push(<div className={s.lessonElement} key={`lesson-${element.id}`}> {component} </div>);
+                else
+                    articleElements.push(<div className={s.lessonElement} key={`answer-${element.id}`}> {component} </div>);
+
             })
 
+            if (taskComponent)
+                articleElements.push(taskComponent);
+
             if (isAnswer)
-                this.setState({ answerElements: elementsArray });
+                this.setState({ answerElements });
             else
-                this.setState({ articleElements: elementsArray });
+                this.setState({ articleElements });
         }
     }
 
@@ -68,21 +89,26 @@ class Lesson extends React.Component {
                     {this.state.articleElements.map(element => element)}
                 </div>
 
-                <div className={s.buttonHolder}>
-                    {this.props.completedLessonsIds.some(id => id === +this.props.lesson.id) ?
-                        <button onClick={() => { this.goToNextLesson() }}>Next</button>
-                        : this.props.lesson.type === 0 ?
-                            <button onClick={() => { this.completeLesson() }}>CompleteLesson</button>
-                            : null}
-                </div>
-
-
-                {this.props.lesson.type === 1 && this.props.answerBlockVisible ?
+                {this.props.lesson.type === 1 && this.state.answerBlockVisible && this.state.answerElements.length ?
                     <div className={s.answerBlock}>
                         <h2>Answer</h2>
                         {this.state.answerElements.map(element => element)}
                     </div>
                     : null}
+
+                <div className={s.buttonHolder}>
+                    {this.props.completedLessonsIds.some(id => id === +this.props.lesson.id) ?
+                        <div>
+                            <button onClick={() => { this.goToNextLesson() }}>Next</button>
+                            <div className={s.likeLesson}>Like lesson <button onClick={this.likeLesson}><i className="fa fa-thumbs-up" aria-hidden="true"></i></button></div>
+                        </div>
+                        : this.props.lesson.type === 0 ?
+                            <button onClick={() => { this.completeLesson() }}>Complete Lesson</button>
+                            : null}
+                </div>
+
+
+
             </div>
         );
     }

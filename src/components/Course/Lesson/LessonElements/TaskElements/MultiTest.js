@@ -4,7 +4,7 @@ import { Field, reduxForm } from 'redux-form';
 
 class MultiTest extends React.Component {
     state = {
-        editMode: ''
+        editMode: '',
     }
     componentDidMount() {
         this.setState({ editMode: this.props.editMode })
@@ -29,7 +29,13 @@ class MultiTest extends React.Component {
     }
 
     editAnswer = (e, position) => {
-        this.props.editAnswer(e, position);
+        let answers = this.props.answers;
+        if (e.currentTarget.checked)
+            answers[position] = position.toString();   
+        else 
+            answers[position] = "";   
+
+        this.props.editQuiz(this.props.options, answers);
     }
 
     completeTask = (formData) => {
@@ -49,7 +55,6 @@ class MultiTest extends React.Component {
             this.props.completeTask(+this.props.lesson.id, false)
     }
     render() {
-        debugger
         return (
             this.state.editMode ?
                 <div>
@@ -84,6 +89,7 @@ const MultiTestForm = (props) => {
                     </div>
                 )}
             </div>
+            {props.completeTry && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
                     <button>Answer</button> : null}

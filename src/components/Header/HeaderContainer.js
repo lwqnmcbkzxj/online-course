@@ -1,7 +1,10 @@
 import React from 'react';
 import Header from './Header'
 import { connect } from 'react-redux';
+import { compose } from 'redux';
+import { withRouter } from 'react-router';
 
+import { setStartPagename } from '../../redux/app-reducer';
 import { toggleEditMode } from '../../redux/course-reducer';
 import { getUserInfo } from '../../redux/user-reducer';
 
@@ -15,10 +18,13 @@ class HeaderContainer extends React.Component {
 let mapStateToProps = (state) => {
     return {
         user: state.user.info,
-        editMode: state.course.editMode,
-        currentLessonId: state.course.currentLessonId,
-        firstNotCompletedLessonId: state.course.firstNotCompletedLessonId,
+        editMode: state.course.editMode,       
     }
 }
 
-export default connect(mapStateToProps, { toggleEditMode, getUserInfo  })(HeaderContainer);
+export default compose(
+withRouter,
+
+    connect(mapStateToProps, { toggleEditMode, getUserInfo, setStartPagename }))(HeaderContainer);
+    
+    

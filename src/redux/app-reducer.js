@@ -7,7 +7,7 @@ const SET_START_PAGENAME = 'SET_START_PAGENAME';
 
 let initialState = {
     initialized: false,
-    startPageName: ''
+    startPageName: '',
 }
 
 const appReducer = (state = initialState, action) => {
@@ -20,7 +20,6 @@ const appReducer = (state = initialState, action) => {
         }
        
         case SET_START_PAGENAME: {
-            debugger
             return {
                 ...state,
                 startPageName: action.pageName
@@ -34,7 +33,7 @@ const appReducer = (state = initialState, action) => {
 export const initApp = () => (dispatch, getState) => {
     let getSects = dispatch(getSections());
     let getUserStat = dispatch(getUserInfo());
-    return Promise.all([getSects, getUserStat])
+    return Promise.allSettled([getSects, getUserStat])
         .then(() => {
             dispatch(getFirstNotCompletedLessonId());       
             dispatch(initializedSuccess(true));            

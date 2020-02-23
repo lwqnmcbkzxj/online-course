@@ -10,7 +10,7 @@ class TasksListContainer extends React.Component {
     componentDidMount() {         
         let request = this.props.getSections();
         request.then(() => {
-            this.props.getTasks()
+            this.props.getTasks();
         });        
     }
     

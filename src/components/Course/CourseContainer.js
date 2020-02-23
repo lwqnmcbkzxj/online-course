@@ -6,12 +6,17 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 
 import { toggleModalVisible } from '../../redux/course-reducer';
+import { withRouter } from 'react-router';
 
 
-class CourseContainer extends React.Component {     
+class CourseContainer extends React.Component {  
+    componentDidMount() {
+        if (!this.props.history.location.pathname.startsWith(`/course/lesson/`) )
+            this.props.history.push(`course/lesson/${this.props.currentLessonId}`)
+    }
     render() {
-        if (this.props.isFetching)
-            return <Preloader />
+        // if (this.props.isFetching)
+        //     return <Preloader />
         return <Course {...this.props} />
     }
 }
@@ -19,10 +24,12 @@ class CourseContainer extends React.Component {
 let mapStateToProps = (state) => ({
     modalIsVisible: state.course.modalIsVisible,
     modalFunction: state.course.modalFunction,
-    isFetching: state.course.isFetching
+    isFetching: state.course.isFetching,
+    currentLessonId: state.course.currentLessonId,
 })
 
 
 
 export default compose(
+    withRouter,
     connect(mapStateToProps, { toggleModalVisible }))(CourseContainer);

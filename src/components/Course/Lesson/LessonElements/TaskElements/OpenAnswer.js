@@ -11,7 +11,6 @@ const OpenAnswer = (props) => {
     }
 
     let completeTask = (formData) => {
-        debugger
         if (formData.answer === props.answers[0])
             props.completeTask(+props.lesson.id, true)
         else

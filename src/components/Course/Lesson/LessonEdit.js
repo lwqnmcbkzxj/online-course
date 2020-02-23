@@ -54,7 +54,7 @@ const LessonEdit = (props) => {
     let togglePublish = (type) => {
         props.togglePublish(props.lesson.id, props.currentSectionId, type)
     }
-    
+
     return (
         <div className={s.lesson}>
             {props.isFirstLesson ? <div className={s.publishCheckboxBlock}> Publish section<input type="checkbox" checked={props.publishedSection} onChange={() => { togglePublish('section') }} /> </div> : null}
@@ -95,12 +95,15 @@ const LessonEdit = (props) => {
             ) : null}
 
             {props.lesson.type === 1 && taskCount === 0 ?
-                <div className={s.addElements}>
+                <div>
                     <h2>Task</h2>
-                    <button onClick={() => { addTaskElement(1) }}>+ Add one choice test</button>
-                    <button onClick={() => { addTaskElement(2) }}>+ Add multichoice test</button>
-                    <button onClick={() => { addTaskElement(3) }}>+ Add open answer</button>
+                    <div className={s.addElements}>
+                        <button onClick={() => { addTaskElement(1) }}>+ Add one choice test</button>
+                        <button onClick={() => { addTaskElement(2) }}>+ Add multichoice test</button>
+                        <button onClick={() => { addTaskElement(3) }}>+ Add open answer</button>
+                    </div>
                 </div>
+
                 : null}
 
 

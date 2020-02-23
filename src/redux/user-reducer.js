@@ -118,14 +118,13 @@ export const login = (email, password) => (dispatch) => {
         }
     })
 }
-export const authUser = () => (dispatch) => {
-    debugger
+export const authUser = () => (dispatch) => {    
     if (Cookies.get('token')) {
         let token = Cookies.get('token');
         setToken(token);
-        dispatch(setUserLogged(true));
         dispatch(setUserToken(token));
         dispatch(getUserInfo());
+        dispatch(setUserLogged(true));
     }
 }
 
