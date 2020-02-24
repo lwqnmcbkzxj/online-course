@@ -26,12 +26,7 @@ class App extends React.Component {
 		this.props.authUser();		
 		this.props.initApp();
 	}
-	componentWillUpdate() {
-		if (this.props.startPageName === 'welcome') {			
-			this.props.setStartPagename('course');			
-			this.props.history.push(`/course/lesson/${this.props.firstNotCompletedLessonId}`);			
-		}
-	}
+	
 	render() {
 		if (this.props.history.location.pathname === '/')
 			this.props.history.push("/welcome");

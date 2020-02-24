@@ -10,14 +10,15 @@ class Lesson extends React.Component {
     state = {
         answerBlockVisible: false,
         answerElements: [],
-        articleElements: []
+        articleElements: [],
+        lessonLiked: false,
     }
 
     componentDidMount() {
         this.setLessonBlock(true);
         this.setLessonBlock(false);
     }
-    componentDidUpdate(prevProps) {
+    componentDidUpdate(prevProps, prevState) {
         if (this.props !== prevProps || this.props.editMode !== prevProps.editMode) {
             this.setLessonBlock(true);
             this.setLessonBlock(false);
@@ -35,6 +36,7 @@ class Lesson extends React.Component {
     }
 
     likeLesson = () => {
+        this.setState({ lessonLiked: true });
         this.props.likeLesson(this.props.lesson.id);
     }
 
@@ -53,7 +55,7 @@ class Lesson extends React.Component {
                 else if (element.type === 2)
                     component = <Video {...element} />;
                 else if (element.type === 3)
-                    taskComponent = 
+                    taskComponent =
                         <div className={s.lessonElement} key={`lesson-${element.id}`}>
                             <Task  {...element}
                                 lesson={this.props.lesson}
@@ -96,19 +98,26 @@ class Lesson extends React.Component {
                     </div>
                     : null}
 
-                <div className={s.buttonHolder}>
-                    {this.props.completedLessonsIds.some(id => id === +this.props.lesson.id) ?
-                        <div>
+                {this.props.completedLessonsIds.some(id => id === +this.props.lesson.id) ?
+                    <div className={s.lessonButtons}>
+
+                        <div className={s.buttonHolder}>
                             <button onClick={() => { this.goToNextLesson() }}>Next</button>
-                            <div className={s.likeLesson}>Like lesson <button onClick={this.likeLesson}><i className="fa fa-thumbs-up" aria-hidden="true"></i></button></div>
                         </div>
-                        : this.props.lesson.type === 0 ?
+
+                        <div className={s.likeLesson}>
+                            <button onClick={this.likeLesson}>
+                                {!this.state.lessonLiked ? "Like lesson  " : "Lesson Liked "}
+                                <i className="fa fa-thumbs-up" aria-hidden="true"></i>
+                            </button>
+                        </div>
+                    </div>
+                    : this.props.lesson.type === 0 ?
+                        <div className={s.buttonHolder}>
                             <button onClick={() => { this.completeLesson() }}>Complete Lesson</button>
-                            : null}
-                </div>
+                        </div>
 
-
-
+                        : null}
             </div>
         );
     }

@@ -105,8 +105,17 @@ input {
     font-size: 22px;
     transition: .5s;
 }
+.likeLesson:hover {
+    cursor: pointer;
+}
 .likeLesson button:hover {
     box-shadow: none;
-    cursor: default;
     color: #353535;
+}
+
+.lessonButtons {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
 }

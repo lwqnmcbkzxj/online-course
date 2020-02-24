@@ -90,11 +90,11 @@ class LessonContainer extends React.Component {
             });
         });
     }
-
     getCurrentSectionTitle = (lessonId) => {
+        debugger
         let sections = this.props.sections;
         for (let i = 0; i < sections.length; i++) {
-            if (+sections[i].id === +this.props.currentSectionId && +sections[i].lessons[0].id === +lessonId) {
+            if (sections[i].lessons[0] && +sections[i].lessons[0].id === +lessonId) {
                 this.setState({ sectionTitle: sections[i].title, isFirstLesson: true });
                 break;
             } else
@@ -135,7 +135,6 @@ class LessonContainer extends React.Component {
                 if (lesson.id === +this.props.lesson.id) {
                     lesPos = lessonCounter;
                     sectPos = sectionCounter;
-
                 }
             })
         })
@@ -154,13 +153,16 @@ class LessonContainer extends React.Component {
         if (nextId === this.props.lesson.id) {
             while (nextId === this.props.lesson.id) {
                 sectPos++;
-                let lessons = this.props.sections[sectPos].lessons;
-                for (let i = 0; i < lessons.length; i++) {
-                    if (lessons[i].publish) {
-                        nextId = lessons[i].id;
-                        break;
+                if (this.props.sections[sectPos]) {
+                    let lessons = this.props.sections[sectPos].lessons;
+                    for (let i = 0; i < lessons.length; i++) {
+                        if (lessons[i].publish) {
+                            nextId = lessons[i].id;
+                            break;
+                        }
                     }
                 }
+                else break;
             }
         }
         this.props.history.push(`/course/lesson/${nextId}`)

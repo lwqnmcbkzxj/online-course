@@ -1,6 +1,8 @@
 import { userAPI } from "../api/api";
 import { setToken } from "../api/api"
 import Cookies from "js-cookie";
+import { stopSubmit } from 'redux-form';
+
 
 const SET_USER_INFO = 'SET-USER';
 const SET_USER_STATS = 'SET-STATS';
@@ -112,9 +114,13 @@ export const getUserInfo = () => (dispatch) => {
 
 export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
+        debugger
+
         if (response.token) {  
             Cookies.set('token', response.token, { expires: 10 / 24 });
             dispatch(authUser());
+        } else if (response.error === "Invalid credentials") {
+            dispatch(stopSubmit("login", { _error: "Incorrect email or password" }))
         }
     })
 }
@@ -130,7 +136,11 @@ export const authUser = () => (dispatch) => {
 
 
 export const register = (login, email, password) => (dispatch) => {
-    userAPI.register(login, email, password)
+    userAPI.register(login, email, password).then(response => {
+        if (response.error === "already exists") {
+            dispatch(stopSubmit("register", { _error: "User with that login or email already exists" }))            
+        }
+    })
 }
 
 export const logout = () => (dispatch) => {

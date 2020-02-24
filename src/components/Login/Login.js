@@ -2,17 +2,23 @@ import React from 'react';
 import s from './Login.module.css';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { login, authUser } from '../../redux/user-reducer';
-import { Field, reduxForm } from 'redux-form';
 import { Redirect } from 'react-router';
+
+import { login, authUser } from '../../redux/user-reducer';
+
+import { Field, reduxForm } from 'redux-form';
+import { Input } from '../Common/FormComponents/Input';
+import { required } from '../../utils/validators/validators';
 
 
 const LoginForm = (props) => {
     return (
         <div className={s.login}>
             <form onSubmit={props.handleSubmit}>
-                <Field placeholder="Email" name={"email"} component="input" />
-                <Field placeholder="Password" name={"password"} type="password" component="input" />
+                <div className={s.formError}>{props.error}</div>
+                <Field placeholder="Email" name={"email"} component={Input} validate={[required]} />
+                <Field placeholder="Password" name={"password"} type="password" component={Input} validate={[required]} />
+
                 <button className={s.active}>Log in</button>
             </form>
         </div>
@@ -20,7 +26,7 @@ const LoginForm = (props) => {
 }
 
 class Login extends React.Component {
-    componentDidMount() {        
+    componentDidMount() {
         this.props.authUser();
     }
     login = (formData) => {

@@ -17,11 +17,11 @@
     text-align: center;
     font-weight: bold;
     font-size: 22px;
-    margin-bottom: 20px;
+    margin-bottom: 10px;
 }
 
 .login form input {
-    padding: 15px 10px;
+    padding: 17px 10px;
     width: 100%;
     box-sizing: border-box;
 }
@@ -36,9 +36,14 @@
 
 .login button.active {    
     background: #000;
-    color: #c6a951;
+    color: #ddad35;
     font-weight: normal;
     padding: 10px;
-
 }
 
+.formError {
+    text-align: center;
+    margin-bottom: 10px;
+    color: #f05642;
+    font-size: 22px;
+}

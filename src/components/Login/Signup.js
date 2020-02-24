@@ -2,18 +2,24 @@ import React from 'react';
 import s from './Login.module.css';
 import { NavLink } from 'react-router-dom';
 import { connect } from 'react-redux';
-import { register } from '../../redux/user-reducer';
-import { Field, reduxForm } from 'redux-form';
 import { Redirect } from 'react-router';
+
+import { register } from '../../redux/user-reducer';
+import { SubmissionError } from 'redux-form'
+
+import { Field, reduxForm } from 'redux-form';
+import { Input } from '../Common/FormComponents/Input';
+import { required } from '../../utils/validators/validators';
 
 const RegisterForm = (props) => {
     return (
         <div className={s.login}>           
-            <form onSubmit={props.handleSubmit}>                
-                <Field placeholder="Login" name="login" component="input"/>
-                <Field placeholder="Email" name="email" component="input"/>
-                <Field placeholder="Password" name="password" type="password" component="input"/>
-                <Field placeholder="Repeat password" name="repeat_password" type="password" component="input"/>
+            <form onSubmit={props.handleSubmit}>
+                <div className={s.formError}>{props.error}</div>                
+                <Field placeholder="Login" name="login" component={Input} validate={[required]}/>
+                <Field placeholder="Email" name="email" component={Input} validate={[required]}/>
+                <Field placeholder="Password" name="password" type="password" component={Input} validate={[required]} />
+                <Field placeholder="Repeat password" name="repeat_password" type="password" component={Input} validate={[required]} />
                 <button className={s.active}>Sign up</button>
             </form>
         </div>
@@ -23,11 +29,15 @@ const RegisterForm = (props) => {
 
 const Register = (props) => {
     const onSubmit = (formData) => {
+        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email))
+            throw new SubmissionError({ _error: "Incorrect email" })
+
         if (formData.password === formData.repeat_password) {
             props.register(formData.login, formData.email, formData.password);
             return <Redirect to={"/login"} />
-        }
-        
+        } else {
+            throw new SubmissionError({ _error: "Passwords don't match" })
+        } 
     }
 
     return (
