@@ -35,7 +35,7 @@ class App extends React.Component {
 			return <Preloader />;
 		return (
 			<div className="app-wrapper">
-				<Route path="/" render={() => <HeaderContainer />} />
+				<Route path="/" render={(props) => props.location.pathname !== '/welcome' && <HeaderContainer />} />
 
 				<div className='app-container'>
 					<Switch>

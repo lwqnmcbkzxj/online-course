@@ -7,6 +7,8 @@ const TOGGLE_EDIT_MODE = 'TOGGLE-EDIT-MODE';
 
 const SET_FIRST_NOTCOMPLETED_LESSON_ID = 'SET_FIRST_NOTCOMPLETED_LESSON_ID';
 const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+const SET_ADDED_LESSON_ID = 'SET_ADDED_LESSON_ID';
+const SET_FIRST_VIDEO_URL = 'SET_FIRST_VIDEO_URL';
 
 
 let initialState = {
@@ -16,8 +18,9 @@ let initialState = {
     modalFunction: null,
     editMode: false,
     firstNotCompletedLessonId: 1,
-    isFetching: false
-
+    isFetching: false,
+    addedLessonId: 1,
+    firstVideo: ''
 }
 
 const courseReducer = (state = initialState, action) => {
@@ -64,7 +67,29 @@ const courseReducer = (state = initialState, action) => {
             return {
                 ...state,
                 isFetching: action.isFetching
-           }
+            }
+        }
+        case SET_ADDED_LESSON_ID: {
+            return {
+                ...state,
+                addedLessonId: +action.lessonId
+            }
+        }
+        case SET_FIRST_VIDEO_URL: {
+
+            let videoID = '';
+            let url = action.url;
+            if (url.includes('watch'))
+                videoID = url.split('/')[3].split('=')[1];
+            else if (url.includes('embed'))
+                videoID = url.split('/')[4];
+
+            videoID = videoID !== '' ? "https://www.youtube.com/embed/" + videoID : "";
+
+            return {
+                ...state,
+                firstVideo: videoID
+            }
         }
         default:
             return state;
@@ -133,7 +158,7 @@ export const getFirstNotCompletedLessonId = () => (dispatch, getState) => {
                 if (!completedLessonsIds.some(id => +id === +lessons[j].id) && lessons[j].publish) {
                     dispatch(setFirstNotCompletedLessonId(+lessons[j].id));
                     dispatch(setCurrentLessonId(+lessons[j].id));
-                    
+
                     return +lessons[j].id;
                 }
             }
@@ -146,5 +171,40 @@ export const toggleIsFetching = (isFetching) => {
         type: TOGGLE_IS_FETCHING,
         isFetching
     }
+}
+
+const setAddedLessonIdSuccess = (lessonId) => {
+    return {
+        type: SET_ADDED_LESSON_ID,
+        lessonId
+    }
+}
+const setAddedLessonId = (response) => (dispatch) => {
+    let maxId = 1;
+
+    let sections = response;
+    sections.map(section => {
+        section.lessons.map(lesson => {
+            if (+lesson.id > maxId)
+                maxId = +lesson.id;
+        })
+        dispatch(setAddedLessonIdSuccess(maxId));
+    })
+}
+
+const setFirstVideoSuccess = (url) => {
+    return {
+        type: SET_FIRST_VIDEO_URL,
+        url
+    }
+}
+const setFirstVideo = (response) => (dispatch) => {    
+    dispatch(setFirstVideoSuccess("https://www.youtube.com/watch?v=uD4izuDMUQA"));
+     
+}
+
+export const setCourseInfo = (response) => (dispatch) => {
+    dispatch(setAddedLessonId(response));
+    dispatch(setFirstVideo(response));
 }
 export default courseReducer;

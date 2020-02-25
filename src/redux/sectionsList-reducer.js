@@ -1,5 +1,6 @@
 import { sectionsListAPI, lessonAPI } from '../api/api';
 import { getUserInfo } from "./user-reducer"
+import { setCourseInfo } from './course-reducer';
 const SET_SECTIONS = 'SET_SECTIONS_DATA';
 
 const ADD_SECTION = 'ADD_SECTION';
@@ -13,6 +14,7 @@ const EDIT_LESSON = 'EDIT_LESSON';
 
 const COMPLETE_LESSON = 'COMPLETE_LESSON';
 const COMPLETE_SECTION = 'COMPLETE_SECTION';
+
 
 let initialState = {
     sections: []
@@ -149,6 +151,7 @@ const sectionsListReducer = (state = initialState, action) => {
                 })
             };
         }
+        
         default:
             return state;
     }
@@ -158,6 +161,7 @@ const sectionsListReducer = (state = initialState, action) => {
 export const getSections = () => (dispatch) => {
     return sectionsListAPI.getSections().then((response) => {
         dispatch(setSections(response));
+        dispatch(setCourseInfo(response))
     })
 }
 
@@ -286,10 +290,10 @@ export const addSection = () => (dispatch) => {
 }
 
 export const addLesson = (sectionId, contentType) => (dispatch) => {
-    lessonAPI.addLesson(sectionId, contentType).then((response) => {
+    return lessonAPI.addLesson(sectionId, contentType).then((response) => {
         if (response.status === "ok") {
             dispatch(getUserInfo());
-            dispatch(getSections());
+            return dispatch(getSections());            
         }
     })
 }

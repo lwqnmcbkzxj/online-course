@@ -84,6 +84,7 @@ const TestForm = (props) => {
                     </div>
                 )}
             </div>
+            {props.completeTry && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
                     <button>Answer</button> : null}

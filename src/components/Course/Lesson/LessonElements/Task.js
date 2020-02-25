@@ -6,6 +6,11 @@ import MultiTest from './TaskElements/MultiTest';
 import Test from './TaskElements/Test';
 import OpenAnswer from './TaskElements/OpenAnswer';
 
+import moveIcon from '../../../../assets/images/move.svg'
+import deleteIcon from '../../../../assets/images/delete.png'
+
+
+
 let soloTest = 'Test with one choice';
 let multiTest = 'Test with multi choice';
 let openAnswer = 'Write answer in textfield';
@@ -77,7 +82,7 @@ class Task extends React.Component {
         options[position] = value;
         this.editQuiz(options, answers);
     }
-   
+
 
     editQuiz = (options, answers) => {
         options = JSON.stringify(options);
@@ -159,7 +164,7 @@ class Task extends React.Component {
             editQuestion: this.editQuestion,
             addOption: this.addOption,
             deleteOption: this.deleteOption,
-            editOption: this.editOption,            
+            editOption: this.editOption,
         }
         if (this.state.type === openAnswer)
             taskComponent = <OpenAnswer {...this.state} {...propsObj} />
@@ -168,12 +173,15 @@ class Task extends React.Component {
         else if (this.state.type === multiTest)
             taskComponent = <MultiTest {...this.state} {...propsObj} />
 
+
+        // const { isDragging, connectDragSource, connectDragPreview, connectDropTarget, editMode, find, move, change, ...restProps } = this.props
+        // const opacity = isDragging ? 0.5 : 1;
         return (
             this.props.editMode ?
                 <div>
                     <div className={s.elementHeader}>
-                        <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteElement(this.props.id) }}></i>
-                        <i className="fa fa-arrows" aria-hidden="true"></i>
+                        <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
+                        <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
                         <h2>Task - {this.state.type}</h2>
                     </div>
                     <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e) => { this.editQuestion(e) }} />
@@ -186,10 +194,37 @@ class Task extends React.Component {
                     <h3>{this.props.text}</h3>
                     <div key={this.props.id}>
                         {taskComponent}
-                    </div> 
-                </div>
+                    </div>
+                </div>);
 
-        );
+
+        // if (this.props.editMode) {
+        //     return connectDropTarget(
+        //         connectDragPreview(
+        //             <div>
+        //                 <div className={s.elementHeader}>
+        //                     <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
+        //                     {/* {connectDragSource(<div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>)} */}
+        //                     <h2>Task - {this.state.type}</h2>
+        //                 </div>
+        //                 <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e) => { this.editQuestion(e) }} />
+        //                 <div key={this.props.id}>
+        //                     {taskComponent}
+        //                 </div>
+        //             </div>
+        //         )
+        //     )
+        // } else {
+        //     return (
+        //         <div className={s.task}>
+        //             <h2>Task - {this.state.type}</h2>
+        //             <h3>{this.props.text}</h3>
+        //             <div key={this.props.id}>
+        //                 {taskComponent}
+        //             </div>
+        //         </div>
+        //     )
+        // }
     }
 }
 export default Task;

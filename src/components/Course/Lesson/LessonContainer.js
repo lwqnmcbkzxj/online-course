@@ -91,7 +91,6 @@ class LessonContainer extends React.Component {
         });
     }
     getCurrentSectionTitle = (lessonId) => {
-        debugger
         let sections = this.props.sections;
         for (let i = 0; i < sections.length; i++) {
             if (sections[i].lessons[0] && +sections[i].lessons[0].id === +lessonId) {

@@ -6,7 +6,7 @@ import { getSections, addSection, addLesson, deleteSection, deleteLesson } from 
 
 
 class SectionsListContainer extends React.Component {
-    componentWillMount() {
+    componentDidMount() {
         this.props.getSections();
     }
 
@@ -19,6 +19,7 @@ let mapStateToProps = (state) => ({
     sections: state.sectionsList.sections,
     currentSectionId: state.course.currentSectionId,
     currentLessonId: state.course.currentLessonId,
+    addedLessonId: state.course.addedLessonId,
     editMode: state.course.editMode,
     completedSectionsIds: state.user.completedSectionsIds,
     completedLessonsIds: state.user.completedLessonsIds,

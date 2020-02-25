@@ -168,3 +168,27 @@ button {
 input {
     border: 1px solid black;
 }
+
+.icon {
+	filter: brightness(0);
+	margin-right: 8px;
+	width: 18px;
+	transition: .3s;
+}
+
+.icon.move{
+	width: 11px;
+}
+
+.icon:hover {
+	cursor: pointer;
+	opacity: .5;
+}
+
+button {
+	transition: .4s;
+}
+button:hover {
+    opacity: .8;
+
+}

@@ -21,6 +21,8 @@
 }
 .stats div {
     margin: 0 5px;
+    display: flex;
+    flex-direction: row;
 }
 .stats img {
     width: 20px;

@@ -2,6 +2,10 @@ import React from 'react';
 import s from './SectionsList.module.css';
 import { NavLink } from 'react-router-dom';
 
+import moveIcon from '../../../assets/images/move.svg'
+import deleteIcon from '../../../assets/images/delete.png'
+import { withRouter } from 'react-router';
+
 
 class SectionsList extends React.Component {
     state = {
@@ -28,7 +32,11 @@ class SectionsList extends React.Component {
 
     addLesson = (sectionId, contentType) => {
         this.setCurrentSection(sectionId);
-        this.props.addLesson(sectionId, contentType);
+        debugger
+
+        this.props.addLesson(sectionId, contentType).then(() => {
+            this.props.history.push(`/course/lesson/${this.props.addedLessonId}`)
+        });
     }
 
     addSection = () => {
@@ -60,12 +68,12 @@ class SectionsList extends React.Component {
             <div className={s.sectionList}>
                 {
                     this.props.sections.map(section =>
-                        section.publish || this.props.editMode ?  <div className={s.section} key={"s" + section.id} >
+                        section.publish || this.props.editMode ? <div className={s.section} key={"s" + section.id} >
                             <div className={s.sectionContent}>
                                 {this.props.editMode &&
                                     <div className={s.serviceBlock}>
-                                        <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteSection(section.id) }}></i>
-                                        <i className="fa fa-arrows" aria-hidden="true"></i>
+                                        <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteSection(section.id) }} /></div>
+                                        <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
                                     </div>}
                                 {this.props.completedSectionsIds.some(id => +id === +section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
                                 <div onClick={() => { this.toggleSection(section.id) }} className={s.sectionNameBlock}>
@@ -78,14 +86,14 @@ class SectionsList extends React.Component {
                             <ul className={this.state.visibleSections.some(id => +id === +section.id) ? s.lessonsVisibile : s.lessonsHidden} >
                                 {
                                     section.lessons ?
-                                        
+
                                         section.lessons.map(lesson =>
                                             lesson.publish || this.props.editMode ? <li key={"l" + lesson.id}>
                                                 <div className={s.item} >
                                                     {this.props.editMode &&
                                                         <div className={s.serviceBlock}>
-                                                            <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteLesson(lesson.id, section.id) }}></i>
-                                                            <i className="fa fa-arrows" aria-hidden="true"></i>
+                                                            <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteLesson(lesson.id, section.id) }} /></div>
+                                                            <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
                                                         </div>}
 
                                                     {this.props.completedLessonsIds.some(id => +id === +lesson.id) ?
@@ -95,7 +103,7 @@ class SectionsList extends React.Component {
                                                         {lesson.title}
                                                     </NavLink>
                                                 </div>
-                                            </li> : null)                                        
+                                            </li> : null)
                                         : null
                                 }
                                 {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 0) }}>+ Add lesson</button>}
@@ -109,4 +117,4 @@ class SectionsList extends React.Component {
         );
     }
 }
-export default SectionsList;
+export default withRouter(SectionsList);

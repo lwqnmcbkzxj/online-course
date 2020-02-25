@@ -4,7 +4,6 @@ import { connect } from 'react-redux';
 import { compose } from 'redux';
 import { withRouter } from 'react-router';
 
-import { setStartPagename } from '../../redux/app-reducer';
 import { toggleEditMode } from '../../redux/course-reducer';
 import { getUserInfo } from '../../redux/user-reducer';
 
@@ -24,7 +23,6 @@ let mapStateToProps = (state) => {
 
 export default compose(
 withRouter,
-
-    connect(mapStateToProps, { toggleEditMode, getUserInfo, setStartPagename }))(HeaderContainer);
+    connect(mapStateToProps, { toggleEditMode, getUserInfo }))(HeaderContainer);
     
     

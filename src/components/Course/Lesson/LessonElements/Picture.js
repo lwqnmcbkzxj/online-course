@@ -1,6 +1,9 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
+import moveIcon from '../../../../assets/images/move.svg'
+import deleteIcon from '../../../../assets/images/delete.png'
+
 class Picture extends React.Component {
     state = {
         media: "",
@@ -27,22 +30,30 @@ class Picture extends React.Component {
     }
 
     render() {
-        return (
-            this.props.editMode ?
-                <div>
-                    <div className={s.elementHeader}>
-                        <i className="fa fa-trash-o" aria-hidden="true" onClick={() => { this.deleteElement(this.props.id) }}></i>
-                        <i className="fa fa-arrows" aria-hidden="true"></i>
-                        <h2>Picture</h2>
+        // const { isDragging, connectDragSource, connectDragPreview, connectDropTarget, editMode, find, move, change, ...restProps } = this.props
+        // const opacity = isDragging ? 0.5 : 1;
+
+        if (this.props.editMode) {
+            return(
+            // connectDropTarget(
+                // connectDragPreview(
+                    <div>
+                        <div className={s.elementHeader} >
+                            <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
+                            {/* {connectDragSource(<div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>)} */}
+                            <h2>Picture</h2>
+                        </div>
+                        <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                     </div>
-                    <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
+                // )
+            )
+        } else {
+            return this.state.media ?
+                <div className={s.picture}>
+                    <img src={this.state.media} alt="pictureBlockImage" />
                 </div>
-                : this.state.media ?
-                    <div className={s.picture}>
-                        <img src={this.state.media} alt="pictureBlockImage"/>
-                    </div>
-                    : null
-        );
+                : null
+        }
     }
 }
 export default Picture;

@@ -1,14 +1,34 @@
-import React from 'react';
+import React, { useState } from 'react';
 import s from './Lesson.module.css';
+
+import { DragSource, DropTarget, DragDropContext, connectDropTarget } from "react-dnd";
+import HTML5Backend from "react-dnd-html5-backend";
+import ArticleElements from './ArticleElements';
 
 import Video from './LessonElements/Video'
 import Picture from './LessonElements/Picture'
 import Text from './LessonElements/Text'
 import Task from './LessonElements/Task'
 
-const LessonEdit = (props) => {
-    let taskCount = 0;
-    let addTaskElement = (taskType) => {
+
+class LessonEdit extends React.Component {
+    state = {
+        taskCount: 0,
+        answerElements: [],
+        articleElements: [],
+    }
+
+    componentDidMount() {
+        this.setLessonBlock(true);
+        this.setLessonBlock(false);
+    }
+    componentDidUpdate(prevProps, prevState) {
+        if (this.props !== prevProps || this.props.editMode !== prevProps.editMode) {
+            this.setLessonBlock(true);
+            this.setLessonBlock(false);
+        }
+    }
+    addTaskElement = (taskType) => {
         let options = null;
         let answers = null;
         if (taskType === 1) {
@@ -28,107 +48,133 @@ const LessonEdit = (props) => {
         if (options !== null)
             options = JSON.stringify(options)
 
-        props.addTaskElement(props.lesson.id, 3, [options, answers]);
+        this.props.addTaskElement(this.props.lesson.id, 3, [options, answers]);
     }
 
-    let addElement = (elementType, isAnswer = false) => {
-        props.addElement(props.lesson.id, elementType, props.lesson.type, isAnswer);
+    addElement = (elementType, isAnswer = false) => {
+        this.props.addElement(this.props.lesson.id, elementType, this.props.lesson.type, isAnswer);
     }
 
-    let deleteElement = (elementId) => {
-        props.setModalFunction(props.deleteElement, [elementId, props.lesson.type], 'Element');
+    deleteElement = (elementId) => {
+        this.props.setModalFunction(this.props.deleteElement, [elementId, this.props.lesson.type], 'Element');
     }
 
-    let editElement = (elementId, data, elementType) => {
-        props.editElement(elementId, data, elementType, props.lesson.type)
+    editElement = (elementId, data, elementType) => {
+        this.props.editElement(elementId, data, elementType, this.props.lesson.type)
     }
 
-    let editLesson = (e) => {
-        props.editLesson(props.currentSectionId, props.lesson.id, e.currentTarget.value)
+    editLesson = (e) => {
+        this.props.editLesson(this.props.currentSectionId, this.props.lesson.id, e.currentTarget.value)
     }
 
-    let editSection = (e) => {
-        props.editSection(props.currentSectionId, e.currentTarget.value)
+    editSection = (e) => {
+        this.props.editSection(this.props.currentSectionId, e.currentTarget.value)
     }
 
-    let togglePublish = (type) => {
-        props.togglePublish(props.lesson.id, props.currentSectionId, type)
+    togglePublish = (type) => {
+        this.props.togglePublish(this.props.lesson.id, this.props.currentSectionId, type)
     }
 
-    return (
-        <div className={s.lesson}>
-            {props.isFirstLesson ? <div className={s.publishCheckboxBlock}> Publish section<input type="checkbox" checked={props.publishedSection} onChange={() => { togglePublish('section') }} /> </div> : null}
-            <div className={s.publishCheckboxBlock}> Publish lesson<input type="checkbox" checked={props.publishedLesson} onChange={() => { togglePublish('lesson') }} /> </div>
-            {props.isFirstLesson ? <input defaultValue={props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { editSection(e) }} /> : null}
-            <input defaultValue={props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { editLesson(e) }} />
+    setLessonBlock = (isAnswer) => {
+        let answerElements = [];
+        let articleElements = [];
+        let taskElement = "";
+        if (this.props.lesson.elements) {
+            this.props.lesson.elements.map(element => {
 
-            {props.lesson.elements ? props.lesson.elements.map(element =>
-                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
-                    {!element.is_answer ?
-                        element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                            : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                    : null
-                        : null}
+                let propsObj = {
+                    ...element,
+                    editMode: this.props.editMode,
+                    deleteElement: this.deleteElement,
+                    editElement: this.editElement
+                }
+                let component = '';
+                if (element.type === 0)
+                    component = <Text {...propsObj} />;
+                else if (element.type === 1)
+                    component = <Picture {...propsObj} />;
+                else if (element.type === 2)
+                    component = <Video {...propsObj} />;
+                else if (element.type === 3) {
+                    taskElement =
+                            <Task  {...propsObj}
+                                lesson={this.props.lesson}
+                                completedLessonsIds={this.props.completedLessonsIds}
+                                completeLesson={this.completeLesson}
+                                showAnswerBlock={this.showAnswerBlock} />
+                    this.setState({ taskCount: 1 });
+                }
+
+                if (component) {
+                    if (element.is_answer)
+                        answerElements.push(component);
+                    else
+                        articleElements.push(component);
+                }
+            })
+
+            this.setState({ taskElement });
+            if (isAnswer)
+                this.setState({ answerElements });
+            else
+                this.setState({ articleElements });
+        }
+    }
+
+
+    render() {
+        return (
+            <div className={s.lesson}>
+                {this.props.isFirstLesson ? <div className={s.publishCheckboxBlock}> Publish section<input type="checkbox" checked={this.props.publishedSection} onChange={() => { this.togglePublish('section') }} /> </div> : null}
+                <div className={s.publishCheckboxBlock}>
+                    Publish {this.props.lesson.type === 0 ? "lesson" : "task"}
+                    <input type="checkbox" checked={this.props.publishedLesson} onChange={() => { this.togglePublish('lesson') }} />
                 </div>
-            ) : null}
-
-            <div className={s.addElements}>
-                <button onClick={() => { addElement(0) }}>+ Add text</button>
-                <button onClick={() => { addElement(1) }}>+ Add picture</button>
-                <button onClick={() => { addElement(2) }}>+ Add video</button>
-            </div>
+                {this.props.isFirstLesson ? <input defaultValue={this.props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { this.editSection(e) }} /> : null}
+                <input defaultValue={this.props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { this.editLesson(e) }} />
 
 
-            {props.lesson.elements ? props.lesson.elements.map(element =>
-                <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
-                    {element.type === 3 ? taskCount++ ||
-                        <Task {...element}
-                            editMode={props.editMode}
-                            deleteElement={deleteElement}
-                            editElement={editElement}
-                            lesson={props.lesson}
-                            completedLessonsIds={props.completedLessonsIds}
-                        /> : null}
+                <ArticleElements {...this.state} editMode={this.props.editMode}/>
+
+                <div className={s.addElements}>
+                    <button onClick={() => { this.addElement(0) }}>+ Add text</button>
+                    <button onClick={() => { this.addElement(1) }}>+ Add picture</button>
+                    <button onClick={() => { this.addElement(2) }}>+ Add video</button>
                 </div>
 
-            ) : null}
+                {this.state.taskElement}
 
-            {props.lesson.type === 1 && taskCount === 0 ?
-                <div>
-                    <h2>Task</h2>
-                    <div className={s.addElements}>
-                        <button onClick={() => { addTaskElement(1) }}>+ Add one choice test</button>
-                        <button onClick={() => { addTaskElement(2) }}>+ Add multichoice test</button>
-                        <button onClick={() => { addTaskElement(3) }}>+ Add open answer</button>
-                    </div>
-                </div>
-
-                : null}
-
-
-            {props.lesson.type === 1 ?
-                <div className={s.answerBlock}>
-                    <h2>Answer</h2>
-                    {props.lesson.elements ? props.lesson.elements.map(element =>
-                        <div className={s.lessonElement} key={`i${element.id}e${element.lesson_position}`}>
-                            {element.is_answer ?
-                                element.type === 0 ? <Text {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                    : element.type === 1 ? <Picture {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                        : element.type === 2 ? <Video {...element} editMode={props.editMode} deleteElement={deleteElement} editElement={editElement} />
-                                            : null
-                                : null}
+                {this.props.lesson.type === 1 && this.state.taskCount === 0 ?
+                    <div>
+                        <h2>Task</h2>
+                        <div className={s.addElements}>
+                            <button onClick={() => { this.addTaskElement(1) }}>+ Add one choice test</button>
+                            <button onClick={() => { this.addTaskElement(2) }}>+ Add multichoice test</button>
+                            <button onClick={() => { this.addTaskElement(3) }}>+ Add open answer</button>
                         </div>
-                    ) : null}
-                    <div className={s.addElements}>
-                        <button onClick={() => { addElement(0, true) }}>+ Add text</button>
-                        <button onClick={() => { addElement(1, true) }}>+ Add picture</button>
-                        <button onClick={() => { addElement(2, true) }}>+ Add video</button>
                     </div>
-                </div>
-                : null}
 
-        </div>
-    );
+                    : null}
+
+
+                {this.props.lesson.type === 1 ?
+                    <div className={s.answerBlock}>
+                        <h2>Answer</h2>
+                        {this.state.answerElements.map(element => element)}
+                        <div className={s.addElements}>
+                            <button onClick={() => { this.addElement(0, true) }}>+ Add text</button>
+                            <button onClick={() => { this.addElement(1, true) }}>+ Add picture</button>
+                            <button onClick={() => { this.addElement(2, true) }}>+ Add video</button>
+                        </div>
+                    </div>
+                    : null}
+
+            </div>
+        );
+    }
 }
+
 export default LessonEdit;
+
+
+

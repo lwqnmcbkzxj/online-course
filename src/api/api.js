@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://3e44a919.ngrok.io",
+    baseURL: "http://250d687e.ngrok.io",
     headers: {
         "Authorization": ""
     }

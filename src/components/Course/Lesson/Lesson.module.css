@@ -47,7 +47,7 @@
 
 
 .lessonElement {
-    margin-top: 30px;
+    margin: 10px 0;
 }
 
 .addElements {
@@ -110,7 +110,6 @@ input {
 }
 .likeLesson button:hover {
     box-shadow: none;
-    color: #353535;
 }
 
 .lessonButtons {
@@ -118,4 +117,8 @@ input {
     flex-direction: column;
     justify-content: center;
     align-items: center;
+}
+
+.articleBlock {
+    margin-top: 10px;
 }
