@@ -3,7 +3,7 @@ import s from './Preloader.module.css';
 import loader from '../../../assets/images/Preloader.svg';
 
 
-const Preloader = (props) => {
+const Preloader = () => {
     return (
         <div className={s.preloader}>
             <img src={loader} alt="Preloader"/>

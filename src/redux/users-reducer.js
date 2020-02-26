@@ -22,13 +22,13 @@ const usersReducer = (state = initialState, action) => {
     }
 }
 
-
 export const setOverallStats = (stats) => {
     return {
         type: SET_USERS_STATS,
         stats
     }
 }
+
 export const getOverallStats = () => (dispatch) => {
     userAPI.getAdminInfo().then((response) => {
         dispatch(setOverallStats(response.stats));

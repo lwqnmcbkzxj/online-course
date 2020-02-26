@@ -11,7 +11,7 @@ const OpenAnswer = (props) => {
     }
 
     let completeTask = (formData) => {
-        if (formData.answer === props.answers[0])
+        if (formData.answer.toLowerCase() === props.answers[0].toLowerCase())
             props.completeTask(+props.lesson.id, true)
         else
             props.completeTask(+props.lesson.id, false)
@@ -34,7 +34,7 @@ const OpenAnswerForm = (props) => {
             {props.completeTry && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
-                    <button>Answer</button> : null}
+                    <button>Submit</button> : null}
             </div>
         </form>
     );

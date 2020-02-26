@@ -38,10 +38,10 @@ class Test extends React.Component {
 
     completeTask = (formData) => {
         let answers = this.props.answers;
-        let correct = true;
+        let correct = false;
         for (let key in formData) {
-            if (!answers.some(answer => answer === formData[key]))
-                correct = false;
+            if (formData[key] && answers.some(answer => answer === formData[key]))
+                correct = true;
         }
 
         if (correct)
@@ -87,7 +87,7 @@ const TestForm = (props) => {
             {props.completeTry && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
-                    <button>Answer</button> : null}
+                    <button>Submit</button> : null}
             </div>
         </form>
     );

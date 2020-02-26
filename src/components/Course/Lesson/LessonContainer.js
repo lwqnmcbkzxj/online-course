@@ -47,6 +47,11 @@ class LessonContainer extends React.Component {
             this.getIsPublished(lessonId);
         }
 
+        if (this.props.sections !== prevProps.sections) {
+            this.getCurrentLessonTitle(lessonId);
+            this.getCurrentSectionTitle(lessonId);
+        }
+        
         if (this.props.sections.length > 0 && prevProps.sections.length > 0) {
             this.checkCanGetIsPublished(lessonId, prevProps);
         }
@@ -196,7 +201,8 @@ let mapStateToProps = (state) => {
         currentSectionId: state.course.currentSectionId,
         editMode: state.course.editMode,
         completedLessonsIds: state.user.completedLessonsIds,
-        lessonIsFetching: state.lesson.lessonIsFetching
+        lessonIsFetching: state.lesson.lessonIsFetching,
+        user: state.user
     }
 }
 

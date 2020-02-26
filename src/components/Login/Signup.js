@@ -25,11 +25,12 @@ const RegisterForm = (props) => {
         </div>
     );
 }
-
+const ReduxRegisterForm = reduxForm({ form: 'register' })(RegisterForm)
 
 const Register = (props) => {
     const onSubmit = (formData) => {
-        if (!/^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i.test(formData.email))
+        let regExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
+        if (!regExp.test(formData.email))
             throw new SubmissionError({ _error: "Incorrect email" })
 
         if (formData.password === formData.repeat_password) {
@@ -51,10 +52,6 @@ const Register = (props) => {
 
 
 
-const ReduxRegisterForm = reduxForm({ form: 'register' })(RegisterForm)
-
-const mapStateToProps = (state) => ({
-    
-})
+const mapStateToProps = (state) => ({});
 
 export default connect(mapStateToProps, { register })(Register);

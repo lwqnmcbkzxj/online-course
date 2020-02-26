@@ -6,20 +6,19 @@ import MultiTest from './TaskElements/MultiTest';
 import Test from './TaskElements/Test';
 import OpenAnswer from './TaskElements/OpenAnswer';
 
-import moveIcon from '../../../../assets/images/move.svg'
-import deleteIcon from '../../../../assets/images/delete.png'
-
-
+import deleteIcon from '../../../../assets/images/delete.png';
 
 let soloTest = 'Test with one choice';
 let multiTest = 'Test with multi choice';
 let openAnswer = 'Write answer in textfield';
+
 class Task extends React.Component {
     state = {
         type: '',
         taskMessage: '',
-        completeTry: false,
+        triedToComplete: false,
     }
+
     componentDidMount() {
         this.setCurrentState();
         if (!this.props.editMode) {
@@ -46,7 +45,6 @@ class Task extends React.Component {
             this.setState({ "type": soloTest, options, answers })
         else if (answers.length > 1)
             this.setState({ "type": multiTest, options, answers });
-
     }
 
     deleteElement = (elementId) => {
@@ -67,6 +65,7 @@ class Task extends React.Component {
 
         this.editQuiz(options, answers);
     }
+
     deleteOption = (position) => {
         let answers = [...this.state.answers];
         let options = [...this.state.options];
@@ -75,6 +74,7 @@ class Task extends React.Component {
 
         this.editQuiz(options, answers);
     }
+
     editOption = (value, position) => {
         let answers = this.state.answers;
         let options = this.state.options;
@@ -82,7 +82,6 @@ class Task extends React.Component {
         options[position] = value;
         this.editQuiz(options, answers);
     }
-
 
     editQuiz = (options, answers) => {
         options = JSON.stringify(options);
@@ -114,7 +113,7 @@ class Task extends React.Component {
         let taskCookie = Cookies.get(`task${lessonId}`);
         let taskObject = JSON.parse(taskCookie);
 
-        this.setState({ completeTry: true });
+        this.setState({ triedToComplete: true });
         taskObject.attempts--;
 
         if (taskObject.attempts === 2)
@@ -129,9 +128,9 @@ class Task extends React.Component {
             }
 
             this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
-            this.setState({ taskMessage: `Correct answer. You completed task in ${3 - taskObject.attempts} attempts` });
+            this.setState({ taskMessage: `You're right!` });
             Cookies.remove(`task${lessonId}`);
-            this.props.showAnswerBlock();
+            this.props.toggleCompletedNow();
 
         } else if (taskObject.attempts === 0) {
             let newObj = {
@@ -140,13 +139,12 @@ class Task extends React.Component {
                 overall_result: false,
                 total_time: now - taskObject.startDate
             }
-
             this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
-            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
+            this.setState({ taskMessage: `Wrong! You have no more attempts :(` });
             Cookies.remove(`task${lessonId}`);
-            this.props.showAnswerBlock();
-        } else {
-            this.setState({ taskMessage: `Incorrect answer. You got ${taskObject.attempts} attempts` });
+            this.props.toggleCompletedNow();
+        } else {            
+            this.setState({ taskMessage: `Wrong! You have ${taskObject.attempts} more attepmts` });
             Cookies.set(`task${lessonId}`, JSON.stringify(taskObject), { expires: 7 });
         }
     }
@@ -173,15 +171,12 @@ class Task extends React.Component {
         else if (this.state.type === multiTest)
             taskComponent = <MultiTest {...this.state} {...propsObj} />
 
-
-        // const { isDragging, connectDragSource, connectDragPreview, connectDropTarget, editMode, find, move, change, ...restProps } = this.props
-        // const opacity = isDragging ? 0.5 : 1;
+       
         return (
             this.props.editMode ?
-                <div>
+                <div className={s.task}>
                     <div className={s.elementHeader}>
                         <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
-                        <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
                         <h2>Task - {this.state.type}</h2>
                     </div>
                     <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e) => { this.editQuestion(e) }} />
@@ -196,35 +191,6 @@ class Task extends React.Component {
                         {taskComponent}
                     </div>
                 </div>);
-
-
-        // if (this.props.editMode) {
-        //     return connectDropTarget(
-        //         connectDragPreview(
-        //             <div>
-        //                 <div className={s.elementHeader}>
-        //                     <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
-        //                     {/* {connectDragSource(<div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>)} */}
-        //                     <h2>Task - {this.state.type}</h2>
-        //                 </div>
-        //                 <input defaultValue={this.props.text} placeholder="Enter task question here" onBlur={(e) => { this.editQuestion(e) }} />
-        //                 <div key={this.props.id}>
-        //                     {taskComponent}
-        //                 </div>
-        //             </div>
-        //         )
-        //     )
-        // } else {
-        //     return (
-        //         <div className={s.task}>
-        //             <h2>Task - {this.state.type}</h2>
-        //             <h3>{this.props.text}</h3>
-        //             <div key={this.props.id}>
-        //                 {taskComponent}
-        //             </div>
-        //         </div>
-        //     )
-        // }
     }
 }
 export default Task;

@@ -13,11 +13,13 @@
 .lesson h2 {
     font-size: 20px;
     font-weight: bold;
+    font-family: 'Exo 2';
 }
 
 .lessonTitle, .sectionTitle {
     font-size: 22px;
     font-weight: bold;
+    font-family: 'Exo 2';
     margin-bottom: 20px;
 }
 
@@ -44,7 +46,6 @@
     box-shadow: 1px 1px 2px #818181;
     cursor: pointer;
 }
-
 
 .lessonElement {
     margin: 10px 0;
@@ -121,4 +122,9 @@ input {
 
 .articleBlock {
     margin-top: 10px;
+}
+
+.answerBlock>h2 {
+    margin-left: -20px;
+    margin-bottom: 10px;
 }

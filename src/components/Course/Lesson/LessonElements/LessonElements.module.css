@@ -9,7 +9,10 @@
     text-align: center;
     margin: 20px auto;
 }
-
+.videoBlock {
+    width: 80%;
+    margin: 0 auto;
+}
 .video {
     overflow: hidden;
     position: relative;
@@ -88,9 +91,6 @@ textarea {
     width: 100%;
 }
 
-.quiz .testButton:hover label{    
-    cursor: pointer;
-}
 .quiz .testButton label{    
     width: 100%;
     display: block;
@@ -98,7 +98,13 @@ textarea {
     background: #000; 
     color: #fff;
     padding: 10px 0;
+    font-size: 20px;
 }
+
+.quiz .testButton:hover label{    
+    cursor: pointer;
+}
+
 
 .testButton input[type="checkbox"] {
 	display:none;
@@ -114,8 +120,17 @@ textarea {
   background-color:#585858!important;
 }
 
+.task {
+    margin: 15px 0 10px 0;
+}
+
+.task h2 {
+    margin: 10px 0 5px 0;
+}
+
 .task h3 {
-    margin-bottom: 10px;
+    margin: 10px 0;
+    font-size: 22px;
 }
 .task p {
     margin-top: 10px;

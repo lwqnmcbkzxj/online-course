@@ -1,8 +1,6 @@
 import React from 'react';
 import s from './LessonElements.module.css';
-import { DragSource, DropTarget, } from "react-dnd";
 
-import moveIcon from '../../../../assets/images/move.svg'
 import deleteIcon from '../../../../assets/images/delete.png'
 
 class Text extends React.Component {
@@ -31,71 +29,27 @@ class Text extends React.Component {
     }
 
     render() {
-        // const { isDragging, connectDragSource, connectDragPreview, connectDropTarget, editMode, find, move, change, ...restProps } = this.props
-        // const opacity = isDragging ? 0.5 : 1;
-
-        if (this.props.editMode) {
-            return (
-            // connectDropTarget(
-                // connectDragPreview(
-                    <div>
-                        <div className={s.elementHeader} >
-                            <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
-                            {/* {connectDragSource(<div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>)} */}
-                            <h2>Text</h2> 
-                        
+        return (
+            this.props.editMode ?
+                <div>
+                    <div className={s.elementHeader}>
+                        <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
+                        <div>
+                            <i className="fa fa-caret-up" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 0)}}></i>
+                            <i className="fa fa-caret-down" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 1)}}></i>
                         </div>
-                        <textarea defaultValue={this.state.text} placeholder={"Write text here"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
+                        <h2>Text</h2>
                     </div>
-                // )                
-            )
-        } else {
-            return this.state.text ?
-                <div className={s.text}>
-                    <p>{this.state.text}</p>
+                    <textarea defaultValue={this.state.text} placeholder={"Write text here"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                 </div>
-                : null
-        }        
+                : this.state.text ?
+                    <div className={s.text}>
+                        <p>{this.state.text}</p>
+                    </div>
+                    : null
+        )
     }
 }
 
 
-// const dragSpec = {
-//     beginDrag: props => ({
-//         id: props.id,
-//         originalIndex: props.find(props.id).index
-//     }),
-//     endDrag(props, monitor) {
-//         const { id: droppedId, originalIndex } = monitor.getItem();
-//         const didDrop = monitor.didDrop();
-//         if (!didDrop) return props.move(droppedId, originalIndex);
-//         return props.change(droppedId, originalIndex);
-//     }
-// };
-// const dragCollect = (connect, monitor) => ({
-//     connectDragSource: connect.dragSource(),
-//     connectDragPreview: connect.dragPreview(),
-//     isDragging: monitor.isDragging()
-// });
-// const dropSpec = {
-//     canDrop: () => false,
-//     hover(props, monitor) {
-//         const { id: draggedId } = monitor.getItem();
-//         const { id: overId } = props;
-
-//         if (draggedId !== overId) {
-//             const { index: overIndex } = props.find(overId);
-//             props.move(draggedId, overIndex);
-//         }
-//     }
-// };
-// const dropCollect = (connect, monitor) => ({
-//     connectDropTarget: connect.dropTarget()
-// });
-
-// const Text1 = DropTarget("item", dropSpec, dropCollect)(
-//     DragSource("item", dragSpec, dragCollect)(Text)
-// );
-
-// export default Text1;
 export default Text;

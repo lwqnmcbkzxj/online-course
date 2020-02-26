@@ -8,7 +8,6 @@ class Header extends React.Component {
         this.props.toggleEditMode(value)
     }
 
-
     render() {
         return (
             <header className={s.header}>

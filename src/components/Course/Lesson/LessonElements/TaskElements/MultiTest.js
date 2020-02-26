@@ -31,24 +31,32 @@ class MultiTest extends React.Component {
     editAnswer = (e, position) => {
         let answers = this.props.answers;
         if (e.currentTarget.checked)
-            answers[position] = position.toString();   
-        else 
-            answers[position] = "";   
+            answers[position] = position.toString();
+        else
+            answers[position] = "";
 
         this.props.editQuiz(this.props.options, answers);
     }
 
     completeTask = (formData) => {
         let answers = this.props.answers;
-        let correct = true;
+        let correct = false;
+        let userDataKeys = [];
         for (let key in formData) {
             if (formData[key]) {
-                let userAnswer = key.slice(3);
-                if (!answers.some(answer => answer === userAnswer))
-                    correct = false;
+                userDataKeys.push(key.slice(3));
             }
         }
-
+        for (let i = 0; i < answers.length; i++) {
+            if (answers[i]) {
+                if (userDataKeys.some(userAnswer => userAnswer === answers[i]))
+                    correct = true;
+                else {
+                    correct = false;
+                    break;
+                }
+            }
+        }
         if (correct)
             this.props.completeTask(+this.props.lesson.id, true)
         else
@@ -92,7 +100,7 @@ const MultiTestForm = (props) => {
             {props.completeTry && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
-                    <button>Answer</button> : null}
+                    <button>Submit</button> : null}
             </div>
         </form>
     );

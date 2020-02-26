@@ -1,7 +1,6 @@
 import React from 'react';
 import s from './LessonElements.module.css';
 
-import moveIcon from '../../../../assets/images/move.svg'
 import deleteIcon from '../../../../assets/images/delete.png'
 
 class Picture extends React.Component {
@@ -9,8 +8,12 @@ class Picture extends React.Component {
         media: "",
     }
     componentDidMount(prevProps) {
-        if (this.props.media !== null) {
-            this.setState({ media: this.props.media });
+        if (this.props.media) {
+            let pictureUrl = this.props.media;
+
+            if (!pictureUrl.includes('http'))
+                pictureUrl = 'http://' + pictureUrl;
+            this.setState({ media: pictureUrl });
         }
         else
             this.setState({ media: "" });
@@ -30,30 +33,25 @@ class Picture extends React.Component {
     }
 
     render() {
-        // const { isDragging, connectDragSource, connectDragPreview, connectDropTarget, editMode, find, move, change, ...restProps } = this.props
-        // const opacity = isDragging ? 0.5 : 1;
-
-        if (this.props.editMode) {
-            return(
-            // connectDropTarget(
-                // connectDragPreview(
-                    <div>
-                        <div className={s.elementHeader} >
-                            <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
-                            {/* {connectDragSource(<div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>)} */}
-                            <h2>Picture</h2>
+        return (
+            this.props.editMode ?
+                <div>
+                    <div className={s.elementHeader}>
+                        <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
+                        <div>
+                            <i className="fa fa-caret-up" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 0)}}></i>
+                            <i className="fa fa-caret-down" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 1)}}></i>
                         </div>
-                        <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
+                        <h2>Picture</h2>
                     </div>
-                // )
-            )
-        } else {
-            return this.state.media ?
-                <div className={s.picture}>
-                    <img src={this.state.media} alt="pictureBlockImage" />
+                    <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                 </div>
-                : null
-        }
+                : this.state.media ?
+                    <div className={s.picture}>
+                        <img src={this.state.media} alt="pictureBlockImage" />
+                    </div>
+                    : null
+        )
     }
 }
 export default Picture;

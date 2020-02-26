@@ -30,7 +30,7 @@ const appReducer = (state = initialState, action) => {
     }
 }
 
-export const initApp = () => (dispatch, getState) => {
+export const initApp = () => (dispatch) => {
     let getSects = dispatch(getSections());
     let getUserStat = dispatch(getUserInfo());
     return Promise.allSettled([getSects, getUserStat])
@@ -39,7 +39,6 @@ export const initApp = () => (dispatch, getState) => {
             dispatch(initializedSuccess(true));            
         });
 }
-
 
 export const initializedSuccess = (initialized) => {
     return {

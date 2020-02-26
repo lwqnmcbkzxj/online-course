@@ -1,4 +1,22 @@
-@import url('https://fonts.googleapis.com/css?family=Exo+2:300,400,700&display=swap');
+@font-face {
+	font-family: "Charter"; 
+	src: url("./assets//fonts/charter_bt_roman.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: normal; 
+} 
+
+@font-face {
+	font-family: "Exo 2"; 
+	src: url("./assets//fonts//Exo2-Bold.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: bold; 
+}
+@font-face {
+	font-family: "Exo 2"; 
+	src: url("./assets//fonts//Exo2-Regular.ttf") format("truetype"); 
+	font-style: normal; 
+	font-weight: normal; 
+}  
 
 html,
 body,
@@ -106,7 +124,7 @@ section {
 
 body {
 	line-height: 1;
-	font-family: 'Exo 2', sans-serif;
+	font-family: 'Charter', sans-serif;
 }
 
 ol,
@@ -158,6 +176,7 @@ button {
 }
 
 .fa {
+	transition: .3s;
 	margin-right: 8px
 }
 
@@ -176,11 +195,7 @@ input {
 	transition: .3s;
 }
 
-.icon.move{
-	width: 11px;
-}
-
-.icon:hover {
+.icon:hover, .fa:hover {
 	cursor: pointer;
 	opacity: .5;
 }
@@ -189,6 +204,8 @@ button {
 	transition: .4s;
 }
 button:hover {
-    opacity: .8;
-
+    opacity: .7;
+}
+.fa-caret-down, .fa-caret-up {
+	font-size: 22px!important;
 }

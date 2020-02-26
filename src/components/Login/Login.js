@@ -18,12 +18,12 @@ const LoginForm = (props) => {
                 <div className={s.formError}>{props.error}</div>
                 <Field placeholder="Email" name={"email"} component={Input} validate={[required]} />
                 <Field placeholder="Password" name={"password"} type="password" component={Input} validate={[required]} />
-
                 <button className={s.active}>Log in</button>
             </form>
         </div>
     );
 }
+const ReduxLoginForm = reduxForm({ form: 'login' })(LoginForm)
 
 class Login extends React.Component {
     componentDidMount() {
@@ -46,11 +46,6 @@ class Login extends React.Component {
         );
     }
 }
-
-
-
-
-const ReduxLoginForm = reduxForm({ form: 'login' })(LoginForm)
 
 const mapStateToProps = (state) => ({
     logged: state.user.logged,

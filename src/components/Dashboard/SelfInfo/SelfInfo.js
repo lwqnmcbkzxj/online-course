@@ -18,6 +18,7 @@ class SelfInfo extends React.Component {
         visibleEmail: '',
         passwordFormVisible: false,
     }
+
     componentDidUpdate(prevProps) {
         if (this.props !== prevProps) {
             let totalStats = {};
@@ -42,7 +43,6 @@ class SelfInfo extends React.Component {
             this.calculateProgressPercent({ ...this.state.totalStats }, { ...this.state.completed })
         }
     }
-
     
     togglePasswordChangeForm = () => {
         this.setState({
@@ -72,6 +72,7 @@ class SelfInfo extends React.Component {
     logout = () => {
         this.props.logout();
     }
+    
     render() {
         return (
             <div className={s.selfInfo}>

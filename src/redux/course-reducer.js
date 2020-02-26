@@ -45,45 +45,44 @@ const courseReducer = (state = initialState, action) => {
                 modalIsVisible: !state.modalIsVisible
             };
         }
+            
         case SET_MODAL_FUNCTION: {
             return {
                 ...state,
                 modalFunction: { func: action.func, data: action.data, text: action.text }
             };
         }
+            
         case TOGGLE_EDIT_MODE: {
             return {
                 ...state,
                 editMode: action.editState
             }
         }
+            
         case SET_FIRST_NOTCOMPLETED_LESSON_ID: {
             return {
                 ...state,
                 firstNotCompletedLessonId: action.lessonId
             }
         }
-        case TOGGLE_IS_FETCHING: {
-            return {
-                ...state,
-                isFetching: action.isFetching
-            }
-        }
+            
         case SET_ADDED_LESSON_ID: {
             return {
                 ...state,
                 addedLessonId: +action.lessonId
             }
         }
+            
         case SET_FIRST_VIDEO_URL: {
-
             let videoID = '';
             let url = action.url;
             if (url.includes('watch'))
                 videoID = url.split('/')[3].split('=')[1];
             else if (url.includes('embed'))
                 videoID = url.split('/')[4];
-
+            else if (url.includes('youtu.be'))
+                videoID = url.split('/')[3];
             videoID = videoID !== '' ? "https://www.youtube.com/embed/" + videoID : "";
 
             return {
@@ -91,11 +90,17 @@ const courseReducer = (state = initialState, action) => {
                 firstVideo: videoID
             }
         }
+            
         default:
             return state;
     }
 }
 
+
+export const setCourseInfo = (response) => (dispatch) => {
+    dispatch(setAddedLessonId(response));
+    dispatch(setFirstVideo(response));
+}
 
 export const setCurrentSectionId = (sectionId) => {
     return {
@@ -128,14 +133,12 @@ export const setModalFunction = (func, data, text) => (dispatch) => {
     })
 }
 
-
 export const toggleEditMode = (editState) => {
     return {
         type: TOGGLE_EDIT_MODE,
         editState
     }
 }
-
 
 const setFirstNotCompletedLessonId = (lessonId) => {
     return {
@@ -166,19 +169,13 @@ export const getFirstNotCompletedLessonId = () => (dispatch, getState) => {
     }
 }
 
-export const toggleIsFetching = (isFetching) => {
-    return {
-        type: TOGGLE_IS_FETCHING,
-        isFetching
-    }
-}
-
 const setAddedLessonIdSuccess = (lessonId) => {
     return {
         type: SET_ADDED_LESSON_ID,
         lessonId
     }
 }
+
 const setAddedLessonId = (response) => (dispatch) => {
     let maxId = 1;
 
@@ -198,13 +195,9 @@ const setFirstVideoSuccess = (url) => {
         url
     }
 }
+
 const setFirstVideo = (response) => (dispatch) => {    
-    dispatch(setFirstVideoSuccess("https://www.youtube.com/watch?v=uD4izuDMUQA"));
-     
+    dispatch(setFirstVideoSuccess("https://www.youtube.com/watch?v=uD4izuDMUQA"));     
 }
 
-export const setCourseInfo = (response) => (dispatch) => {
-    dispatch(setAddedLessonId(response));
-    dispatch(setFirstVideo(response));
-}
 export default courseReducer;

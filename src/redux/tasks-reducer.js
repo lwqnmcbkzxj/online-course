@@ -1,4 +1,3 @@
-import { toggleIsFetching } from "./course-reducer"
 import { tasksAPI } from "../api/api";
 const SET_TASKS = 'SET_TASKS';
 const CALCULATE_POPULARITY = 'CALCULATE_POPULARITY';
@@ -18,6 +17,7 @@ const tasksReducer = (state = initialState, action) => {
                 tasks: action.tasks,
             }
         }
+            
         case CALCULATE_POPULARITY: {
             let averagePopularity = 0;
             let count = 0;
@@ -38,6 +38,7 @@ const tasksReducer = (state = initialState, action) => {
                 })
             }
         }
+            
         case SET_LIKES: {
             let likes = action.likes;
             return {
@@ -52,6 +53,7 @@ const tasksReducer = (state = initialState, action) => {
                 })
             }
         }
+            
         case SET_PUBLISHED: {
             return {
                 ...state, 
@@ -63,6 +65,7 @@ const tasksReducer = (state = initialState, action) => {
                 })
             }
         }
+            
         default:
             return state;
     }
@@ -96,7 +99,6 @@ const setPublishStatus = (publishedIds) => {
 }
 
 const getPublishedStatus = () => (dispatch, getState) => {
-    debugger
     let sections = getState().sectionsList.sections
     let publishedTasks = [];
     sections.map(section => {
@@ -109,15 +111,12 @@ const getPublishedStatus = () => (dispatch, getState) => {
 }
 
 export const getTasks = () => (dispatch) => {
-    dispatch(toggleIsFetching(true));
     tasksAPI.getTasks().then((response) => {
         dispatch(setTasks(response.tasks));
 
         dispatch(setLikes(response.likes));
         dispatch(calculateTasksPopularity());
         dispatch(getPublishedStatus());
-
-        dispatch(toggleIsFetching(false));
     })
 }
 export default tasksReducer;

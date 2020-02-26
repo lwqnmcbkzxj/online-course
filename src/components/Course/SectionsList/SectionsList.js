@@ -1,10 +1,9 @@
 import React from 'react';
 import s from './SectionsList.module.css';
-import { NavLink } from 'react-router-dom';
-
-import moveIcon from '../../../assets/images/move.svg'
-import deleteIcon from '../../../assets/images/delete.png'
 import { withRouter } from 'react-router';
+
+import SectionHeader from './Elements/SectionHeader';
+import LessonsListElement from './Elements/LessonsListElement';
 
 
 class SectionsList extends React.Component {
@@ -32,7 +31,6 @@ class SectionsList extends React.Component {
 
     addLesson = (sectionId, contentType) => {
         this.setCurrentSection(sectionId);
-        debugger
 
         this.props.addLesson(sectionId, contentType).then(() => {
             this.props.history.push(`/course/lesson/${this.props.addedLessonId}`)
@@ -63,53 +61,75 @@ class SectionsList extends React.Component {
         this.setState({ visibleSections })
     }
 
+    changeLessonPosition = (position, sectionId, direction) => {
+        let section = this.props.sections.filter(section => section.id === sectionId)[0];
+        let newPosition = 0;
+        if (direction === 0 && position > 1) {
+            newPosition = position--;
+        } else if (direction === 1 && position < section.lessons.length) {
+            newPosition = position++;
+        }
+        if (newPosition !== 0) {
+            this.props.changeElementPosition(position, newPosition, 'lesson', sectionId);
+        }
+    }
+
+    changeSectionPosition = (position, direction) => {
+        let sections = this.props.sections;
+
+        let newPosition = 0;
+        if (direction === 0 && position > 1) {
+            newPosition = position--;
+        } else if (direction === 1 && position < sections.length) {
+            newPosition = position++;
+        }
+
+        if (newPosition !== 0) {
+            this.props.changeElementPosition(position, newPosition, 'section');
+        }
+    }
+
     render() {
         return (
             <div className={s.sectionList}>
                 {
                     this.props.sections.map(section =>
-                        section.publish || this.props.editMode ? <div className={s.section} key={"s" + section.id} >
-                            <div className={s.sectionContent}>
-                                {this.props.editMode &&
-                                    <div className={s.serviceBlock}>
-                                        <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteSection(section.id) }} /></div>
-                                        <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
-                                    </div>}
-                                {this.props.completedSectionsIds.some(id => +id === +section.id) ? <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
-                                <div onClick={() => { this.toggleSection(section.id) }} className={s.sectionNameBlock}>
-                                    <h1 className={s.sectionName} > {section.title}   </h1>
-                                    {this.state.visibleSections.some(id => +id === +section.id) ?
-                                        <i className="fa fa-chevron-up fa-rotate-180" aria-hidden="true"></i> :
-                                        <i className="fa fa-chevron-up" aria-hidden="true"></i>}
-                                </div>
-                            </div>
-                            <ul className={this.state.visibleSections.some(id => +id === +section.id) ? s.lessonsVisibile : s.lessonsHidden} >
-                                {
-                                    section.lessons ?
+                        section.publish || this.props.editMode ?
+                            <div className={s.section} key={"section" + section.id} >
+                                <SectionHeader
+                                    {...section}
+                                    sectionsLength={this.props.sections.length}
+                                    completedSectionsIds={this.props.completedSectionsIds}
+                                    visibleSections={this.state.visibleSections}
+                                    editMode={this.props.editMode}
+                                    deleteSection={this.deleteSection}
+                                    toggleSection={this.toggleSection}
+                                    changeSectionPosition={this.changeSectionPosition}
+                                />
 
-                                        section.lessons.map(lesson =>
-                                            lesson.publish || this.props.editMode ? <li key={"l" + lesson.id}>
-                                                <div className={s.item} >
-                                                    {this.props.editMode &&
-                                                        <div className={s.serviceBlock}>
-                                                            <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteLesson(lesson.id, section.id) }} /></div>
-                                                            <div className="icon move"><img src={moveIcon} alt="moveIcon" /></div>
-                                                        </div>}
-
-                                                    {this.props.completedLessonsIds.some(id => +id === +lesson.id) ?
-                                                        <div><i className="fa fa-check" aria-hidden="true"></i></div> : null}
-
-                                                    <NavLink to={`/course/lesson/${lesson.id}`} activeClassName={s.activeLink} onClick={() => { this.setCurrentSection(section.id) }}>
-                                                        {lesson.title}
-                                                    </NavLink>
-                                                </div>
-                                            </li> : null)
-                                        : null
-                                }
-                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 0) }}>+ Add lesson</button>}
-                                {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 1) }}>+ Add task</button>}
-                            </ul>
-                        </div> : null
+                                <ul className={this.state.visibleSections.some(id => +id === +section.id) ? s.lessonsVisibile : s.lessonsHidden} >
+                                    {
+                                        section.lessons ? section.lessons.map(lesson =>
+                                                lesson.publish || this.props.editMode ?
+                                                    <li key={"lesson" + lesson.id}>
+                                                        <LessonsListElement
+                                                            {...lesson}
+                                                            section={section}
+                                                            completedLessonsIds={this.props.completedLessonsIds}
+                                                            editMode={this.props.editMode}
+                                                            changeSectionPosition={this.changeSectionPosition}
+                                                            setCurrentSection={this.setCurrentSection}
+                                                            changeLessonPosition={this.changeLessonPosition}
+                                                            deleteLesson={this.deleteLesson}
+                                                        />
+                                                    </li>
+                                                    : null)
+                                            : null
+                                    }
+                                    {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 0) }}>+ Add lesson</button>}
+                                    {this.props.editMode && <button className={s.addLessonBtn} onClick={() => { this.addLesson(section.id, 1) }}>+ Add task</button>}
+                                </ul>
+                            </div> : null
                     )
                 }
                 {this.props.editMode && <button className={s.addSectionBtn} onClick={this.addSection}>+ Add section</button>}

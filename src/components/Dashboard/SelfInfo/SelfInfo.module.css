@@ -8,33 +8,34 @@
     grid-template-columns: repeat(3, 1fr);
     padding: 13px 0;
     border-bottom: 1px solid #bcbcbc;
+    font-family: 'Exo 2';
+    font-weight: bold;
+    font-size: 20px;
 }
+
 .infoBlock {
     border-bottom: 1px solid #bcbcbc;
-
 }
+
 .infoBlock>div {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     padding: 13px 0;    
-}
-.stats>div{    
-    font-weight: bold;
-    font-size: 20px;
 }
 
 .resetForm {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
 }
+
+.resetForm input {
+    width: 90%;
+}
+
 .buttonHolder {
     display: flex;
     justify-content: center;
     align-items: center;
     margin-top: 20px;
     font-size: 22px;
-}
-
-.resetForm input {
-    width: 90%;
 }

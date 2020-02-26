@@ -1,7 +1,7 @@
 import Axios from 'axios';
 
 const instance = Axios.create({
-    baseURL: "http://250d687e.ngrok.io",
+    baseURL: "http://apicourse.dig-studio.ru",
     headers: {
         "Authorization": ""
     }
@@ -69,13 +69,16 @@ export const lessonAPI = {
             }).then(response => response.data);
         } else {
             return instance.post(`complete`, { "id": lessonId, "type": contentType }).then(response => response.data);
-        }
-        
+        }        
     },
     changePublishStatus(id, type) {
         return instance.post(`change-publish-status`, { "id": id, "type": type})
             .then(response => response.data);
     },
+    changeElementPosition(startPosition, endPosition, type, foreignId) {
+        return instance.post(`change-positions`, { "oldpos": startPosition, "newpos": endPosition, "type": type, "foreign_key_id":foreignId, })
+            .then(response => response.data);
+    }
 }
 
 export const articleElementsAPI = {
@@ -127,16 +130,8 @@ export const tasksAPI = {
     getTasks() {
         return instance.get(`tasks`)
             .then(response => response.data);
-    },
-
-    getTask(id) {
-        return instance.get(`tasks/${id}`)
-            .then(response => response.data);
-    }
+    },   
 }
-
-
-
 
 export const userAPI = {
     getUserInfo() {

@@ -4,8 +4,8 @@ import Cookies from "js-cookie";
 import { stopSubmit } from 'redux-form';
 
 
-const SET_USER_INFO = 'SET-USER';
-const SET_USER_STATS = 'SET-STATS';
+const SET_USER_INFO = 'SET_USER_INFO';
+const SET_USER_STATS = 'SET_USER_STATS';
 const SET_USER_TOKEN = 'SET_USER_TOKEN';
 const SET_USER_LOGGED = 'SET_USER_LOGGED';
 
@@ -27,6 +27,7 @@ const userReducer = (state = initialState, action) => {
                 info: action.info,
             }
         }
+            
         case SET_USER_STATS: {
             let articleIds = [];
             let tasksIds = [];
@@ -56,19 +57,22 @@ const userReducer = (state = initialState, action) => {
                 completedSectionsIds: sectionsIds,
                 completedLessonsIds: [...articleIds, ...tasksIds],
             }
-        }        
+        }  
+            
         case SET_USER_LOGGED: {
             return {
                 ...state,
                 logged: action.logged
             }
         }
+            
         case SET_USER_TOKEN: {
             return {
                 ...state,
                 token: action.token
             }
         }
+            
         default:
             return state;
     }
@@ -95,6 +99,7 @@ const setUserLogged = (logged) => {
         logged
     }
 }
+
 const setUserToken = (token) => {
     return {
         type: SET_USER_TOKEN,
@@ -111,11 +116,8 @@ export const getUserInfo = () => (dispatch) => {
     })
 }
 
-
 export const login = (email, password) => (dispatch) => {
     userAPI.login(email, password).then((response) => {
-        debugger
-
         if (response.token) {  
             Cookies.set('token', response.token, { expires: 10 / 24 });
             dispatch(authUser());
@@ -124,6 +126,7 @@ export const login = (email, password) => (dispatch) => {
         }
     })
 }
+
 export const authUser = () => (dispatch) => {    
     if (Cookies.get('token')) {
         let token = Cookies.get('token');
@@ -133,7 +136,6 @@ export const authUser = () => (dispatch) => {
         dispatch(setUserLogged(true));
     }
 }
-
 
 export const register = (login, email, password) => (dispatch) => {
     userAPI.register(login, email, password).then(response => {
@@ -152,15 +154,10 @@ export const logout = () => (dispatch) => {
     dispatch(setUserStats(null));
 }
 
-
 export const changePassword = (password) => (dispatch) => {
     userAPI.changePassword(password).then((response) => {
 
     })
 }
-export const changeEmail = () => (dispatch) => {
-    userAPI.changeEmail().then((response) => {
 
-    })
-}
 export default userReducer;

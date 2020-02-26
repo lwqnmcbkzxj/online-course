@@ -1,9 +1,5 @@
-import React, { useState } from 'react';
+import React from 'react';
 import s from './Lesson.module.css';
-
-import { DragSource, DropTarget, DragDropContext, connectDropTarget } from "react-dnd";
-import HTML5Backend from "react-dnd-html5-backend";
-import ArticleElements from './ArticleElements';
 
 import Video from './LessonElements/Video'
 import Picture from './LessonElements/Picture'
@@ -86,7 +82,8 @@ class LessonEdit extends React.Component {
                     ...element,
                     editMode: this.props.editMode,
                     deleteElement: this.deleteElement,
-                    editElement: this.editElement
+                    editElement: this.editElement,
+                    changeElementPosition: this.changeElementPosition
                 }
                 let component = '';
                 if (element.type === 0)
@@ -97,30 +94,62 @@ class LessonEdit extends React.Component {
                     component = <Video {...propsObj} />;
                 else if (element.type === 3) {
                     taskElement =
+                        <div className={s.lessonElement} key={`task-${element.id}`}>
                             <Task  {...propsObj}
                                 lesson={this.props.lesson}
                                 completedLessonsIds={this.props.completedLessonsIds}
                                 completeLesson={this.completeLesson}
-                                showAnswerBlock={this.showAnswerBlock} />
-                    this.setState({ taskCount: 1 });
+                                showAnswerBlock={this.showAnswerBlock} 
+                                />
+                        </div>
                 }
 
                 if (component) {
                     if (element.is_answer)
-                        answerElements.push(component);
+                        answerElements.push(<div className={s.lessonElement} key={`answer-${element.id}`}>{component}</div>);
                     else
-                        articleElements.push(component);
+                        articleElements.push(<div className={s.lessonElement} key={`article-${element.id}`}>{component}</div>);
                 }
             })
 
-            this.setState({ taskElement });
+            this.setState({ taskElement });                
+
+            if (taskElement)
+                this.setState({ taskCount: 1 });
+            else {
+                this.setState({ taskCount: 0 });
+            }
+
             if (isAnswer)
                 this.setState({ answerElements });
             else
                 this.setState({ articleElements });
         }
     }
+    changeElementPosition = (elementPosition, isAnswer, direction) => {  
+        let elements = this.props.lesson.elements;
+        
+        let newPos = 0;
+        //Fining closest is_answer equal element
+        if (direction === 0 && elementPosition > 1) {
+            for (let i = elementPosition - 2; i >= 0; i--) {
+                if (elements[i].is_answer === isAnswer){
+                    newPos = elements[i].lesson_position;
+                    break;
+                }
+            }
+        } else if (direction === 1 && elementPosition < elements.length) {
+            for (let i = elementPosition; i < elements.length; i++) {
+                if (elements[i].is_answer === isAnswer) {
+                    newPos = elements[i].lesson_position;
+                    break;
+                }                
+            }
+        }
 
+        if (newPos !== 0)
+            this.props.changeElementPosition(elementPosition, newPos, this.props.lesson.type, this.props.lesson.id)
+    }
 
     render() {
         return (
@@ -134,7 +163,7 @@ class LessonEdit extends React.Component {
                 <input defaultValue={this.props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { this.editLesson(e) }} />
 
 
-                <ArticleElements {...this.state} editMode={this.props.editMode}/>
+                {this.state.articleElements.map(element => element)}
 
                 <div className={s.addElements}>
                     <button onClick={() => { this.addElement(0) }}>+ Add text</button>
@@ -160,6 +189,7 @@ class LessonEdit extends React.Component {
                 {this.props.lesson.type === 1 ?
                     <div className={s.answerBlock}>
                         <h2>Answer</h2>
+
                         {this.state.answerElements.map(element => element)}
                         <div className={s.addElements}>
                             <button onClick={() => { this.addElement(0, true) }}>+ Add text</button>

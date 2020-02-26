@@ -6,22 +6,17 @@ import { compose } from 'redux';
 import { connect } from 'react-redux';
 import { withAuthRedirect } from '../../hoc/withAuthRedirect';
 
-class DashboardContainer extends React.Component {
-    componentDidMount() {
-        
-    }
-    render() {
-        return (
-            <div className={s.dashboard}>
-                <Dashboard {...this.props}/>
-            </div>
-        );
-    }
+const DashboardContainer = (props) => {
+    return (
+        <div className={s.dashboard}>
+            <Dashboard {...props} />
+        </div>
+    );
 }
 const mapStateToProps = (state) => ({
-	role: state.user.role
+    role: state.user.role,
 })
 
 export default compose(
     withAuthRedirect,
-    connect(mapStateToProps, {  }))(DashboardContainer);
+    connect(mapStateToProps, {}))(DashboardContainer);

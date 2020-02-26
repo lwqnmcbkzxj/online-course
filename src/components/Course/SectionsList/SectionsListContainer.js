@@ -2,7 +2,7 @@ import React from 'react';
 import SectionsList from './SectionsList';
 import { connect } from 'react-redux';
 import { setCurrentSectionId, toggleModalVisible, setModalFunction } from '../../../redux/course-reducer';
-import { getSections, addSection, addLesson, deleteSection, deleteLesson } from '../../../redux/sectionsList-reducer';
+import { getSections, addSection, addLesson, deleteSection, deleteLesson, changeElementPosition } from '../../../redux/sectionsList-reducer';
 
 
 class SectionsListContainer extends React.Component {
@@ -32,5 +32,6 @@ export default connect(mapStateToProps, {
     getSections, setCurrentSectionId,
     addSection, addLesson,
     deleteSection, deleteLesson,
-    toggleModalVisible, setModalFunction
+    toggleModalVisible, setModalFunction,
+    changeElementPosition
 })(SectionsListContainer);

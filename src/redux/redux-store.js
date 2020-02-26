@@ -1,7 +1,6 @@
 import { createStore, combineReducers, applyMiddleware } from "redux";
 
 import tasksReducer from "./tasks-reducer";
-import taskReducer from "./task-reducer";
 import userReducer from "./user-reducer";
 import usersReducer from "./users-reducer";
 
@@ -12,26 +11,21 @@ import appReducer from "./app-reducer";
 
 import { reducer as formReducer } from "redux-form";
 
-import thunkMiddleware from "redux-thunk"
-
+import thunkMiddleware from "redux-thunk";
 
 
 let reducers = combineReducers({
     course: courseReducer,
+    app: appReducer,
     sectionsList: sectionsListReducer,
-    lesson: lessonReducer,    
     tasksList: tasksReducer,
-
-    taskPage: taskReducer,
+    lesson: lessonReducer,    
     user: userReducer,
     users: usersReducer,
-    app: appReducer,
     form: formReducer,
-
 }); 
 
 let store = createStore(reducers, applyMiddleware(thunkMiddleware));
-
 
 export default store;
 

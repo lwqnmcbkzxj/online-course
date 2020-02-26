@@ -21,10 +21,12 @@ let initialState = {
 
 const lessonReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_LESSON: {
+        case SET_LESSON: {    
+            let elements = action.lesson.elements;
+             elements = elements && elements.sort((prev, next) => prev.lesson_position - next.lesson_position)
             return {
                 ...state,
-                lesson: action.lesson
+                lesson: {...action.lesson, elements}
             };
         }
 
@@ -101,18 +103,21 @@ const lessonReducer = (state = initialState, action) => {
             };
         }
         case CHANGE_ELEMENT_POSITION: {
+            let elements = state.lesson.elements.map(element => {
+                if (element.lesson_position === action.oldPosition)
+                    return { ...element, lesson_position: action.newPosition };
+                else if (element.lesson_position === action.newPosition)
+                    return { ...element, lesson_position: action.oldPosition };
+
+                return element
+            })
+
+            elements = elements.sort((prev, next) => prev.lesson_position - next.lesson_position)
             return {
                 ...state,
                 lesson: {
                     ...state.lesson,
-                    elements: state.lesson.elements.map(element => {
-                        // if (element.position == action.oldPosition)
-                        //     return { ...element, position: action.newPosition };
-                        // else if (element.position == action.newPosition)
-                        //     return { ...element, position: action.oldPosition };
-
-                        return element
-                    })
+                    elements: elements
                 }
             };
         }
@@ -147,14 +152,6 @@ export const setLesson = (lesson) => {
     }
 }
 
-const addElementSuccess = (elementType, data = "", isAnswer, ) => {
-    return {
-        type: ADD_ELEMENT,
-        elementType,
-        isAnswer,
-        data
-    }
-}
 const deleteElementSuccess = (id) => {
     return {
         type: DELETE_ELEMENT,
@@ -234,17 +231,22 @@ export const editElement = (elementId, data, elementType, lessonType) => (dispat
 }
 export const likeLesson = (lessonId) => (dispatch) => {
     lessonAPI.likeLesson(lessonId);
-
 }
-
-
-export const changeElementPosition = (elementId, oldPosition, newPosition) => {
+const changeElementPositionSuccess = (oldPosition, newPosition) => {
     return {
         type: CHANGE_ELEMENT_POSITION,
-        elementId,
         oldPosition,
         newPosition
     }
+}
+
+export const changeElementPosition = (oldPosition, newPosition, objectType, foreignId) => (dispatch) => {
+    if (objectType === 0)
+        objectType = 'article';
+    else if (objectType === 1)
+        objectType = 'task';
+    lessonAPI.changeElementPosition(oldPosition, newPosition, objectType, foreignId);
+    dispatch(changeElementPositionSuccess(oldPosition, newPosition));
 }
 
 export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {

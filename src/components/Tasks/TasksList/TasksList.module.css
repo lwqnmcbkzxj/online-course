@@ -9,6 +9,7 @@
 
 .taskName {
     font-weight: bold;
+    font-family: 'Exo 2';
     font-size: 18px;
 }
 
@@ -19,11 +20,13 @@
     align-items: center;
     justify-content: start;
 }
+
 .stats div {
     margin: 0 5px;
     display: flex;
     flex-direction: row;
 }
+
 .stats img {
     width: 20px;
 }

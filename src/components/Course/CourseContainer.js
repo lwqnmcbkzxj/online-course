@@ -1,6 +1,5 @@
 import React from 'react';
 import Course from './Course';
-import Preloader from '../Common/Preloader/Preloader';
 
 import { compose } from 'redux';
 import { connect } from 'react-redux';
@@ -15,8 +14,6 @@ class CourseContainer extends React.Component {
             this.props.history.push(`course/lesson/${this.props.currentLessonId}`)
     }
     render() {
-        // if (this.props.isFetching)
-        //     return <Preloader />
         return <Course {...this.props} />
     }
 }
