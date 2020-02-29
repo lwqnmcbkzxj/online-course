@@ -12,7 +12,7 @@ const TasksList = (props) => {
         <div className={s.tasksList}>
            {
                 props.tasks.map(task =>
-                    task.publish ? <NavLink to={`/tasks/${task.id}`} key={task.id}>
+                    task.publish ? <NavLink to={`/tasks/${task.id}`} key={task.id} activeClassName={s.activeTaskLink}>
                         <div className={s.task}>
                             <h1 className={s.taskName}>{task.title}</h1>
                             <div className={s.stats}>

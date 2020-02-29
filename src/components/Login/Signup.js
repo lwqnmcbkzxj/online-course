@@ -15,7 +15,10 @@ const RegisterForm = (props) => {
     return (
         <div className={s.login}>           
             <form onSubmit={props.handleSubmit}>
-                <div className={s.formError}>{props.error}</div>                
+                {props.error ? 
+                    <div className={s.formError}>{props.error}</div> :
+                    <div className={s.formSuccess}>{props.successMessage}</div>
+                }
                 <Field placeholder="Login" name="login" component={Input} validate={[required]}/>
                 <Field placeholder="Email" name="email" component={Input} validate={[required]}/>
                 <Field placeholder="Password" name="password" type="password" component={Input} validate={[required]} />
@@ -27,27 +30,34 @@ const RegisterForm = (props) => {
 }
 const ReduxRegisterForm = reduxForm({ form: 'register' })(RegisterForm)
 
-const Register = (props) => {
-    const onSubmit = (formData) => {
+class Register extends React.Component {
+    state = { successMessage: '' }
+
+    onSubmit = (formData) => {
         let regExp = /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i;
         if (!regExp.test(formData.email))
             throw new SubmissionError({ _error: "Incorrect email" })
 
         if (formData.password === formData.repeat_password) {
-            props.register(formData.login, formData.email, formData.password);
-            return <Redirect to={"/login"} />
+            this.props.register(formData.login, formData.email, formData.password).then((response) => { 
+                if (response)
+                    this.setState({successMessage: response })
+            });
+            
         } else {
             throw new SubmissionError({ _error: "Passwords don't match" })
         } 
     }
 
-    return (
-        <div className={s.login}>
-            <h1>SIGN UP</h1>            
-            <ReduxRegisterForm onSubmit={onSubmit} />
-            <NavLink to="/login"><button>Log in</button></NavLink>
-        </div>
-    );
+    render() {
+        return (
+            <div className={s.login}>
+                <h1>SIGN UP</h1>  
+                <ReduxRegisterForm onSubmit={this.onSubmit} successMessage={this.state.successMessage}/>
+                <NavLink to="/login"><button>Log in</button></NavLink>
+            </div>
+        );
+    }
 }
 
 

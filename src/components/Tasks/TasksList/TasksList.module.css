@@ -7,10 +7,17 @@
     padding: 10px 0;
 }
 
-.taskName {
-    font-weight: bold;
-    font-family: 'Exo 2';
+.taskName {    
     font-size: 18px;
+    transition: .4s;
+}
+.taskName:hover {    
+    opacity: .7;
+}
+.activeTaskLink{
+    font-family: 'Exo 2';
+
+    font-weight: bold;
 }
 
 .stats {

@@ -18,7 +18,7 @@ const appReducer = (state = initialState, action) => {
                 initialized: action.initialized
             }
         }
-       
+
         case SET_START_PAGENAME: {
             return {
                 ...state,
@@ -35,8 +35,8 @@ export const initApp = () => (dispatch) => {
     let getUserStat = dispatch(getUserInfo());
     return Promise.allSettled([getSects, getUserStat])
         .then(() => {
-            dispatch(getFirstNotCompletedLessonId());       
-            dispatch(initializedSuccess(true));            
+            dispatch(getFirstNotCompletedLessonId());
+            dispatch(initializedSuccess(true));
         });
 }
 
@@ -52,6 +52,18 @@ export const setStartPagename = (pageName) => {
         type: SET_START_PAGENAME,
         pageName
     }
+}
+
+if (!Promise.allSettled) {
+    Promise.allSettled = function (promises) {
+        return Promise.all(promises.map(p => Promise.resolve(p).then(value => ({
+            state: 'fulfilled',
+            value: value
+        }), error => ({
+            state: 'rejected',
+            reason: error
+        }))));
+    };
 }
 
 export default appReducer;

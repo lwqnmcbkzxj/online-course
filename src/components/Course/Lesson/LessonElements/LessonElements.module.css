@@ -101,10 +101,20 @@ textarea {
     font-size: 20px;
 }
 
+.quiz .completedTaskcorrectButton {
+    border: 3px solid #429D24;
+}
+
+.quiz .completedTaskWrongButton {
+    border: 3px solid #7A0000;
+}
+
 .quiz .testButton:hover label{    
     cursor: pointer;
 }
-
+.task form input.completedInput {
+    border: 3px solid #429D24;
+}
 
 .testButton input[type="checkbox"] {
 	display:none;
@@ -129,7 +139,7 @@ textarea {
 }
 
 .task h3 {
-    margin: 10px 0;
+    margin: 20px 0 30px 0;
     font-size: 22px;
 }
 .task p {

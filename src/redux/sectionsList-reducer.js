@@ -1,6 +1,10 @@
 import { sectionsListAPI, lessonAPI } from '../api/api';
 import { getUserInfo } from "./user-reducer"
 import { setCourseInfo } from './course-reducer';
+
+import alertify from "alertifyjs";
+alertify.set('notifier', 'position', 'top-right');
+
 const SET_SECTIONS = 'SET_SECTIONS_DATA';
 
 const ADD_SECTION = 'ADD_SECTION';
@@ -18,9 +22,12 @@ const COMPLETE_SECTION = 'COMPLETE_SECTION';
 const CHANGE_LESSON_POSITION = 'CHANGE_LESSON_POSITION';
 const CHANGE_SECTION_POSITION = 'CHANGE_SECTION_POSITION';
 
+const TOGGLE_IS_SECTIONS_FETCHING = 'TOGGLE_IS_SECTIONS_FETCHING';
+
 
 let initialState = {
-    sections: []
+    sections: [],
+    sectionsListIsFetching:false
 }
 
 const sectionsListReducer = (state = initialState, action) => {
@@ -28,7 +35,7 @@ const sectionsListReducer = (state = initialState, action) => {
         case SET_SECTIONS: {
             let sections = action.sections.map(section => {
                 let lessons = section.lessons.sort((prev, next) => prev.section_position - next.section_position)
-                return {...section, lessons}
+                return { ...section, lessons }
             })
             sections = sections.sort((prev, next) => prev.dash_position - next.dash_position)
             return {
@@ -100,31 +107,31 @@ const sectionsListReducer = (state = initialState, action) => {
             return {
                 ...state,
                 sections: state.sections.map(section => {
-                    if (section.id === action.sectionId)                     
+                    if (section.id === action.sectionId)
                         return { ...section, title: action.title };
                     return section;
                 })
             };
         }
-            
+
         case EDIT_LESSON: {
             return {
                 ...state,
-                sections: state.sections.map(section => {                    
+                sections: state.sections.map(section => {
                     if (section.id === action.sectionId) {
-                       section.lessons = section.lessons.map(lesson => {
-                            if (+lesson.id === +action.lessonId)                            
-                                return { ...lesson,  title: action.title };                            
-                            
+                        section.lessons = section.lessons.map(lesson => {
+                            if (+lesson.id === +action.lessonId)
+                                return { ...lesson, title: action.title };
+
                             return lesson;
                         });
-                    }                  
-                        
+                    }
+
                     return section;
                 })
             };
-        } 
-            
+        }
+
         case COMPLETE_LESSON: {
             return {
                 ...state,
@@ -141,7 +148,7 @@ const sectionsListReducer = (state = initialState, action) => {
                 })
             };
         }
-            
+
         case COMPLETE_SECTION: {
             let allCompleted = true;
             for (let section of this.state.sections) {
@@ -162,7 +169,7 @@ const sectionsListReducer = (state = initialState, action) => {
                 })
             };
         }
-            
+
         case CHANGE_SECTION_POSITION: {
             let sections = state.sections;
             sections = sections.map(section => {
@@ -174,11 +181,11 @@ const sectionsListReducer = (state = initialState, action) => {
                 return section;
             });
             return {
-                ...state, 
-                sections: sections.sort((prev, next) => prev.dash_position - next.dash_position) 
+                ...state,
+                sections: sections.sort((prev, next) => prev.dash_position - next.dash_position)
             }
         }
-            
+
         case CHANGE_LESSON_POSITION: {
             let lessons = state.sections.filter(section => section.id === action.sectionId)[0].lessons;
 
@@ -191,9 +198,9 @@ const sectionsListReducer = (state = initialState, action) => {
                 return lesson;
             });
             lessons = lessons.sort((prev, next) => prev.section_position - next.section_position)
-            
+
             return {
-                ...state, 
+                ...state,
                 sections: state.sections.map(section => {
                     if (section.id === action.sectionId)
                         return { ...section, lessons }
@@ -201,7 +208,13 @@ const sectionsListReducer = (state = initialState, action) => {
                 })
             }
         }
-            
+
+        case TOGGLE_IS_SECTIONS_FETCHING: {
+            return {
+                ...state,
+                sectionsListIsFetching: action.isFetching
+            }
+        }
         default:
             return state;
     }
@@ -267,7 +280,8 @@ const changeSectionPositionSuccess = (oldPosition, newPosition) => {
 export const getSections = () => (dispatch) => {
     return sectionsListAPI.getSections().then((response) => {
         dispatch(setSections(response));
-        dispatch(setCourseInfo(response))
+        dispatch(setCourseInfo(response));
+        dispatch(toggleIsSectionsFetching(false));
     })
 }
 
@@ -282,25 +296,25 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
     for (let section of sections) {
         if (+section.id === +sectionId) {
             section.lessons.map(lesson => {
-                if (!completedLessonsIds.some(id => +id === +lesson.id)) 
+                if (!completedLessonsIds.some(id => +id === +lesson.id))
                     allCompleted = false;
             })
-        }        
+        }
     }
 
     if (allCompleted) {
         sectionsListAPI.completeSection(sectionId).then((response) => {
             if (response.status === "ok") {
-                dispatch(getUserInfo());            
+                dispatch(getUserInfo());
             }
         });
     }
 }
 
-export const completeLesson = (lessonId, sectionId, contentType, data) => (dispatch) => {    
+export const completeLesson = (lessonId, sectionId, contentType, data) => (dispatch) => {
     lessonAPI.completeLesson(lessonId, contentType, data).then((response) => {
         if (response.status === "ok") {
-            dispatch(getUserInfo());  
+            dispatch(getUserInfo());
             dispatch(completeSection(lessonId, sectionId));
         }
     });
@@ -309,57 +323,101 @@ export const completeLesson = (lessonId, sectionId, contentType, data) => (dispa
 
 // DELETE
 export const deleteSection = (sectionId) => (dispatch) => {
+    dispatch(toggleIsSectionsFetching(true))
+
     dispatch(deleteSectionSuccess(sectionId));
     sectionsListAPI.deleteSection(sectionId).then((response) => {
-        if (response.status !== "ok") {}
+        if (response.status === "ok") {
+            alertify.success("Section deleted");
+            dispatch(getSections());
+        }
+        else
+            alertify.error("Failed to delete section");
     })
 }
 
 export const deleteLesson = (lessonId, sectionId) => (dispatch) => {
-    dispatch(deleteLessonSuccess(lessonId));
+    dispatch(toggleIsSectionsFetching(true))
+
+    // dispatch(deleteLessonSuccess(lessonId));
     lessonAPI.deleteLesson(lessonId, sectionId).then((response) => {
         if (response.status === "ok") {
             dispatch(getUserInfo());
             dispatch(getSections());
-
-        }
+            alertify.success("Lesson deleted");
+        } else
+            alertify.error("Failed to delete lesson");
     })
 }
 
 // ADD
 export const addSection = () => (dispatch) => {
+    dispatch(toggleIsSectionsFetching(true));
+
     sectionsListAPI.addSection().then((response) => {
         if (response.status === "ok") {
             dispatch(getSections());
-        }
+            alertify.success("Section added");
+        } else
+            alertify.error("Failed to add section");
     })
 }
 
 export const addLesson = (sectionId, contentType) => (dispatch) => {
+    dispatch(toggleIsSectionsFetching(true));
     return lessonAPI.addLesson(sectionId, contentType).then((response) => {
         if (response.status === "ok") {
             dispatch(getUserInfo());
-            return dispatch(getSections());            
-        }
+            alertify.success("Lesson added");
+            return dispatch(getSections());
+        } else
+            alertify.error("Failed to add lesson");
     })
 }
 
 // EDIT
 export const editSection = (sectionId, title) => (dispatch) => {
     dispatch(editSectionSuccess(sectionId, title));
-    sectionsListAPI.editSection(sectionId, title);
+    sectionsListAPI.editSection(sectionId, title).then(response => {
+        if (response.status === "ok")
+            alertify.success("Section edited");
+        else
+            alertify.error("Failed to edit section");
+    });
+
+
 }
 export const editLesson = (sectionId, lessonId, title) => (dispatch) => {
     dispatch(editLessonSuccess(sectionId, lessonId, title));
-    lessonAPI.editLesson(lessonId, title);
+    lessonAPI.editLesson(lessonId, title).then(response => {
+        if (response.status === "ok")
+            alertify.success("Lesson edited");
+        else
+            alertify.error("Failed to edit lesson");
+    });
 }
 
 export const changeElementPosition = (oldPosition, newPosition, type, foreignId) => (dispatch) => {
-    lessonAPI.changeElementPosition(oldPosition, newPosition, type, foreignId);
-    if (type === 'section')
-        dispatch(changeSectionPositionSuccess(oldPosition, newPosition));        
-    else if (type === 'lesson')
-        dispatch(changeLessonPositionSuccess(oldPosition, newPosition, foreignId));
+    lessonAPI.changeElementPosition(oldPosition, newPosition, type, foreignId).then(response => {
+        if (response.status === "ok") {
+            if (type === 'section')
+                dispatch(changeSectionPositionSuccess(oldPosition, newPosition));
+            else if (type === 'lesson')
+                dispatch(changeLessonPositionSuccess(oldPosition, newPosition, foreignId));
+            alertify.success("Position changed");
+        }
+        else
+            alertify.error("Failed to change position");
+    });
+
+
+}
+
+const toggleIsSectionsFetching = (isFetching) => {
+    return {
+        type: TOGGLE_IS_SECTIONS_FETCHING,
+        isFetching
+    }
 }
 
 export default sectionsListReducer;

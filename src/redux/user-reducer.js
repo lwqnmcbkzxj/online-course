@@ -138,9 +138,13 @@ export const authUser = () => (dispatch) => {
 }
 
 export const register = (login, email, password) => (dispatch) => {
-    userAPI.register(login, email, password).then(response => {
+    return userAPI.register(login, email, password).then(response => {
+        if (response.status === 'ok') {
+            return "You're successfully registered";
+        }
         if (response.error === "already exists") {
-            dispatch(stopSubmit("register", { _error: "User with that login or email already exists" }))            
+            dispatch(stopSubmit("register", { _error: "User with that login or email already exists" }));
+            return false;
         }
     })
 }

@@ -17,7 +17,7 @@
     font-family: 'Exo 2';
     font-weight: bold;
     font-size: 22px;
-    margin-bottom: 10px;
+    margin: 20px 0 10px 0;
 }
 
 .login form input {
@@ -37,14 +37,23 @@
 
 .login button.active {    
     background: #000;
-    color: #ddad35;
+    color: #fff;
     font-weight: normal;
     padding: 10px;
 }
 
-.formError {
+.formError, .formSuccess {
     text-align: center;
     margin-bottom: 10px;
-    color: #f05642;
-    font-size: 22px;
+    font-size: 18px;
+    font-weight: bold;
+    font-family: 'Exo 2';
+}
+
+.formError {
+    color:#A13131;
+}
+
+.formSuccess {
+    color: #40A131;
 }

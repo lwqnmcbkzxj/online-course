@@ -2,6 +2,9 @@ import { lessonAPI, articleElementsAPI, taskElementsAPI } from '../api/api';
 import { setCurrentLessonId } from './course-reducer';
 import { getSections } from './sectionsList-reducer';
 
+import alertify from "alertifyjs";
+alertify.set('notifier', 'position', 'top-right');
+
 const SET_LESSON = 'SET_LESSON';
 const ADD_ELEMENT = 'ADD_ELEMENT';
 const DELETE_ELEMENT = 'DELETE_ELEMENT';
@@ -21,12 +24,12 @@ let initialState = {
 
 const lessonReducer = (state = initialState, action) => {
     switch (action.type) {
-        case SET_LESSON: {    
+        case SET_LESSON: {
             let elements = action.lesson.elements;
-             elements = elements && elements.sort((prev, next) => prev.lesson_position - next.lesson_position)
+            elements = elements && elements.sort((prev, next) => prev.lesson_position - next.lesson_position)
             return {
                 ...state,
-                lesson: {...action.lesson, elements}
+                lesson: { ...action.lesson, elements }
             };
         }
 
@@ -43,8 +46,6 @@ const lessonReducer = (state = initialState, action) => {
                 ...state,
                 lesson: {
                     ...state.lesson, elements: [...state.lesson.elements, newElement],
-                    
-
                 }
             };
         }
@@ -93,9 +94,9 @@ const lessonReducer = (state = initialState, action) => {
                 lesson: {
                     ...state.lesson,
                     elements: state.lesson.elements.map(element => {
-                        if (+element.id === +action.id) 
-                            return  { ...element, json_quiz_options: action.data[0],  json_quiz_answers: action.data[1] };
-                        
+                        if (+element.id === +action.id)
+                            return { ...element, json_quiz_options: action.data[0], json_quiz_answers: action.data[1] };
+
 
                         return element;
                     })
@@ -125,14 +126,13 @@ const lessonReducer = (state = initialState, action) => {
             return {
                 ...state,
                 lessonIsFetching: action.isFetching
-           }
+            }
         }
-        
+
         default:
             return state;
     }
 }
-
 
 export const getLesson = (lessonId) => (dispatch) => {
     dispatch(toggleIsFetching(true));
@@ -158,6 +158,7 @@ const deleteElementSuccess = (id) => {
         id
     }
 }
+
 const editElementTextSuccess = (id, text) => {
     return {
         type: EDIT_ELEMENT_TEXT,
@@ -165,6 +166,7 @@ const editElementTextSuccess = (id, text) => {
         text
     }
 }
+
 const editElementMediaSuccess = (id, media) => {
     return {
         type: EDIT_ELEMENT_MEDIA,
@@ -172,6 +174,7 @@ const editElementMediaSuccess = (id, media) => {
         media
     }
 }
+
 const editElementQuizSuccess = (id, data) => {
     return {
         type: EDIT_TASK_QUIZ,
@@ -179,55 +182,88 @@ const editElementQuizSuccess = (id, data) => {
         data
     }
 }
+
 export const addElement = (lessonId, elementType, lessonType, isAnswer) => (dispatch) => {
     // dispatch(addElementSuccess(elementType, '', isAnswer));
 
-    if (lessonType === 0)
-        articleElementsAPI.addArticleElement(lessonId, elementType).then(() => {
-            dispatch(getLesson(lessonId))
+    if (lessonType === 0) {
+        articleElementsAPI.addArticleElement(lessonId, elementType).then((response) => {
+            if (response.status === "ok") {
+                dispatch(getLesson(lessonId));
+                alertify.success("Element added");
+            } else alertify.error("Failed to add element");
         });
-    else
-        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer).then(() => {
-            dispatch(getLesson(lessonId))
+    } else {
+        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer).then(response => {
+            if (response.status === "ok") {
+                dispatch(getLesson(lessonId));
+                alertify.success("Element added");
+            } else alertify.error("Failed to add element");
         });
+    }
 
 }
 
 export const addTaskElement = (lessonId, elementType, data) => (dispatch) => {
     // dispatch(addElementSuccess(elementType, data));    
-    taskElementsAPI.addTaskElement(lessonId, elementType, data).then(() => {
-        dispatch(getLesson(lessonId))
+    taskElementsAPI.addTaskElement(lessonId, elementType, data).then(response => {
+        if (response.status === "ok") {
+            dispatch(getLesson(lessonId))
+            alertify.success("Element added");
+        } else
+            alertify.error("Failed to add element");
     });;
 }
-export const deleteElement = (elementId, lessonType) => (dispatch) => {
+export const deleteElement = (lessonId, elementId, lessonType) => (dispatch) => {
     dispatch(deleteElementSuccess(elementId));
+    dispatch(toggleIsFetching(true));
 
     if (lessonType === 0)
-        articleElementsAPI.deleteArticleElement(elementId);
+        articleElementsAPI.deleteArticleElement(elementId).then(response => {
+            if (response.status === "ok") {
+                dispatch(getLesson(lessonId));
+                alertify.success('Element deleted');
+            }
+            else alertify.error("Failed to delete element");
+        });
     else
-        taskElementsAPI.deleteTaskElement(elementId);
+        taskElementsAPI.deleteTaskElement(elementId).then(response => {
+            if (response.status === "ok") {
+                dispatch(getLesson(lessonId));
+                alertify.success('Element deleted');
+            }
+            else alertify.error("Failed to delete element");
+        });
+    
 }
 export const editElement = (elementId, data, elementType, lessonType) => (dispatch) => {
+    let status = '';
     if (elementType === 0) {
         dispatch(editElementTextSuccess(elementId, data));
 
         if (lessonType === 0)
-            articleElementsAPI.editArticleElementText(elementId, data);
+            articleElementsAPI.editArticleElementText(elementId, data).then(response => showAlertify(response.status));
         else
-            taskElementsAPI.editTaskElementText(elementId, data);
-    }
-    else if (elementType === 3) {
+            taskElementsAPI.editTaskElementText(elementId, data).then(response => showAlertify(response.status));
+    } else if (elementType === 3) {
         dispatch(editElementQuizSuccess(elementId, data));
-        taskElementsAPI.editTaskQuiz(elementId, data);        
-    }
-    else {
+        taskElementsAPI.editTaskQuiz(elementId, data).then(response => showAlertify(response.status));
+    } else {
         dispatch(editElementMediaSuccess(elementId, data));
 
         if (lessonType === 0)
-            articleElementsAPI.editArticleElementMedia(elementId, data);
+            articleElementsAPI.editArticleElementMedia(elementId, data).then(response => showAlertify(response.status));
         else
-            taskElementsAPI.editTaskElementMedia(elementId, data);
+            taskElementsAPI.editTaskElementMedia(elementId, data).then(response => showAlertify(response.status));
     }
+
+    const showAlertify = (status) => {
+        if (status === "ok")
+            alertify.success('Element edited');
+        else
+            alertify.error("Failed to edit element");
+    }
+
 }
 export const likeLesson = (lessonId) => (dispatch) => {
     lessonAPI.likeLesson(lessonId);
@@ -245,8 +281,13 @@ export const changeElementPosition = (oldPosition, newPosition, objectType, fore
         objectType = 'article';
     else if (objectType === 1)
         objectType = 'task';
-    lessonAPI.changeElementPosition(oldPosition, newPosition, objectType, foreignId);
-    dispatch(changeElementPositionSuccess(oldPosition, newPosition));
+    lessonAPI.changeElementPosition(oldPosition, newPosition, objectType, foreignId).then(response => {
+        if (response.status === "ok") {
+            dispatch(changeElementPositionSuccess(oldPosition, newPosition));
+            alertify.success('Element position changed');
+        } else
+            alertify.error('Failer to change element position');
+    });
 }
 
 export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {
@@ -255,10 +296,14 @@ export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {
         id = sectionId;
     else if (type === 'lesson')
         id = lessonId;
-    
-    lessonAPI.changePublishStatus(id, type).then(() => {
-        dispatch(getSections());
-        dispatch(getLesson(lessonId));
+
+    lessonAPI.changePublishStatus(id, type).then((response) => {
+        if (response.status === "ok") {
+            dispatch(getSections());
+            dispatch(getLesson(lessonId));
+            alertify.success('Publish status changed');
+        } else
+            alertify.error('Failed to change publish status');
     })
 }
 

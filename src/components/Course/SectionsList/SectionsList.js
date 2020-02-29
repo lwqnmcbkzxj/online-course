@@ -4,7 +4,8 @@ import { withRouter } from 'react-router';
 
 import SectionHeader from './Elements/SectionHeader';
 import LessonsListElement from './Elements/LessonsListElement';
-
+import alertify from "alertifyjs";
+import Preloader from '../../Common/Preloader/Preloader';
 
 class SectionsList extends React.Component {
     state = {
@@ -33,7 +34,9 @@ class SectionsList extends React.Component {
         this.setCurrentSection(sectionId);
 
         this.props.addLesson(sectionId, contentType).then(() => {
-            this.props.history.push(`/course/lesson/${this.props.addedLessonId}`)
+            this.props.history.push(`/course/lesson/${this.props.addedLessonId}`);
+            // alertify.success("SUCCESS")
+
         });
     }
 
@@ -41,9 +44,8 @@ class SectionsList extends React.Component {
         this.props.addSection();
     }
 
-
     deleteLesson = (lessonId, sectionId) => {
-        this.props.setModalFunction(this.props.deleteLesson, [lessonId, sectionId], 'Lesson')
+        this.props.setModalFunction(this.props.deleteLesson, [lessonId, sectionId], 'Lesson');
     }
 
     deleteSection = (sectionId) => {
@@ -90,6 +92,8 @@ class SectionsList extends React.Component {
     }
 
     render() {
+        if (this.props.sectionsListIsFetching)
+            return <Preloader />
         return (
             <div className={s.sectionList}>
                 {

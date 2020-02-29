@@ -3,6 +3,7 @@ import SectionsList from './SectionsList';
 import { connect } from 'react-redux';
 import { setCurrentSectionId, toggleModalVisible, setModalFunction } from '../../../redux/course-reducer';
 import { getSections, addSection, addLesson, deleteSection, deleteLesson, changeElementPosition } from '../../../redux/sectionsList-reducer';
+import Preloader from '../../Common/Preloader/Preloader';
 
 
 class SectionsListContainer extends React.Component {
@@ -11,6 +12,9 @@ class SectionsListContainer extends React.Component {
     }
 
     render() {
+        // if (this.props.sectionsListIsFetching)
+        // return <Preloader />
+
         return <SectionsList {...this.props} />
     }
 }
@@ -24,6 +28,7 @@ let mapStateToProps = (state) => ({
     completedSectionsIds: state.user.completedSectionsIds,
     completedLessonsIds: state.user.completedLessonsIds,
     completedTasksIds: state.user.completedTasksIds,
+    sectionsListIsFetching: state.sectionsList.sectionsListIsFetching
 })
 
 

@@ -30,7 +30,7 @@ class Test extends React.Component {
     editAnswer = (e, position) => {
         let answers = this.props.answers;
         if (e.currentTarget.checked)
-            answers[0] = position.toString();    
+            answers[0] = position.toString();
 
         this.props.editQuiz(this.props.options, answers);
     }
@@ -80,11 +80,18 @@ const TestForm = (props) => {
                 {props.options.map((option, counter) =>
                     <div className={s.testButton} key={`c${props.id}.${counter}2`}>
                         <Field name={`test`} id={`c${props.id}.${counter}`} value={counter.toString()} component="input" type="radio" />
-                        <label htmlFor={`c${props.id}.${counter}`}>{option ? option : "Option"}</label>
+                        <label htmlFor={`c${props.id}.${counter}`}
+                            className={props.completedLessonsIds.some(id => id === +props.lesson.id) ? (
+                                props.answers.some(answer => +answer === counter && answer !== "")
+                                    ? s.completedTaskcorrectButton : s.completedTaskWrongButton)
+                                : null}
+                        >
+                            {option ? option : "Option"}
+                        </label>
                     </div>
                 )}
             </div>
-            {props.completeTry && <p>{props.taskMessage}</p>}
+            {props.triedToComplete && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
                 {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
                     <button>Submit</button> : null}

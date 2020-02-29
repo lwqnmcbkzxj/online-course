@@ -5,6 +5,10 @@ import { NavLink } from 'react-router-dom';
 import { setStartPagename } from '../../redux/app-reducer';
 import textImage from '../../assets/images/physics_text.png';
 
+import indeedLogo from "../../assets/images/logo_indeed.png";
+import euLogo from "../../assets/images/logo_EU.png";
+import cepheiLogo from "../../assets/images/logo_CEPHEI.png";
+import univerityLogo from "../../assets/images/logo_lut.png";
 
 const Welcome = (props) => {
     let setStartPagename = () => {
@@ -12,13 +16,13 @@ const Welcome = (props) => {
     }
     return (
         <div className={s.welcome}>
-            <div className={s.header}>
+            <header className={s.header}>
                 <div className={s.courseName}>Creativity in Physics</div>
                 <div className={s.navlinks}>
                 <NavLink to="/login"><button className={s.item}onClick={setStartPagename}>Resume</button></NavLink>
                 <NavLink to="/signin"><button className={s.item}>Enroll</button></NavLink>
                 </div>
-            </div>
+            </header>
             <div className={s.content}>
                 <div className={s.entollText}>
                     <img src={textImage} alt="welcomeTextImage"/>
@@ -30,6 +34,14 @@ const Welcome = (props) => {
                     </div>
                 </div>
             </div>
+            <footer>
+                <div className={s.logos}>
+                    <img src={indeedLogo} alt="indeedLogo"/>
+                    <img src={euLogo} alt="euLogo"/>
+                    <img src={cepheiLogo} alt="cepheiLogo"/>
+                    <img src={univerityLogo} alt="univerityLogo"/>
+                </div>
+            </footer>
         </div>
     );
 }

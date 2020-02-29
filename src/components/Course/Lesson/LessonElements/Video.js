@@ -30,13 +30,19 @@ class Video extends React.Component {
     }
 
     editElement = (elementId) => {
-        this.props.editElement(elementId, this.state.media, this.props.type);
+        let propsMeida = this.props.media
+        if (propsMeida === null)
+            propsMeida = "";
+        if (this.state.media !== propsMeida) {
+            this.props.editElement(elementId, this.state.media, this.props.type);
+        }
     }
 
     onTextChange = (e) => {
-        this.setState({
-            media: e.currentTarget.value
-        })
+        let media = e.currentTarget.value;
+
+        if (media.length < 300)
+            this.setState({ media })
     }
     render() {
         return (
@@ -45,13 +51,13 @@ class Video extends React.Component {
                     <div className={s.elementHeader} >
                         <div className="icon delete"><img src={deleteIcon} alt="deleteIcon" onClick={() => { this.deleteElement(this.props.id) }} /></div>
                         <div>
-                        <i className="fa fa-caret-up" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 0)}}></i>
-                            <i className="fa fa-caret-down" aria-hidden="true" onClick={()=>{this.props.changeElementPosition(this.props.lesson_position, this.props.is_answer, 1)}}></i>
+                            <i className="fa fa-caret-up" aria-hidden="true" onClick={() => { this.props.changeElementPosition(this.props.id, this.props.is_answer, 0) }}></i>
+                            <i className="fa fa-caret-down" aria-hidden="true" onClick={() => { this.props.changeElementPosition(this.props.id, this.props.is_answer, 1) }}></i>
                         </div>
 
                         <h2>Video</h2>
                     </div>
-                    <input defaultValue={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
+                    <input value={this.state.media} placeholder={"http://"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                 </div>
                 : this.state.media ?
                     <div className={s.videoBlock}>

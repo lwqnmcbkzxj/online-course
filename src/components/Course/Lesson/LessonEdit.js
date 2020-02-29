@@ -18,12 +18,14 @@ class LessonEdit extends React.Component {
         this.setLessonBlock(true);
         this.setLessonBlock(false);
     }
+
     componentDidUpdate(prevProps, prevState) {
         if (this.props !== prevProps || this.props.editMode !== prevProps.editMode) {
             this.setLessonBlock(true);
             this.setLessonBlock(false);
         }
     }
+
     addTaskElement = (taskType) => {
         let options = null;
         let answers = null;
@@ -52,19 +54,23 @@ class LessonEdit extends React.Component {
     }
 
     deleteElement = (elementId) => {
-        this.props.setModalFunction(this.props.deleteElement, [elementId, this.props.lesson.type], 'Element');
+        this.props.setModalFunction(this.props.deleteElement, [this.props.lesson.id, elementId, this.props.lesson.type], 'Element');
     }
 
     editElement = (elementId, data, elementType) => {
         this.props.editElement(elementId, data, elementType, this.props.lesson.type)
     }
 
-    editLesson = (e) => {
-        this.props.editLesson(this.props.currentSectionId, this.props.lesson.id, e.currentTarget.value)
+    editLessonTitle = (e) => {
+        let value = e.currentTarget.value;
+        if (this.props.lessonTitle !== value)
+            this.props.editLesson(this.props.currentSectionId, this.props.lesson.id, value)
     }
 
-    editSection = (e) => {
-        this.props.editSection(this.props.currentSectionId, e.currentTarget.value)
+    editSectionTitle = (e) => {
+        let value = e.currentTarget.value;
+        if (this.props.sectionTitle !== value)
+            this.props.editSection(this.props.currentSectionId, value)
     }
 
     togglePublish = (type) => {
@@ -99,8 +105,8 @@ class LessonEdit extends React.Component {
                                 lesson={this.props.lesson}
                                 completedLessonsIds={this.props.completedLessonsIds}
                                 completeLesson={this.completeLesson}
-                                showAnswerBlock={this.showAnswerBlock} 
-                                />
+                                showAnswerBlock={this.showAnswerBlock}
+                            />
                         </div>
                 }
 
@@ -112,7 +118,7 @@ class LessonEdit extends React.Component {
                 }
             })
 
-            this.setState({ taskElement });                
+            this.setState({ taskElement });
 
             if (taskElement)
                 this.setState({ taskCount: 1 });
@@ -126,28 +132,39 @@ class LessonEdit extends React.Component {
                 this.setState({ articleElements });
         }
     }
-    changeElementPosition = (elementPosition, isAnswer, direction) => {  
+
+    changeElementPosition = (elementId, isAnswer, direction) => {
         let elements = this.props.lesson.elements;
-        
+
+        let elementIndex = 0;
+        let elementPosition = 0;
+        for (let i = 0; i < elements.length; i++) {
+            if (elements[i].id === elementId) {
+                elementIndex = i;
+                elementPosition = elements[i].lesson_position
+                break;
+            }
+        }       
+
         let newPos = 0;
         //Fining closest is_answer equal element
         if (direction === 0 && elementPosition > 1) {
-            for (let i = elementPosition - 2; i >= 0; i--) {
-                if (elements[i].is_answer === isAnswer){
+            for (let i = elementIndex - 1; i >= 0; i--) {
+                if (elements[i].is_answer === isAnswer && elements[i].type !== 3) {
                     newPos = elements[i].lesson_position;
                     break;
                 }
             }
         } else if (direction === 1 && elementPosition < elements.length) {
-            for (let i = elementPosition; i < elements.length; i++) {
-                if (elements[i].is_answer === isAnswer) {
+            for (let i = elementIndex + 1; i < elements.length; i++) {
+                if (elements[i].is_answer === isAnswer && elements[i].type !== 3) {
                     newPos = elements[i].lesson_position;
                     break;
-                }                
+                }
             }
         }
 
-        if (newPos !== 0)
+        if (newPos !== 0 && elementPosition !== 0)
             this.props.changeElementPosition(elementPosition, newPos, this.props.lesson.type, this.props.lesson.id)
     }
 
@@ -159,8 +176,8 @@ class LessonEdit extends React.Component {
                     Publish {this.props.lesson.type === 0 ? "lesson" : "task"}
                     <input type="checkbox" checked={this.props.publishedLesson} onChange={() => { this.togglePublish('lesson') }} />
                 </div>
-                {this.props.isFirstLesson ? <input defaultValue={this.props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { this.editSection(e) }} /> : null}
-                <input defaultValue={this.props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { this.editLesson(e) }} />
+                {this.props.isFirstLesson ? <input defaultValue={this.props.sectionTitle} placeholder={"Write section title here"} onBlur={(e) => { this.editSectionTitle(e) }} /> : null}
+                <input defaultValue={this.props.lessonTitle} placeholder={"Write lesson title here"} onBlur={(e) => { this.editLessonTitle(e) }} />
 
 
                 {this.state.articleElements.map(element => element)}
@@ -205,6 +222,3 @@ class LessonEdit extends React.Component {
 }
 
 export default LessonEdit;
-
-
-
