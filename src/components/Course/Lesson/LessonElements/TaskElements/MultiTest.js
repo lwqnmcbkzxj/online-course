@@ -87,7 +87,6 @@ class MultiTest extends React.Component {
 
 
 const MultiTestForm = (props) => {
-    debugger
     return (
         <form onSubmit={props.handleSubmit}>
             <div className={s.quiz}>

@@ -28,7 +28,6 @@ const OpenAnswer = (props) => {
 
 
 const OpenAnswerForm = (props) => {
-    debugger
     return (
         <form onSubmit={props.handleSubmit}>
 

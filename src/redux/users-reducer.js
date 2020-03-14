@@ -1,6 +1,6 @@
 import { userAPI } from "../api/api";
 
-const SET_USERS_STATS = 'SET-USERS-STATS';
+const SET_USERS_STATS = 'users/SET-USERS-STATS';
 
 
 let initialState = {  
@@ -29,10 +29,9 @@ export const setOverallStats = (stats) => {
     }
 }
 
-export const getOverallStats = () => (dispatch) => {
-    userAPI.getAdminInfo().then((response) => {
-        dispatch(setOverallStats(response.stats));
-    })    
+export const getOverallStats = () => async (dispatch) => {
+    let response = await userAPI.getAdminInfo();
+    dispatch(setOverallStats(response.stats));  
 }
 
 export default usersReducer;

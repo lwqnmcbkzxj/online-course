@@ -20,13 +20,23 @@ import DashboardContainer from './components/Dashboard/DashboardContainer';
 import CourseContainer from './components/Course/CourseContainer';
 import HeaderContainer from './components/Header/HeaderContainer';
 
+import alertify from "alertifyjs";
+alertify.set('notifier', 'position', 'bottom-right');
 
 class App extends React.Component {
 	componentDidMount() {		
 		this.props.authUser();		
 		this.props.initApp();
 	}
-	
+
+
+	catchAllUnhandledErrors = (reason, promiseRejectionEvent) => {
+		console.error(reason + '\n' + promiseRejectionEvent);
+        alertify.error("Any error occured!");
+	}
+	componentWillUnmount() {
+		window.removeEventListener("unhandledrejection", this.catchAllUnhandledErrors);		
+	}
 	render() {
 		if (this.props.history.location.pathname === '/')
 			this.props.history.push("/welcome");

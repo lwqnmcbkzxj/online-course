@@ -17,7 +17,7 @@ const tasksReducer = (state = initialState, action) => {
                 tasks: action.tasks,
             }
         }
-            
+
         case CALCULATE_POPULARITY: {
             let averagePopularity = 0;
             let count = 0;
@@ -38,7 +38,7 @@ const tasksReducer = (state = initialState, action) => {
                 })
             }
         }
-            
+
         case SET_LIKES: {
             let likes = action.likes;
             return {
@@ -53,19 +53,19 @@ const tasksReducer = (state = initialState, action) => {
                 })
             }
         }
-            
+
         case SET_PUBLISHED: {
             return {
-                ...state, 
+                ...state,
                 tasks: state.tasks.map(task => {
                     if (action.publishedIds.some(id => id === task.id))
                         return { ...task, publish: 1 };
-                    
-                    return { ...task, publish: 0 };                    
+
+                    return { ...task, publish: 0 };
                 })
             }
         }
-            
+
         default:
             return state;
     }
@@ -110,13 +110,13 @@ const getPublishedStatus = () => (dispatch, getState) => {
     dispatch(setPublishStatus(publishedTasks));
 }
 
-export const getTasks = () => (dispatch) => {
-    tasksAPI.getTasks().then((response) => {
-        dispatch(setTasks(response.tasks));
+export const getTasks = () => async (dispatch) => {
+    let response = await tasksAPI.getTasks();
+    
+    dispatch(setTasks(response.tasks));
 
-        dispatch(setLikes(response.likes));
-        dispatch(calculateTasksPopularity());
-        dispatch(getPublishedStatus());
-    })
+    dispatch(setLikes(response.likes));
+    dispatch(calculateTasksPopularity());
+    dispatch(getPublishedStatus());
 }
 export default tasksReducer;

@@ -41,7 +41,7 @@ class Text extends React.Component {
                         </div>
                         <h2>Text</h2>
                     </div>
-                    <textarea value={this.state.text} placeholder={"Write text here (Max. 500 symbols)"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
+                    <textarea value={this.state.text} placeholder={"Write text here (Max. 4000 symbols)"} onChange={this.onTextChange} onBlur={() => { this.editElement(this.props.id) }} />
                 </div>
                 : this.state.text ?
                     <div className={s.text}>

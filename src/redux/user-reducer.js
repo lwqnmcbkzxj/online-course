@@ -3,11 +3,13 @@ import { setToken } from "../api/api"
 import Cookies from "js-cookie";
 import { stopSubmit } from 'redux-form';
 
+import alertify from "alertifyjs";
+alertify.set('notifier', 'position', 'bottom-right');
 
-const SET_USER_INFO = 'SET_USER_INFO';
-const SET_USER_STATS = 'SET_USER_STATS';
-const SET_USER_TOKEN = 'SET_USER_TOKEN';
-const SET_USER_LOGGED = 'SET_USER_LOGGED';
+const SET_USER_INFO = 'user/SET_USER_INFO';
+const SET_USER_STATS = 'user/SET_USER_STATS';
+const SET_USER_TOKEN = 'user/SET_USER_TOKEN';
+const SET_USER_LOGGED = 'user/SET_USER_LOGGED';
 
 
 let initialState = {
@@ -27,7 +29,7 @@ const userReducer = (state = initialState, action) => {
                 info: action.info,
             }
         }
-            
+
         case SET_USER_STATS: {
             let articleIds = [];
             let tasksIds = [];
@@ -57,22 +59,22 @@ const userReducer = (state = initialState, action) => {
                 completedSectionsIds: sectionsIds,
                 completedLessonsIds: [...articleIds, ...tasksIds],
             }
-        }  
-            
+        }
+
         case SET_USER_LOGGED: {
             return {
                 ...state,
                 logged: action.logged
             }
         }
-            
+
         case SET_USER_TOKEN: {
             return {
                 ...state,
                 token: action.token
             }
         }
-            
+
         default:
             return state;
     }
@@ -105,29 +107,31 @@ const setUserToken = (token) => {
         type: SET_USER_TOKEN,
         token
     }
+}
+
+export const getUserInfo = () => async (dispatch) => {
+    dispatch(setUserToken());
+
+    let response = await userAPI.getUserInfo()
+    dispatch(setUserStats(response.stats));
+    dispatch(setUserInfo(response.info));
+
+    return response;
+}
+
+export const login = (email, password) => async (dispatch) => {
+
+    let response = await userAPI.login(email, password)
+    if (response.token) {
+        Cookies.set('token', response.token, { expires: 10 / 24 });
+        dispatch(authUser());
+    } else if (response.error === "Invalid credentials") {
+        dispatch(stopSubmit("login", { _error: "Incorrect email or password" }))
+    }
 
 }
 
-export const getUserInfo = () => (dispatch) => {
-    dispatch(setUserToken())
-    return userAPI.getUserInfo().then((response) => {
-        dispatch(setUserStats(response.stats));
-        dispatch(setUserInfo(response.info));
-    })
-}
-
-export const login = (email, password) => (dispatch) => {
-    userAPI.login(email, password).then((response) => {
-        if (response.token) {  
-            Cookies.set('token', response.token, { expires: 10 / 24 });
-            dispatch(authUser());
-        } else if (response.error === "Invalid credentials") {
-            dispatch(stopSubmit("login", { _error: "Incorrect email or password" }))
-        }
-    })
-}
-
-export const authUser = () => (dispatch) => {    
+export const authUser = () => (dispatch) => {
     if (Cookies.get('token')) {
         let token = Cookies.get('token');
         setToken(token);
@@ -137,16 +141,18 @@ export const authUser = () => (dispatch) => {
     }
 }
 
-export const register = (login, email, password) => (dispatch) => {
-    return userAPI.register(login, email, password).then(response => {
-        if (response.status === 'ok') {
-            return "You're successfully registered";
-        }
-        if (response.error === "already exists") {
-            dispatch(stopSubmit("register", { _error: "User with that login or email already exists" }));
-            return false;
-        }
-    })
+export const register = (login, email, password) => async (dispatch) => {
+    let response = await userAPI.register(login, email, password);
+
+    if (response.status === 'ok') {
+        return "You're successfully registered";
+    }
+    if (response.error === "already exists") {
+        dispatch(stopSubmit("register", { _error: "User with that login or email already exists" }));
+        return false;
+    }
+
+    return response;
 }
 
 export const logout = () => (dispatch) => {
@@ -158,10 +164,12 @@ export const logout = () => (dispatch) => {
     dispatch(setUserStats(null));
 }
 
-export const changePassword = (password) => (dispatch) => {
-    userAPI.changePassword(password).then((response) => {
-
-    })
+export const changePassword = (password) => async (dispatch) => {
+    let response = await userAPI.changePassword(password);
+    if (response.status === "ok")
+        alertify.success("Password changed successfully");
+    else 
+        alertify.error("Failed to change password");        
 }
 
 export default userReducer;

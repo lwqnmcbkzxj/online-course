@@ -3,19 +3,19 @@ import { setCurrentLessonId } from './course-reducer';
 import { getSections } from './sectionsList-reducer';
 
 import alertify from "alertifyjs";
-alertify.set('notifier', 'position', 'top-right');
+alertify.set('notifier', 'position', 'bottom-right');
 
-const SET_LESSON = 'SET_LESSON';
-const ADD_ELEMENT = 'ADD_ELEMENT';
-const DELETE_ELEMENT = 'DELETE_ELEMENT';
+const SET_LESSON = 'lesson/SET_LESSON';
+const ADD_ELEMENT = 'lesson/ADD_ELEMENT';
+const DELETE_ELEMENT = 'lesson/DELETE_ELEMENT';
 
-const EDIT_ELEMENT_TEXT = 'EDIT_ELEMENT_TEXT';
-const EDIT_ELEMENT_MEDIA = 'EDIT_ELEMENT_MEDIA';
-const EDIT_TASK_QUIZ = 'EDIT_ELEMENEDIT_TASK_QUIZT_MEDIA';
+const EDIT_ELEMENT_TEXT = 'lesson/EDIT_ELEMENT_TEXT';
+const EDIT_ELEMENT_MEDIA = 'lesson/EDIT_ELEMENT_MEDIA';
+const EDIT_TASK_QUIZ = 'lesson/EDIT_ELEMENEDIT_TASK_QUIZT_MEDIA';
 
-const CHANGE_ELEMENT_POSITION = 'CHANGE_ELEMENT_POSITION';
+const CHANGE_ELEMENT_POSITION = 'lesson/CHANGE_ELEMENT_POSITION';
 
-const TOGGLE_IS_FETCHING = 'TOGGLE_IS_FETCHING';
+const TOGGLE_IS_FETCHING = 'lesson/TOGGLE_IS_FETCHING';
 
 let initialState = {
     lesson: {},
@@ -59,6 +59,7 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
+
         case EDIT_ELEMENT_TEXT: {
             return {
                 ...state,
@@ -88,6 +89,7 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
+
         case EDIT_TASK_QUIZ: {
             return {
                 ...state,
@@ -103,6 +105,7 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
+
         case CHANGE_ELEMENT_POSITION: {
             let elements = state.lesson.elements.map(element => {
                 if (element.lesson_position === action.oldPosition)
@@ -122,6 +125,7 @@ const lessonReducer = (state = initialState, action) => {
                 }
             };
         }
+
         case TOGGLE_IS_FETCHING: {
             return {
                 ...state,
@@ -134,15 +138,14 @@ const lessonReducer = (state = initialState, action) => {
     }
 }
 
-export const getLesson = (lessonId) => (dispatch) => {
+export const getLesson = (lessonId) => async (dispatch) => {
     dispatch(toggleIsFetching(true));
-    lessonAPI.getLesson(lessonId).then((response) => {
-        dispatch(setLesson(response));
-        dispatch(setCurrentLessonId(lessonId));
-        dispatch(toggleIsFetching(false));
+    let response = await lessonAPI.getLesson(lessonId);
+    dispatch(setLesson(response));
+    dispatch(setCurrentLessonId(lessonId));
+    dispatch(toggleIsFetching(false));
 
-        return response;
-    })
+    return response;
 }
 
 export const setLesson = (lesson) => {
@@ -183,86 +186,72 @@ const editElementQuizSuccess = (id, data) => {
     }
 }
 
-export const addElement = (lessonId, elementType, lessonType, isAnswer) => (dispatch) => {
+export const addElement = (lessonId, elementType, lessonType, isAnswer) => async (dispatch) => {
     // dispatch(addElementSuccess(elementType, '', isAnswer));
+    let response;
+    if (lessonType === 0)
+        response = await articleElementsAPI.addArticleElement(lessonId, elementType);
+    else
+        response = await taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer);
 
-    if (lessonType === 0) {
-        articleElementsAPI.addArticleElement(lessonId, elementType).then((response) => {
-            if (response.status === "ok") {
-                dispatch(getLesson(lessonId));
-                alertify.success("Element added");
-            } else alertify.error("Failed to add element");
-        });
-    } else {
-        taskElementsAPI.addTaskElement(lessonId, elementType, '', isAnswer).then(response => {
-            if (response.status === "ok") {
-                dispatch(getLesson(lessonId));
-                alertify.success("Element added");
-            } else alertify.error("Failed to add element");
-        });
-    }
-
+    if (response.status === "ok") {
+        dispatch(getLesson(lessonId));
+        alertify.success("Element added");
+    } else
+        alertify.error("Failed to add element");
 }
 
-export const addTaskElement = (lessonId, elementType, data) => (dispatch) => {
+export const addTaskElement = (lessonId, elementType, data) => async (dispatch) => {
     // dispatch(addElementSuccess(elementType, data));    
-    taskElementsAPI.addTaskElement(lessonId, elementType, data).then(response => {
-        if (response.status === "ok") {
-            dispatch(getLesson(lessonId))
-            alertify.success("Element added");
-        } else
-            alertify.error("Failed to add element");
-    });;
+    let response = await taskElementsAPI.addTaskElement(lessonId, elementType, data)
+    if (response.status === "ok") {
+        dispatch(getLesson(lessonId))
+        alertify.success("Element added");
+    } else
+        alertify.error("Failed to add element");
 }
-export const deleteElement = (lessonId, elementId, lessonType) => (dispatch) => {
+export const deleteElement = (lessonId, elementId, lessonType) => async (dispatch) => {
     dispatch(deleteElementSuccess(elementId));
     dispatch(toggleIsFetching(true));
 
+    let response;
     if (lessonType === 0)
-        articleElementsAPI.deleteArticleElement(elementId).then(response => {
-            if (response.status === "ok") {
-                dispatch(getLesson(lessonId));
-                alertify.success('Element deleted');
-            }
-            else alertify.error("Failed to delete element");
-        });
+        response = await articleElementsAPI.deleteArticleElement(elementId)
     else
-        taskElementsAPI.deleteTaskElement(elementId).then(response => {
-            if (response.status === "ok") {
-                dispatch(getLesson(lessonId));
-                alertify.success('Element deleted');
-            }
-            else alertify.error("Failed to delete element");
-        });
-    
+        response = await taskElementsAPI.deleteTaskElement(elementId);
+
+    if (response.status === "ok") {
+        dispatch(getLesson(lessonId));
+        alertify.success('Element deleted');
+    }
+    else
+        alertify.error("Failed to delete element");
 }
-export const editElement = (elementId, data, elementType, lessonType) => (dispatch) => {
-    let status = '';
+export const editElement = (elementId, data, elementType, lessonType) => async (dispatch) => {
+    let response;
     if (elementType === 0) {
         dispatch(editElementTextSuccess(elementId, data));
 
         if (lessonType === 0)
-            articleElementsAPI.editArticleElementText(elementId, data).then(response => showAlertify(response.status));
+            response = await articleElementsAPI.editArticleElementText(elementId, data);
         else
-            taskElementsAPI.editTaskElementText(elementId, data).then(response => showAlertify(response.status));
+            response = await taskElementsAPI.editTaskElementText(elementId, data);
     } else if (elementType === 3) {
         dispatch(editElementQuizSuccess(elementId, data));
-        taskElementsAPI.editTaskQuiz(elementId, data).then(response => showAlertify(response.status));
+        response = await taskElementsAPI.editTaskQuiz(elementId, data);
     } else {
         dispatch(editElementMediaSuccess(elementId, data));
 
         if (lessonType === 0)
-            articleElementsAPI.editArticleElementMedia(elementId, data).then(response => showAlertify(response.status));
+            response = await articleElementsAPI.editArticleElementMedia(elementId, data);
         else
-            taskElementsAPI.editTaskElementMedia(elementId, data).then(response => showAlertify(response.status));
+            response = await taskElementsAPI.editTaskElementMedia(elementId, data);
     }
 
-    const showAlertify = (status) => {
-        if (status === "ok")
-            alertify.success('Element edited');
-        else
-            alertify.error("Failed to edit element");
-    }
+    if (response.status === "ok")
+        alertify.success('Element edited');
+    else
+        alertify.error("Failed to edit element");
 
 }
 export const likeLesson = (lessonId) => (dispatch) => {
@@ -276,35 +265,33 @@ const changeElementPositionSuccess = (oldPosition, newPosition) => {
     }
 }
 
-export const changeElementPosition = (oldPosition, newPosition, objectType, foreignId) => (dispatch) => {
+export const changeElementPosition = (oldPosition, newPosition, objectType, foreignId) => async (dispatch) => {
     if (objectType === 0)
         objectType = 'article';
     else if (objectType === 1)
         objectType = 'task';
-    lessonAPI.changeElementPosition(oldPosition, newPosition, objectType, foreignId).then(response => {
-        if (response.status === "ok") {
-            dispatch(changeElementPositionSuccess(oldPosition, newPosition));
-            alertify.success('Element position changed');
-        } else
-            alertify.error('Failer to change element position');
-    });
+    let response = await lessonAPI.changeElementPosition(oldPosition, newPosition, objectType, foreignId)
+    if (response.status === "ok") {
+        dispatch(changeElementPositionSuccess(oldPosition, newPosition));
+        alertify.success('Element position changed');
+    } else
+        alertify.error('Failer to change element position');
 }
 
-export const togglePublish = (lessonId, sectionId, type) => (dispatch) => {
+export const togglePublish = (lessonId, sectionId, type) => async (dispatch) => {
     let id = 0;
     if (type === 'section')
         id = sectionId;
     else if (type === 'lesson')
         id = lessonId;
 
-    lessonAPI.changePublishStatus(id, type).then((response) => {
-        if (response.status === "ok") {
-            dispatch(getSections());
-            dispatch(getLesson(lessonId));
-            alertify.success('Publish status changed');
-        } else
-            alertify.error('Failed to change publish status');
-    })
+    let response = await lessonAPI.changePublishStatus(id, type)
+    if (response.status === "ok") {
+        dispatch(getSections());
+        dispatch(getLesson(lessonId));
+        alertify.success('Publish status changed');
+    } else
+        alertify.error('Failed to change publish status');
 }
 
 const toggleIsFetching = (isFetching) => {

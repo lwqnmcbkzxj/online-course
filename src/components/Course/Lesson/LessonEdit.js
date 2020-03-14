@@ -164,7 +164,7 @@ class LessonEdit extends React.Component {
             }
         }
 
-        if (newPos !== 0 && elementPosition !== 0)
+        if (newPos !== 0 && elementPosition !== 0 && elementPosition !== newPos) 
             this.props.changeElementPosition(elementPosition, newPos, this.props.lesson.type, this.props.lesson.id)
     }
 

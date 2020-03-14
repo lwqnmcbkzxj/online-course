@@ -3,31 +3,31 @@ import { getUserInfo } from "./user-reducer"
 import { setCourseInfo } from './course-reducer';
 
 import alertify from "alertifyjs";
-alertify.set('notifier', 'position', 'top-right');
+alertify.set('notifier', 'position', 'bottom-right');
 
-const SET_SECTIONS = 'SET_SECTIONS_DATA';
+const SET_SECTIONS = 'sections/SET_SECTIONS_DATA';
 
-const ADD_SECTION = 'ADD_SECTION';
-const ADD_LESSON = 'ADD_LESSON';
+const ADD_SECTION = 'sections/ADD_SECTION';
+const ADD_LESSON = 'sections/ADD_LESSON';
 
-const DELETE_LESSON = 'DELETE_LESSON';
-const DELETE_SECTION = 'DELETE_SECTION';
+const DELETE_LESSON = 'sections/DELETE_LESSON';
+const DELETE_SECTION = 'sections/DELETE_SECTION';
 
-const EDIT_SECTION = 'EDIT_SECTION';
-const EDIT_LESSON = 'EDIT_LESSON';
+const EDIT_SECTION = 'sections/EDIT_SECTION';
+const EDIT_LESSON = 'sections/EDIT_LESSON';
 
-const COMPLETE_LESSON = 'COMPLETE_LESSON';
-const COMPLETE_SECTION = 'COMPLETE_SECTION';
+const COMPLETE_LESSON = 'sections/COMPLETE_LESSON';
+const COMPLETE_SECTION = 'sections/COMPLETE_SECTION';
 
-const CHANGE_LESSON_POSITION = 'CHANGE_LESSON_POSITION';
-const CHANGE_SECTION_POSITION = 'CHANGE_SECTION_POSITION';
+const CHANGE_LESSON_POSITION = 'sections/CHANGE_LESSON_POSITION';
+const CHANGE_SECTION_POSITION = 'sections/CHANGE_SECTION_POSITION';
 
-const TOGGLE_IS_SECTIONS_FETCHING = 'TOGGLE_IS_SECTIONS_FETCHING';
+const TOGGLE_IS_SECTIONS_FETCHING = 'sections/TOGGLE_IS_SECTIONS_FETCHING';
 
 
 let initialState = {
     sections: [],
-    sectionsListIsFetching:false
+    sectionsListIsFetching: false
 }
 
 const sectionsListReducer = (state = initialState, action) => {
@@ -277,21 +277,22 @@ const changeSectionPositionSuccess = (oldPosition, newPosition) => {
 }
 
 //THUNKS
-export const getSections = () => (dispatch) => {
-    return sectionsListAPI.getSections().then((response) => {
-        dispatch(setSections(response));
-        dispatch(setCourseInfo(response));
-        dispatch(toggleIsSectionsFetching(false));
-    })
+export const getSections = () => async (dispatch) => {
+    let response = await sectionsListAPI.getSections();
+    dispatch(setSections(response));
+    dispatch(setCourseInfo(response));
+    dispatch(toggleIsSectionsFetching(false));
+
+    return response;
 }
 
 // COMPLETE
-export const completeSection = (lessonId, sectionId) => (dispatch, getState) => {
+export const completeSection = (lessonId, sectionId) => async (dispatch, getState) => {
     let allCompleted = true;
 
     const state = getState();
-    let completedLessonsIds = [...state.user.completedLessonsIds, +lessonId]
-    let sections = state.sectionsList.sections
+    let completedLessonsIds = [...state.user.completedLessonsIds, +lessonId];
+    let sections = state.sectionsList.sections;
 
     for (let section of sections) {
         if (+section.id === +sectionId) {
@@ -303,114 +304,104 @@ export const completeSection = (lessonId, sectionId) => (dispatch, getState) => 
     }
 
     if (allCompleted) {
-        sectionsListAPI.completeSection(sectionId).then((response) => {
-            if (response.status === "ok") {
-                dispatch(getUserInfo());
-            }
-        });
+        let response = await sectionsListAPI.completeSection(sectionId);
+        if (response.status === "ok") {
+            dispatch(getUserInfo());
+        }
     }
 }
 
-export const completeLesson = (lessonId, sectionId, contentType, data) => (dispatch) => {
-    lessonAPI.completeLesson(lessonId, contentType, data).then((response) => {
-        if (response.status === "ok") {
-            dispatch(getUserInfo());
-            dispatch(completeSection(lessonId, sectionId));
-        }
-    });
-
+export const completeLesson = (lessonId, sectionId, contentType, data) => async (dispatch) => {
+    let response = await lessonAPI.completeLesson(lessonId, contentType, data)
+    if (response.status === "ok") {
+        dispatch(getUserInfo());
+        dispatch(completeSection(lessonId, sectionId));
+    }
 }
 
 // DELETE
-export const deleteSection = (sectionId) => (dispatch) => {
+export const deleteSection = (sectionId) => async (dispatch) => {
     dispatch(toggleIsSectionsFetching(true))
 
     dispatch(deleteSectionSuccess(sectionId));
-    sectionsListAPI.deleteSection(sectionId).then((response) => {
-        if (response.status === "ok") {
-            alertify.success("Section deleted");
-            dispatch(getSections());
-        }
-        else
-            alertify.error("Failed to delete section");
-    })
+    let response = await sectionsListAPI.deleteSection(sectionId);
+    if (response.status === "ok") {
+        alertify.success("Section deleted");
+        dispatch(getSections());
+    }
+    else
+        alertify.error("Failed to delete section");
 }
 
-export const deleteLesson = (lessonId, sectionId) => (dispatch) => {
+export const deleteLesson = (lessonId, sectionId) => async (dispatch) => {
     dispatch(toggleIsSectionsFetching(true))
 
-    // dispatch(deleteLessonSuccess(lessonId));
-    lessonAPI.deleteLesson(lessonId, sectionId).then((response) => {
-        if (response.status === "ok") {
-            dispatch(getUserInfo());
-            dispatch(getSections());
-            alertify.success("Lesson deleted");
-        } else
-            alertify.error("Failed to delete lesson");
-    })
+    dispatch(deleteLessonSuccess(lessonId));
+    let response = await lessonAPI.deleteLesson(lessonId, sectionId)
+    if (response.status === "ok") {
+        dispatch(getUserInfo());
+        dispatch(getSections());
+        alertify.success("Lesson deleted");
+    } else
+        alertify.error("Failed to delete lesson");
 }
 
 // ADD
-export const addSection = () => (dispatch) => {
+export const addSection = () => async (dispatch) => {
     dispatch(toggleIsSectionsFetching(true));
 
-    sectionsListAPI.addSection().then((response) => {
-        if (response.status === "ok") {
-            dispatch(getSections());
-            alertify.success("Section added");
-        } else
-            alertify.error("Failed to add section");
-    })
+    let response = await sectionsListAPI.addSection()
+    if (response.status === "ok") {
+        dispatch(getSections());
+        alertify.success("Section added");
+    } else
+        alertify.error("Failed to add section");
 }
 
-export const addLesson = (sectionId, contentType) => (dispatch) => {
+export const addLesson = (sectionId, contentType) => async (dispatch) => {
     dispatch(toggleIsSectionsFetching(true));
-    return lessonAPI.addLesson(sectionId, contentType).then((response) => {
-        if (response.status === "ok") {
-            dispatch(getUserInfo());
-            alertify.success("Lesson added");
-            return dispatch(getSections());
-        } else
-            alertify.error("Failed to add lesson");
-    })
+
+    let response = await lessonAPI.addLesson(sectionId, contentType)
+    if (response.status === "ok") {
+        dispatch(getUserInfo());
+        alertify.success("Lesson added");
+        return dispatch(getSections());
+    } else
+        alertify.error("Failed to add lesson");
+
+    return response;
 }
 
 // EDIT
-export const editSection = (sectionId, title) => (dispatch) => {
+export const editSection = (sectionId, title) => async (dispatch) => {
     dispatch(editSectionSuccess(sectionId, title));
-    sectionsListAPI.editSection(sectionId, title).then(response => {
-        if (response.status === "ok")
-            alertify.success("Section edited");
-        else
-            alertify.error("Failed to edit section");
-    });
 
-
+    let response = await sectionsListAPI.editSection(sectionId, title)
+    if (response.status === "ok")
+        alertify.success("Section edited");
+    else
+        alertify.error("Failed to edit section");
 }
-export const editLesson = (sectionId, lessonId, title) => (dispatch) => {
+export const editLesson = (sectionId, lessonId, title) => async (dispatch) => {
     dispatch(editLessonSuccess(sectionId, lessonId, title));
-    lessonAPI.editLesson(lessonId, title).then(response => {
-        if (response.status === "ok")
-            alertify.success("Lesson edited");
-        else
-            alertify.error("Failed to edit lesson");
-    });
+    let response = await lessonAPI.editLesson(lessonId, title)
+    if (response.status === "ok")
+        alertify.success("Lesson edited");
+    else
+        alertify.error("Failed to edit lesson");
 }
 
-export const changeElementPosition = (oldPosition, newPosition, type, foreignId) => (dispatch) => {
-    lessonAPI.changeElementPosition(oldPosition, newPosition, type, foreignId).then(response => {
-        if (response.status === "ok") {
-            if (type === 'section')
-                dispatch(changeSectionPositionSuccess(oldPosition, newPosition));
-            else if (type === 'lesson')
-                dispatch(changeLessonPositionSuccess(oldPosition, newPosition, foreignId));
-            alertify.success("Position changed");
-        }
-        else
-            alertify.error("Failed to change position");
-    });
-
-
+export const changeElementPosition = (oldPosition, newPosition, type, foreignId) => async (dispatch) => {
+    let response = await lessonAPI.changeElementPosition(oldPosition, newPosition, type, foreignId)
+    if (response.status === "ok") {
+        if (type === 'section')
+            dispatch(changeSectionPositionSuccess(oldPosition, newPosition));
+        else if (type === 'lesson')
+            dispatch(changeLessonPositionSuccess(oldPosition, newPosition, foreignId));
+        alertify.success("Position changed");
+    }
+    else
+        alertify.error("Failed to change position");
 }
 
 const toggleIsSectionsFetching = (isFetching) => {

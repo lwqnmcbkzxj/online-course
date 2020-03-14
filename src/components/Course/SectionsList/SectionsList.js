@@ -4,7 +4,6 @@ import { withRouter } from 'react-router';
 
 import SectionHeader from './Elements/SectionHeader';
 import LessonsListElement from './Elements/LessonsListElement';
-import alertify from "alertifyjs";
 import Preloader from '../../Common/Preloader/Preloader';
 
 class SectionsList extends React.Component {
@@ -35,8 +34,6 @@ class SectionsList extends React.Component {
 
         this.props.addLesson(sectionId, contentType).then(() => {
             this.props.history.push(`/course/lesson/${this.props.addedLessonId}`);
-            // alertify.success("SUCCESS")
-
         });
     }
 
@@ -65,13 +62,16 @@ class SectionsList extends React.Component {
 
     changeLessonPosition = (position, sectionId, direction) => {
         let section = this.props.sections.filter(section => section.id === sectionId)[0];
+
         let newPosition = 0;
         if (direction === 0 && position > 1) {
-            newPosition = position--;
+            newPosition = position - 1;
         } else if (direction === 1 && position < section.lessons.length) {
-            newPosition = position++;
+            newPosition = position + 1;
         }
-        if (newPosition !== 0) {
+        
+        let newPosElement = section.lessons.filter(lesson => lesson.section_position === newPosition)[0];
+        if (newPosition !== position && newPosition !== 0 && newPosElement) {
             this.props.changeElementPosition(position, newPosition, 'lesson', sectionId);
         }
     }
@@ -81,12 +81,14 @@ class SectionsList extends React.Component {
 
         let newPosition = 0;
         if (direction === 0 && position > 1) {
-            newPosition = position--;
+            newPosition = position - 1;
         } else if (direction === 1 && position < sections.length) {
-            newPosition = position++;
+            newPosition = position + 1;
         }
 
-        if (newPosition !== 0) {
+        let newPosElement = sections.filter(section => section.dash_position === newPosition)[0];
+
+        if (newPosition !== position && newPosition !== 0 && newPosElement) {
             this.props.changeElementPosition(position, newPosition, 'section');
         }
     }
