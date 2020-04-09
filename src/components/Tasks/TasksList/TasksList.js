@@ -18,7 +18,7 @@ const TasksList = (props) => {
                             <div className={s.stats}>
                                 {/* <div className={s.rating}> <img src={ task.popularity === 1 ? rating1 : task.popularity === 2 ? rating2 : rating3 } alt="rating-img"/></div> */}
                                 <div className={s.likes}><i className="fa fa-heart" aria-hidden="true"></i> {task.likes}</div>
-                                <div className={s.views}><i className="fa fa-eye" aria-hidden="true"></i> {task.viewed}</div>
+                                <div className={s.views}><i className="fa fa-eye" aria-hidden="true"></i> {Math.ceil(task.viewed / 3)}</div>
                             </div>
                         </div>
                     </NavLink> : null
