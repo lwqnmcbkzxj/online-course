@@ -18,26 +18,26 @@ const tasksReducer = (state = initialState, action) => {
             }
         }
 
-        case CALCULATE_POPULARITY: {
-            let averagePopularity = 0;
-            let count = 0;
-            state.tasks.map((task, counter) => {
-                averagePopularity += task.viewed;
-                count = counter;
-            })
-            averagePopularity /= count;
-            return {
-                ...state,
-                tasks: state.tasks.map(task => {
-                    if (task.viewed < 0.5 * averagePopularity)
-                        return { ...task, popularity: 1 }
-                    else if (task.viewed > 1.5 * averagePopularity)
-                        return { ...task, popularity: 3 }
-                    else
-                        return { ...task, popularity: 2 }
-                })
-            }
-        }
+        // case CALCULATE_POPULARITY: {
+        //     let averagePopularity = 0;
+        //     let count = 0;
+        //     state.tasks.map((task, counter) => {
+        //         averagePopularity += task.viewed;
+        //         count = counter;
+        //     })
+        //     averagePopularity /= count;
+        //     return {
+        //         ...state,
+        //         tasks: state.tasks.map(task => {
+        //             if (task.viewed < 0.5 * averagePopularity)
+        //                 return { ...task, popularity: 1 }
+        //             else if (task.viewed > 1.5 * averagePopularity)
+        //                 return { ...task, popularity: 3 }
+        //             else
+        //                 return { ...task, popularity: 2 }
+        //         })
+        //     }
+        // }
 
         case SET_LIKES: {
             let likes = action.likes;
@@ -78,11 +78,11 @@ export const setTasks = (tasks) => {
         tasks
     }
 }
-const calculateTasksPopularity = () => {
-    return {
-        type: CALCULATE_POPULARITY
-    }
-}
+// const calculateTasksPopularity = () => {
+//     return {
+//         type: CALCULATE_POPULARITY
+//     }
+// }
 
 const setLikes = (likes) => {
     return {
@@ -116,7 +116,7 @@ export const getTasks = () => async (dispatch) => {
     dispatch(setTasks(response.tasks));
 
     dispatch(setLikes(response.likes));
-    dispatch(calculateTasksPopularity());
+    // dispatch(calculateTasksPopularity());
     dispatch(getPublishedStatus());
 }
 export default tasksReducer;

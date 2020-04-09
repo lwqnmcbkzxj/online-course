@@ -36,7 +36,8 @@
 .buttonHolder button {
     background: #000;
     color: #fff;
-    padding: 10px 50px;
+	padding: 10px;
+	width: 170px;
 }
 .buttonHolder button[disabled] {
     background: #585858!important;   
@@ -99,6 +100,12 @@ input {
     margin-top: 20px;
 }
 
+.likeLesson {
+	display: flex;
+    justify-content: center;
+   margin: 0 auto;
+}
+
 .likeLesson button {
     background: #fff;
     color: #000;
@@ -112,13 +119,13 @@ input {
 .likeLesson button:hover {
     box-shadow: none;
 }
-
+/* 
 .lessonButtons {
     display: flex;
     flex-direction: column;
     justify-content: center;
     align-items: center;
-}
+} */
 
 .articleBlock {
     margin-top: 10px;

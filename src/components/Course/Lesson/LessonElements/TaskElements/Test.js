@@ -81,7 +81,7 @@ const TestForm = (props) => {
                     <div className={s.testButton} key={`c${props.id}.${counter}2`}>
                         <Field name={`test`} id={`c${props.id}.${counter}`} value={counter.toString()} component="input" type="radio" />
                         <label htmlFor={`c${props.id}.${counter}`}
-                            className={props.completedLessonsIds.some(id => id === +props.lesson.id) ? (
+                            className={props.completedLessonsIds.some(id => id === +props.lesson.id) || props.taskCompletedNow  ? (
                                 props.answers.some(answer => +answer === counter && answer !== "")
                                     ? s.completedTaskcorrectButton : s.completedTaskWrongButton)
                                 : null}
@@ -93,7 +93,7 @@ const TestForm = (props) => {
             </div>
             {props.triedToComplete && <p>{props.taskMessage}</p>}
             <div className={s.buttonHolder}>
-                {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 ?
+                {!props.completedLessonsIds.some(id => id === +props.lesson.id) && props.lesson.type === 1 && !props.taskCompletedNow ?
                     <button>Submit</button> : null}
             </div>
         </form>

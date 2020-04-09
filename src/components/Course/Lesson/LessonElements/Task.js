@@ -16,7 +16,8 @@ class Task extends React.Component {
     state = {
         type: '',
         taskMessage: '',
-        triedToComplete: false,
+		triedToComplete: false,
+		taskCompletedNow: false
     }
 
     componentDidMount() {
@@ -46,6 +47,12 @@ class Task extends React.Component {
         else if (answers.length > 1)
             this.setState({ "type": multiTest, options, answers });
     }
+
+	toggleTaskCompletedNow = () => {
+		this.setState({
+			taskCompletedNow: true
+		});
+	}
 
     deleteElement = (elementId) => {
         this.props.deleteElement(elementId);
@@ -126,11 +133,13 @@ class Task extends React.Component {
                 overall_result: true,
                 total_time: now - taskObject.startDate
             }
+			if (this.props.userLogged) {
+				this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
+			} 
 
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
+			this.toggleTaskCompletedNow();
             this.setState({ taskMessage: `You're right!` });
             Cookies.remove(`task${lessonId}`);
-            this.props.toggleCompletedNow();
 
         } else if (taskObject.attempts === 0) {
             let newObj = {
@@ -138,11 +147,15 @@ class Task extends React.Component {
                 first_try_time: taskObject.firstTryTime,
                 overall_result: false,
                 total_time: now - taskObject.startDate
-            }
-            this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
+			}
+			
+			if (this.props.userLogged) {
+				this.props.completeLesson(this.props.lesson.id, this.props.lesson.type, newObj);
+			} 
+
+			this.toggleTaskCompletedNow();
             this.setState({ taskMessage: `Wrong! You have no more attempts :(` });
             Cookies.remove(`task${lessonId}`);
-            this.props.toggleCompletedNow();
         } else {            
             this.setState({ taskMessage: `Wrong! You have ${taskObject.attempts} more attepmts` });
             Cookies.set(`task${lessonId}`, JSON.stringify(taskObject), { expires: 7 });
@@ -155,6 +168,7 @@ class Task extends React.Component {
             lesson: this.props.lesson,
             id: this.props.id,
             completedLessonsIds: this.props.completedLessonsIds,
+			taskCompletedNow: this.state.taskCompletedNow,
 
             completeTask: this.completeTask,
             editElement: this.editElement,
